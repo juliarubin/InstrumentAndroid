@@ -83,18 +83,20 @@ public class InstrumentCalls {
 				break;
 			}
 
-			//search for super ()
-			iter = units.snapshotIterator();
-			while (iter.hasNext()) {
-				u = iter.next();		
-				if (u instanceof JInvokeStmt && 
-						((JInvokeStmt) u).getInvokeExprBox().getValue() instanceof JSpecialInvokeExpr) {					
-					JSpecialInvokeExpr expr = (JSpecialInvokeExpr) (((JInvokeStmt) u).getInvokeExprBox().getValue());
-					if (expr.getMethod().getName().equals("<init>")) {
-						last = u;
+			//if constructor, search for super ()
+			if (b.getMethod().isConstructor()) {
+				iter = units.snapshotIterator();
+				while (iter.hasNext()) {
+					u = iter.next();		
+					if (u instanceof JInvokeStmt && 
+							((JInvokeStmt) u).getInvokeExprBox().getValue() instanceof JSpecialInvokeExpr) {					
+							JSpecialInvokeExpr expr = (JSpecialInvokeExpr) (((JInvokeStmt) u).getInvokeExprBox().getValue());
+						if (expr.getMethod().getName().equals("<init>")) {
+							last = u;
+						}
+						break;
 					}
-					break;
-				}				
+				}
 			}
 			
 			// "tmpRef = java.lang.System.out;" 

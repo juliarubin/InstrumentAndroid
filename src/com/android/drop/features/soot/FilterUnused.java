@@ -174,7 +174,8 @@ public class FilterUnused {
 					}
 					
 */							        
-				}		
+				}
+				/*
 				else {
 					//do nothing, but need it to create previously "empty" methods
 					final PatchingChain<Unit> units = b.getUnits();
@@ -184,74 +185,13 @@ public class FilterUnused {
 							public void caseInvokeStmt(InvokeStmt stmt) {
 							}								
 						});				
-					}
+					}	
 				}
+					*/
 				
 				//check that we did not mess up the Jimple	
 				b.validate();
-				
-				
-			
-						
-//				Unit newUnit = Jimple.v().
-//						newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef( 
-//	                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef()));
-//				
-//				// insert "tmpRef = java.lang.System.out;" 
-//		        units.insertBefore(newUnit, u);
-//
-//		        // insert "tmpLong = 'HELLO';" 
-//		        units.insertBefore(Jimple.v().newAssignStmt(tmpString, 
-//		                      StringConstant.v(Constants.LOG_MARKER + b.getMethod().getSignature())), 
-//		                      u);
-//		        
-//		        // insert "tmpRef.println(tmpString);" 
-//		        SootMethod toCall = Scene.v().getSootClass("java.io.PrintStream").getMethod("void println(java.lang.String)");                    
-//		        units.insertBefore(Jimple.v().newInvokeStmt(
-//		                      Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), tmpString)), u);
-//		        
-		        
-				
-				
-//				//important to use snapshotIterator here
-//				for(Iterator<Unit> iter = units.snapshotIterator(); iter.hasNext();) {														
-//					final Unit u = iter.next();
-//					u.apply(new AbstractStmtSwitch() {
-//						
-//						public void caseInvokeStmt(InvokeStmt stmt) {
-//							//code here																				
-//							InvokeExpr invokeExpr = stmt.getInvokeExpr();							
-//							//if(invokeExpr.getMethod().getName().equals("onDraw")) {
-	//
-//								Local tmpRef = addTmpRef(b);
-//								Local tmpString = addTmpString(b);
-//								
-//								  // insert "tmpRef = java.lang.System.out;" 
-//						        units.insertBefore(Jimple.v().newAssignStmt( 
-//						                      tmpRef, Jimple.v().newStaticFieldRef( 
-//						                      Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef())), u);
-	//
-//						        // insert "tmpLong = 'HELLO';" 
-//						        units.insertBefore(Jimple.v().newAssignStmt(tmpString, 
-//						                      StringConstant.v("INVOKE " + invokeExpr.getMethod().getName() + " of " + invokeExpr.getMethod().getDeclaringClass().getName())), 
-//						                      u);
-//						        
-//						        // insert "tmpRef.println(tmpString);" 
-//						        SootMethod toCall = Scene.v().getSootClass("java.io.PrintStream").getMethod("void println(java.lang.String)");                    
-//						        units.insertBefore(Jimple.v().newInvokeStmt(
-//						                      Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), tmpString)), u);
-//						        
-//						        //check that we did not mess up the Jimple
-//						        b.validate();
-//							//}
-//						}
-//						
-//						public void caseReturnStmt(ReturnStmt stmt) {
-//							
-//						}
-//						
-//					});
-//				}
+								
 		        
 			}
 		} //FilterMethodsTransformer class
