@@ -1,6 +1,7 @@
 
 package com.android.drop.features.soot;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -21,7 +22,6 @@ import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.internal.JInvokeStmt;
 import soot.jimple.internal.JSpecialInvokeExpr;
 import soot.options.Options;
-import soot.util.Chain;
 
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.DataStructure;
@@ -39,8 +39,13 @@ public class InstrumentCalls {
 		
 		//output as APK, too//-f J
 		Options.v().set_output_format(Options.output_format_dex);		
+		//Options.v().set_output_format(Options.output_format_class);
 		
-		Options.v().set_output_dir(Constants.SOOT_OUTPUT_FILE);
+		//Options.v().set_android_jars(Constants.SOOT_ANDROID_PLATFORM); soot needs at least one command line parameter, otherwise does not work
+		Options.v().set_allow_phantom_refs(true);
+		Options.v().set_process_dir(Collections.singletonList(Constants.SOOT_INPUT_DIR + Constants.APP_NAME + ".apk"));
+		Options.v().set_output_dir(Constants.SOOT_OUTPUT_DIR);
+		
         // resolve the PrintStream and System soot-classes
 		Scene.v().addBasicClass("java.io.PrintStream",SootClass.SIGNATURES);
         Scene.v().addBasicClass("java.lang.System",SootClass.SIGNATURES);
@@ -57,9 +62,9 @@ public class InstrumentCalls {
 	}
 
 	    private static class LogMethodsTransformer extends BodyTransformer {
-
 		@Override
-		protected void internalTransform(final Body b, String phaseName, @SuppressWarnings("rawtypes") Map options) {				
+		protected void internalTransform(final Body b, String phaseName, @SuppressWarnings("rawtypes") Map options) {	
+//			/*
 			Method m = new Method(b.getMethod().getSignature());
 			ds.addMethod(m);
 			//System.out.println(m.getSigniture());
@@ -82,6 +87,32 @@ public class InstrumentCalls {
 				last = units.getPredOf(u);
 				break;
 			}
+			
+//			//debug
+//			if (b.getMethod().getDeclaringClass().getName().equals("com.ebay.nautilus.kernel.EbayIdentity") &&
+//					b.getMethod().getName().equals("<clinit>")) {
+//				//look for $r1 = virtualinvoke $r4.<java.lang.Class: java.lang.String getSimpleName()>();
+//				//and print it
+//				while (iter.hasNext()) {														
+//					u = iter.next();	
+//					if (u instanceof JAssignStmt && 
+//							((JAssignStmt) u).rightBox.getValue() instanceof JVirtualInvokeExpr) {	
+//						JVirtualInvokeExpr expr = (JVirtualInvokeExpr) (((JAssignStmt) u).rightBox.getValue());
+//						if (expr.getMethod().getName().equals("getSimpleName")) { 
+//					        Unit u2 = Jimple.v().newAssignStmt(tmpString, ((JAssignStmt) u).leftBox.getValue());				                    
+//					        	        
+//					        // "tmpRef.println(tmpString);" 	    
+//					        SootMethod toCall = Scene.v().getSootClass("java.io.PrintStream").getMethod("void println(java.lang.String)");
+//					        Unit u3 = Jimple.v().newInvokeStmt(
+//				                    Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), tmpString));
+//
+//					        units.insertAfter(u2, u);
+//					        units.insertAfter(u3, u2);
+//							System.out.println("JULIA HERE");
+//						}
+//					}
+//				}
+//			}
 
 			//if constructor, search for super ()
 			if (b.getMethod().isConstructor()) {
@@ -91,10 +122,10 @@ public class InstrumentCalls {
 					if (u instanceof JInvokeStmt && 
 							((JInvokeStmt) u).getInvokeExprBox().getValue() instanceof JSpecialInvokeExpr) {					
 							JSpecialInvokeExpr expr = (JSpecialInvokeExpr) (((JInvokeStmt) u).getInvokeExprBox().getValue());
-						if (expr.getMethod().getName().equals("<init>")) {
+						if (expr.getMethod().getName().equals("<init>") && expr.getBaseBox().getValue().equals(b.getLocals().getFirst())) {
 							last = u;
-						}
-						break;
+							break;
+						}						
 					}
 				}
 			}
@@ -120,11 +151,12 @@ public class InstrumentCalls {
 	        	units.addFirst(newUnit1);
 	        }
         	units.insertAfter(newUnit2, newUnit1); 	                    	    
-        	units.insertAfter(newUnit3, newUnit2);
-	        
-	        //check that we did not mess up the Jimple
-	        b.validate();					      
-		}
+        	units.insertAfter(newUnit3, newUnit2);	
+        	
+	       // check that we did not mess up the Jimple
+	        b.validate();
+//	        */
+		}				
 	} //LogMethodsTransformer class
 		
 	private static Local addTmpRef(Body body) {

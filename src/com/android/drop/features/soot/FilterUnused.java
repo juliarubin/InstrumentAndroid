@@ -3,7 +3,7 @@ package com.android.drop.features.soot;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.Map;
 
 import soot.Body;
@@ -21,11 +21,9 @@ import soot.Transform;
 import soot.Type;
 import soot.Unit;
 import soot.VoidType;
-import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
-import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
@@ -52,13 +50,16 @@ public class FilterUnused {
 		// output as APK, too//-f J
 		Options.v().set_output_format(Options.output_format_dex);
 		
-		Options.v().set_output_dir(Constants.SOOT_OUTPUT_FILE);
+		//Options.v().set_android_jars(Constants.SOOT_ANDROID_PLATFORM); soot needs at least one command line parameter, otherwise does not work
+		Options.v().set_allow_phantom_refs(true);
+		Options.v().set_process_dir(Arrays.asList(Constants.SOOT_INPUT_DIR + Constants.APP_NAME + ".apk"));
+		Options.v().set_output_dir(Constants.SOOT_OUTPUT_DIR);
 
 		// resolve the PrintStream and System soot-classes
 		Scene.v().addBasicClass("java.io.PrintStream", SootClass.SIGNATURES);
 		Scene.v().addBasicClass("java.lang.System", SootClass.SIGNATURES);
 
-		PackManager.v().getPack("jtp").add(new Transform("jtp.myInstrumenter",
+	    PackManager.v().getPack("jtp").add(new Transform("jtp.myInstrumenter",
 						new FilterMethodsTransformer()));
 		try {
 			soot.Main.main(args);
