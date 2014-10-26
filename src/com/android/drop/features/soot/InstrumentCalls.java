@@ -3,21 +3,17 @@ package com.android.drop.features.soot;
 
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
-import soot.Local;
 import soot.PackManager;
 import soot.PatchingChain;
-import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
-import soot.SootMethod;
 import soot.Transform;
 import soot.Unit;
-import soot.jimple.Jimple;
-import soot.jimple.StringConstant;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.internal.JInvokeStmt;
 import soot.jimple.internal.JSpecialInvokeExpr;
@@ -64,13 +60,9 @@ public class InstrumentCalls {
 	    private static class LogMethodsTransformer extends BodyTransformer {
 		@Override
 		protected void internalTransform(final Body b, String phaseName, @SuppressWarnings("rawtypes") Map options) {	
-//			/*
 			Method m = new Method(b.getMethod().getSignature());
 			ds.addMethod(m);
 			//System.out.println(m.getSigniture());
-			
-			Local tmpRef = addTmpRef(b);
-			Local tmpString = addTmpString(b);
 					
 			final PatchingChain<Unit> units = b.getUnits();		
 			Unit u = null;	
@@ -89,8 +81,9 @@ public class InstrumentCalls {
 			}
 			
 //			//debug
-//			if (b.getMethod().getDeclaringClass().getName().equals("com.ebay.nautilus.kernel.EbayIdentity") &&
-//					b.getMethod().getName().equals("<clinit>")) {
+			if (b.getMethod().getDeclaringClass().getName().equals("com.walmart.android.analytics.GoogleAnalytics") &&
+					b.getMethod().getName().equals("start")) {
+				System.out.println("JULIA HERE");
 //				//look for $r1 = virtualinvoke $r4.<java.lang.Class: java.lang.String getSimpleName()>();
 //				//and print it
 //				while (iter.hasNext()) {														
@@ -112,7 +105,7 @@ public class InstrumentCalls {
 //						}
 //					}
 //				}
-//			}
+			}
 
 			//if constructor, search for super ()
 			if (b.getMethod().isConstructor()) {
@@ -130,47 +123,26 @@ public class InstrumentCalls {
 				}
 			}
 			
-			// "tmpRef = java.lang.System.out;" 
-			Unit newUnit1 = Jimple.v().
-					newAssignStmt(tmpRef, Jimple.v().newStaticFieldRef( 
-                    Scene.v().getField("<java.lang.System: java.io.PrintStream out>").makeRef()));					  
-
-	        // "tmpLong = 'HELLO';" 
-	        Unit newUnit2 = Jimple.v().newAssignStmt(tmpString, 
-                    StringConstant.v(Constants.LOG_MARKER + b.getMethod().getSignature()));
-	        	        
-	        // "tmpRef.println(tmpString);" 	    
-	        SootMethod toCall = Scene.v().getSootClass("java.io.PrintStream").getMethod("void println(java.lang.String)");
-	        Unit newUnit3 = Jimple.v().newInvokeStmt(
-                    Jimple.v().newVirtualInvokeExpr(tmpRef, toCall.makeRef(), tmpString));
-	        
+			List<Unit> printUnits = Util.generatePrintout(b, Constants.LOG_MARKER);
+				      
 	        if (last != null) {	        
-	        	units.insertAfter(newUnit1, last);
+	        	units.insertAfter(printUnits.get(0), last);
 	        }
 	        else {
-	        	units.addFirst(newUnit1);
+	        	units.addFirst(printUnits.get(0));
 	        }
-        	units.insertAfter(newUnit2, newUnit1); 	                    	    
-        	units.insertAfter(newUnit3, newUnit2);	
-        	
+	        
+	        last = printUnits.get(0);
+	        for (int i = 1; i < printUnits.size();i++) {
+	        	units.insertAfter(printUnits.get(i), last);
+	        	last = printUnits.get(i);
+	        }
+        		                    	    
 	       // check that we did not mess up the Jimple
 	        b.validate();
-//	        */
+
 		}				
 	} //LogMethodsTransformer class
 		
-	private static Local addTmpRef(Body body) {
-		Local tmpRef = Jimple.v().newLocal("tmpRef",
-				RefType.v("java.io.PrintStream"));
-		body.getLocals().add(tmpRef);
-		return tmpRef;
-	}
 
-	private static Local addTmpString(Body body) {
-		Local tmpString = Jimple.v().newLocal("tmpString",
-				RefType.v("java.lang.String"));
-		body.getLocals().add(tmpString);
-		return tmpString;
-	} 
-	    
 }

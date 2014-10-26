@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import soot.Body;
@@ -53,6 +54,7 @@ public class FilterUnused {
 		//Options.v().set_android_jars(Constants.SOOT_ANDROID_PLATFORM); soot needs at least one command line parameter, otherwise does not work
 		Options.v().set_allow_phantom_refs(true);
 		Options.v().set_process_dir(Arrays.asList(Constants.SOOT_INPUT_DIR + Constants.APP_NAME + ".apk"));
+		//Options.v().set_process_dir(Arrays.asList(Constants.SOOT_INPUT_DIR + Constants.APP_NAME + "_instrumented.apk"));
 		Options.v().set_output_dir(Constants.SOOT_OUTPUT_DIR);
 
 		// resolve the PrintStream and System soot-classes
@@ -110,54 +112,56 @@ public class FilterUnused {
 					System.err.println("The method from an app is not found in data structure: " + signiture);				
 				}
 				else if (!ds.getMethod(signiture).getCalled() && !b.getMethod().isConstructor()) {
-					//System.out.println(m.getSigniture());
+//					//debug
+					if (b.getMethod().getDeclaringClass().getName().equals("com.walmart.android.analytics.GoogleAnalytics") &&
+							b.getMethod().getName().equals("start")) {
+						System.out.println("JULIA HERE");
+					}
 							
 							
 					final PatchingChain<Unit> units = b.getUnits();
 				
-					/*
-					JReturnStmt returnStatement = null; 					
-					
-					Unit u = null;
-					Iterator<Unit> iter = units.snapshotIterator();
-					while (iter.hasNext()) {														
-						u = iter.next();						
-						if (u instanceof JReturnStmt) { 
-							returnStatement = (JReturnStmt) u;							
-						}
-						units.remove(u);
-					}
-					*/
-					
 					units.clear();
 			        b.getTraps().clear();
+			        b.getLocals().clear();
 			        
+			    	List<Unit> printUnits = Util.generatePrintout(b, Constants.FILTERED_MARKER);
+				     
+			    	units.addFirst(printUnits.get(0));
+			        Unit last = printUnits.get(0);
+			        for (int i = 1; i < printUnits.size();i++) {
+			        	units.insertAfter(printUnits.get(i), last);
+			        	last = printUnits.get(i);
+			        }
+			        
+			       	Unit returnStatememnt = null;
+			        		
 					Type returnType = b.getMethod().getReturnType();
 					
 					if (returnType instanceof VoidType)  {
-						units.addLast(Jimple.v().newReturnVoidStmt());
+						returnStatememnt = Jimple.v().newReturnVoidStmt();
   		            }
 					else if (returnType instanceof RefLikeType)  {
-						units.addLast(Jimple.v().newReturnStmt(NullConstant.v()));
+						returnStatememnt = Jimple.v().newReturnStmt(NullConstant.v());
   		            }
 					else if (returnType instanceof DoubleType) {
-		            	units.addLast(Jimple.v().newReturnStmt(DoubleConstant.v(0)));
+						returnStatememnt = Jimple.v().newReturnStmt(DoubleConstant.v(0));
 		            }
 					else if (returnType instanceof FloatType) {
-		            	units.addLast(Jimple.v().newReturnStmt(FloatConstant.v(0)));
+						returnStatememnt = Jimple.v().newReturnStmt(FloatConstant.v(0));
 		            }
 					else if (returnType instanceof LongType) {
-		            	units.addLast(Jimple.v().newReturnStmt(LongConstant.v(0)));
+						returnStatememnt = Jimple.v().newReturnStmt(LongConstant.v(0));
 		            }
   		            else if (returnType instanceof PrimType) {
-  		            	units.addLast(Jimple.v().newReturnStmt(IntConstant.v(0)));
+  		            	returnStatememnt = Jimple.v().newReturnStmt(IntConstant.v(0));
   		            }  		          
   		            else {
   		              System.err.println("Unknown return type " + returnType);
+  		              return;
   		            }
-  		            	
-  		            
-			        ;
+
+					units.insertAfter(returnStatememnt, last);
 /*			        
 			        if (returnStatement != null) {					
 						Type type = returnStatement.getOp().getType();						
