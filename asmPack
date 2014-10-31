@@ -1,0 +1,21 @@
+#!/bin/tcsh -fx
+
+set apkDir = /Volumes/D/data/minst/apks
+
+cd $apkDir/decompiled/asmOutput/$1
+
+jar cf ../$1_$2.jar *
+
+/Volumes/D/data/android_tools/dex2jar-0.0.9.15/d2j-jar2dex.sh -f -o classes.dex ../$1_$2.jar
+
+#create new apk
+cp $apkDir/orig/$1.apk $apkDir/asmOutput/$1_$2.apk
+zip -r $apkDir/asmOutput/$1_$2.apk classes.dex
+rm classes.dex
+
+#sign
+/Volumes/D/data/android_tools/dex2jar-0.0.9.15/d2j-apk-sign.sh -f -o $apkDir/asmOutput/$1_$2_signed.apk $apkDir/asmOutput/$1_$2.apk
+mv $apkDir/asmOutput/$1_$2_signed.apk $apkDir/asmOutput/$1_$2.apk
+jarsigner -verify $apkDir/asmOutput/$1_$2.apk
+
+/Applications/JD-GUI.app/Contents/MacOS/jd-gui $apkDir/decompiled/asmOutput/$1_$2.jar &

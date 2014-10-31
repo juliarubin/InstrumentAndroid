@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+/*
 import soot.Body;
 import soot.BodyTransformer;
 import soot.PackManager;
@@ -18,29 +18,32 @@ import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.internal.JInvokeStmt;
 import soot.jimple.internal.JSpecialInvokeExpr;
 import soot.options.Options;
-
+*/
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.DataStructure;
 import com.android.drop.features.data.Method;
 
 
 public class InstrumentCalls {
-	
+	/*
 	public static DataStructure ds = new DataStructure();
 	
 	public static void main(String[] args) {
 		
-		//prefer Android APK files// -src-prec apk
 		Options.v().set_src_prec(Options.src_prec_apk);
-		
-		//output as APK, too//-f J
-		Options.v().set_output_format(Options.output_format_dex);		
-		//Options.v().set_output_format(Options.output_format_class);
-		
-		//Options.v().set_android_jars(Constants.SOOT_ANDROID_PLATFORM); soot needs at least one command line parameter, otherwise does not work
-		Options.v().set_allow_phantom_refs(true);
+		Options.v().set_output_format(Options.output_format_dex);
 		Options.v().set_process_dir(Collections.singletonList(Constants.SOOT_INPUT_DIR + Constants.APP_NAME + ".apk"));
 		Options.v().set_output_dir(Constants.SOOT_OUTPUT_DIR);
+		
+//		Options.v().set_src_prec(Options.src_prec_class);				
+//		Options.v().set_output_format(Options.output_format_class);
+//		Options.v().set_process_dir(Collections.singletonList(Constants.SOOT_INPUT_DIR + "../decompiled/orig/" + Constants.APP_NAME + "_dex2jar.jar"));
+//		Options.v().set_output_dir(Constants.SOOT_OUTPUT_DIR + Constants.APP_NAME + ".jar");
+//		Options.v().set_output_jar(true);
+		
+		Options.v().set_allow_phantom_refs(true);
+		//Options.v().set_android_jars(Constants.SOOT_ANDROID_PLATFORM); soot needs at least one command line parameter, otherwise does not work
+		
 		
         // resolve the PrintStream and System soot-classes
 		Scene.v().addBasicClass("java.io.PrintStream",SootClass.SIGNATURES);
@@ -144,5 +147,5 @@ public class InstrumentCalls {
 		}				
 	} //LogMethodsTransformer class
 		
-
+*/
 }

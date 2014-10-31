@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/*
 import soot.Body;
 import soot.BodyTransformer;
 import soot.DoubleType;
@@ -29,13 +30,13 @@ import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.options.Options;
-
+*/
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.DataStructure;
 import com.android.drop.features.data.Method;
 
 public class FilterUnused {
-
+/*
 	public static DataStructure ds = new DataStructure();
 	
 	
@@ -162,37 +163,37 @@ public class FilterUnused {
   		            }
 
 					units.insertAfter(returnStatememnt, last);
-/*			        
-			        if (returnStatement != null) {					
-						Type type = returnStatement.getOp().getType();						
-						System.out.println(returnStatement.getOp().getType().getClass());
-						System.out.println();
-						NullConstant.
-						((Type) returnStatement.getOp().getType().getClass()).
-						
-
-						//units.addLast(returnStatement);						
-						//units.addLast(new JReturnStmt(NullConstant.v()));
-					}
-					else {
-						units.addLast(Jimple.v().newReturnVoidStmt());
-					}
-					
-*/							        
+			        
+//			        if (returnStatement != null) {					
+//						Type type = returnStatement.getOp().getType();						
+//						System.out.println(returnStatement.getOp().getType().getClass());
+//						System.out.println();
+//						NullConstant.
+//						((Type) returnStatement.getOp().getType().getClass()).
+//						
+//
+//						//units.addLast(returnStatement);						
+//						//units.addLast(new JReturnStmt(NullConstant.v()));
+//					}
+//					else {
+//						units.addLast(Jimple.v().newReturnVoidStmt());
+//					}
+//					
+							        
 				}
-				/*
-				else {
-					//do nothing, but need it to create previously "empty" methods
-					final PatchingChain<Unit> units = b.getUnits();
-					for(Iterator<Unit> iter = units.snapshotIterator(); iter.hasNext();) {														
-						Unit u = iter.next();
-						u.apply(new AbstractStmtSwitch() {							
-							public void caseInvokeStmt(InvokeStmt stmt) {
-							}								
-						});				
-					}	
-				}
-					*/
+				
+//				else {
+//					//do nothing, but need it to create previously "empty" methods
+//					final PatchingChain<Unit> units = b.getUnits();
+//					for(Iterator<Unit> iter = units.snapshotIterator(); iter.hasNext();) {														
+//						Unit u = iter.next();
+//						u.apply(new AbstractStmtSwitch() {							
+//							public void caseInvokeStmt(InvokeStmt stmt) {
+//							}								
+//						});				
+//					}	
+//				}
+//					
 				
 				//check that we did not mess up the Jimple	
 				b.validate();
@@ -201,6 +202,6 @@ public class FilterUnused {
 			}
 		} //FilterMethodsTransformer class
 			
-
+*/
 
 }

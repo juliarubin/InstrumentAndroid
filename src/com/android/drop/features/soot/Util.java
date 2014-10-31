@@ -3,6 +3,7 @@ package com.android.drop.features.soot;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
 import soot.Body;
 import soot.Local;
 import soot.RefType;
@@ -11,10 +12,10 @@ import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
-
+*/
 
 public class Util {
-	
+	/*
 	public static List<Unit> generatePrintout(final Body b, String stringToPrint) {
 		
 		ArrayList<Unit> result = new ArrayList<Unit>();
@@ -54,6 +55,6 @@ public class Util {
 		body.getLocals().add(tmpString);
 		return tmpString;
 	} 
-	    
+	  */  
 
 }
