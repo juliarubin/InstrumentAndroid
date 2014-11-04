@@ -79,6 +79,36 @@ public class DataStructure {
 		}
 		System.out.println("Used " + i + "/" + methods.size());
 	}
+
+	public void processExecutionLog(String filename) {
+		try {
+	    	BufferedReader br = new BufferedReader(new FileReader(filename));	       
+	        String line = br.readLine();
+
+	        while (line != null) {	          
+	            String methodData[] = line.split(Constants.LOG_MARKER);
+	            if (methodData.length != 2) {
+	            	line = br.readLine();
+	            	continue;
+	            }	            
+	            String signiture = methodData[1];	         
+	            Method method = getMethod(signiture);
+	            if (method == null) {
+	            	System.err.println("Method executed but not in the data structure: " + signiture);
+	            }
+	            else {
+	            	method.setCalled(true);
+	            }	            
+	            line = br.readLine();
+	        }
+	        
+	        br.close();
+	    } 
+	    catch (IOException e) {
+			e.printStackTrace();
+		}	    	 
+		
+	}
 	
 
 }

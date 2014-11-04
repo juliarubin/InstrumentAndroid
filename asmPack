@@ -1,21 +1,31 @@
 #!/bin/tcsh -fx
 
 set apkDir = /Volumes/D/data/minst/apks
+set andrTools = /Volumes/D/data/android_tools/
+set appName = $1_$2
 
-cd $apkDir/decompiled/asmOutput/$1
+cd $apkDir/decompiled/asmOutput/$appName
 
-jar cf ../$1_$2.jar *
+jar cf ../$appName.jar *
 
-/Volumes/D/data/android_tools/dex2jar-0.0.9.15/d2j-jar2dex.sh -f -o classes.dex ../$1_$2.jar
+echo "executing $andrTools/dex2jar-0.0.9.15/d2j-jar2dex.sh -f -o classes.dex ../$appName.jar"
+$andrTools/dex2jar-0.0.9.15/d2j-jar2dex.sh -f -o classes.dex ../$appName.jar
 
 #create new apk
-cp $apkDir/orig/$1.apk $apkDir/asmOutput/$1_$2.apk
-zip -r $apkDir/asmOutput/$1_$2.apk classes.dex
+cp $apkDir/orig/$1.apk $apkDir/asmOutput/$appName.apk
+zip $apkDir/asmOutput/$appName.apk -d META-INF/CERT.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/CERT.RSA
+zip -r $apkDir/asmOutput/$appName.apk classes.dex
 rm classes.dex
 
 #sign
-/Volumes/D/data/android_tools/dex2jar-0.0.9.15/d2j-apk-sign.sh -f -o $apkDir/asmOutput/$1_$2_signed.apk $apkDir/asmOutput/$1_$2.apk
-mv $apkDir/asmOutput/$1_$2_signed.apk $apkDir/asmOutput/$1_$2.apk
-jarsigner -verify $apkDir/asmOutput/$1_$2.apk
+#echo "executing $andrTools/dex2jar-0.0.9.15/d2j-apk-sign.sh -f -o $apkDir/asmOutput/$appName_signed.apk $apkDir/asmOutput/$appName.apk"
+#$andrTools/dex2jar-0.0.9.15/d2j-apk-sign.sh -f -o $apkDir/asmOutput/$appName_signed.apk $apkDir/asmOutput/$appName.apk
+#mv $apkDir/asmOutput/$appName_signed.apk $apkDir/asmOutput/$appName.apk
 
-/Applications/JD-GUI.app/Contents/MacOS/jd-gui $apkDir/decompiled/asmOutput/$1_$2.jar &
+
+jarsigner -sigalg SHA1withRSA -digestalg SHA1 -keystore $andrTools/key/julia-release-key.keystore $apkDir/asmOutput/$appName.apk julia_key -storepass mjulia
+jarsigner -verify $apkDir/asmOutput/$appName.apk
+
+#echo "executing /Applications/JD-GUI.app/Contents/MacOS/jd-gui $apkDir/decompiled/asmOutput/$appName.jar"
+#/Applications/JD-GUI.app/Contents/MacOS/jd-gui $apkDir/decompiled/asmOutput/$appName.jar &

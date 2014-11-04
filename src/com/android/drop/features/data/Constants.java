@@ -2,6 +2,8 @@ package com.android.drop.features.data;
 
 public class Constants {
 
+	
+
 	public static String APP_NAME = "com.walmart.android";
 	//public static String APP_NAME = "com.devuni.flashlight";
 	
@@ -18,8 +20,13 @@ public class Constants {
 	public static String ASM_OUTPUT_DIR = BASE_DIR + "apks/asmOutput/";
 	
 	public static String DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".methods.log";
-	public static String LOGCAT_FILE = BASE_DIR + "logs/" + APP_NAME + "_instrumented.logcat.log";
-
+	public static String FILTER_DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".methods_filter.log";
+	
+	public static String EXECUTED_LOG_FILE = BASE_DIR + "logs/" + APP_NAME + "_instrument_dev.log";
+	
+	public static final String INST_DEV_LOG_FILE = "/data/" + APP_NAME + "_instrument.log";
+	public static final String FILTER_DEV_LOG_FILE = "/data/" + APP_NAME + "_filter.log";
+	
 	public static String LOG_MARKER = "INST_CALL ";
 	public static String FILTERED_MARKER = "FILTERED_CALL ";
 }

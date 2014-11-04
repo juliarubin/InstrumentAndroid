@@ -1,69 +1,82 @@
 package com.android.drop.features.asm;
 
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldInsnNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.commons.AdviceAdapter;
 
-public class InstrumentCallsClassVisitor extends ClassNode {
+import com.android.drop.features.data.Constants;
+import com.android.drop.features.data.DataStructure;
+import com.android.drop.features.data.Method;
 
-	private final ClassVisitor classvisitor;
+public class InstrumentCallsClassVisitor extends BasicClassVisitor {
+    
+	InstrumentCallsClassVisitor(ClassVisitor classvisitor, DataStructure ds, String instrumentationType) {
+		super(classvisitor, ds, instrumentationType);
+	}
 
-	InstrumentCallsClassVisitor(ClassVisitor classvisitor) {
-        super(Opcodes.ASM5);
-        this.classvisitor = classvisitor;
-    }
+	@Override
+    public MethodVisitor visitMethod(final int access, final String name,
+            final String desc, final String signature,
+            final String[] exceptions) {
+        
+		MethodVisitor mv = classWriterVisitor.visitMethod(access, name, desc, signature,
+                exceptions);
 
-    @Override
-    public void visitEnd() {
-        for (Object methodNodeObject : this.methods) {
-            final MethodNode methodNode = (MethodNode) methodNodeObject;
-            final String methodname = methodNode.name;
-      
-            boolean isAbstract = ( methodNode.access & Opcodes.ACC_ABSTRACT) != 0;
-            boolean isNative = (methodNode.access & Opcodes.ACC_NATIVE) != 0;
-            
-            if (isAbstract || isNative) {
-            	continue;
-            }
-            
-           AbstractInsnNode firstInst = methodNode.instructions.getFirst();
-
-            // Insert the three opcodes that will output the
-            // name of the routine
-
-            // ***
-            // insert GETSTATIC
-            final FieldInsnNode fieldnode = new FieldInsnNode(org.objectweb.asm.Opcodes.GETSTATIC,
-                                                             "java/lang/System", // field class
-                                                             "out",              // field name
-                                                             "Ljava/io/PrintStream;"); // field type
-            methodNode.instructions.insertBefore(firstInst, fieldnode);
-
-            // ***
-            // insert ldc "Am in method xxx"
-            final String str = "AM IN METHOD:" + this.name + "." + methodname;
-            final LdcInsnNode ldcnode = new LdcInsnNode(str);
-            methodNode.instructions.insertBefore(firstInst, ldcnode);
-
-            // ***
-            // insert invokevirtual
-            final AbstractInsnNode newInsnNode = new MethodInsnNode(org.objectweb.asm.Opcodes.INVOKEVIRTUAL,
-                                                                   "java/io/PrintStream", // class name
-                                                                   "println",             // method name
-                                                                   "(Ljava/lang/String;)V", false); // desc
-            methodNode.instructions.insertBefore(firstInst, newInsnNode);
+        if (mv == null
+                || (access & (Opcodes.ACC_ABSTRACT | Opcodes.ACC_NATIVE)) > 0) {
+            return mv;
         }
 
-   
-        // Without this, get
-        // "UnsupportedClassVersionError: Test : Unsupoorted majorminor version 0.0"
-        // Where Test was the application class
-        accept(classvisitor);
+        return new InstrumentMethodAdapter(Opcodes.ASM5, mv, this.name, access, name, desc);
     }
+	
+
+	
+	private class InstrumentMethodAdapter extends AdviceAdapter {
+		
+		protected String className;
+		protected String name;
+		protected String desc;
+		protected String methodSigniture;
+		
+		protected InstrumentMethodAdapter(final int api, final MethodVisitor mv,
+	            String className, final int access, final String name, final String desc) {
+			super(api, mv, access, name, desc);
+	        this.className = className;
+	        this.name = name;
+	        this.desc = desc;
+	        methodSigniture = className + "." + name +  desc;
+		}
+		
+		@Override
+        protected void onMethodEnter() {
+		  Method m = new Method(methodSigniture);
+		  ds.addMethod(m);
+		  //System.out.println("Entering " + methodSigniture);
+		  addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture);
+
+/*
+ *   // insert GETSTATIC
+		  super.visitFieldInsn(org.objectweb.asm.Opcodes.GETSTATIC,
+                                                           "java/lang/System", // field class
+                                                           "out",              // field name
+                                                           "Ljava/io/PrintStream;"); // field type
+		  
+          // insert ldc "Am in method xxx"
+          final String str = Constants.LOG_MARKER + methodSigniture;
+          super.visitLdcInsn(str);
+          
+          // insert invokevirtual
+          super.visitMethodInsn(org.objectweb.asm.Opcodes.INVOKEVIRTUAL,
+                                                          "java/io/PrintStream", // class name
+                                                          "println",             // method name
+                                                           "(Ljava/lang/String;)V", false); // desc
+        }
+ */
+        }
+    };
+	
+
     
 }

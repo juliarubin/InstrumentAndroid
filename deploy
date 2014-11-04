@@ -1,10 +1,15 @@
 #!/bin/tcsh -fx
 
 set apkDir = /Volumes/D/data/minst/apks/
+set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
 
-#deploy
-~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb -s emulator-5554 uninstall $1
-~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb -s emulator-5554 logcat -c
-~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb -s emulator-5554 install -r $apkDir/asmOutput/$1_$2.apk
-~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb -s emulator-5554 logcat > $apkDir/../logs/$1_$2_logcat.log 
+$adb -s emulator-5554 uninstall $1
 
+$adb -s emulator-5554 push ~/empty.log /data/$1_$2.log
+
+$adb -s emulator-5554 logcat -c
+$adb -s emulator-5554 logcat > $apkDir/../logs/$1_$2_logcat.log &
+
+$adb -s emulator-5554 install -r $apkDir/asmOutput/$1_$2.apk
+
+#$adb pull /data/$1_$2.log $apkDir/../logs/$1_$2_dev.log
