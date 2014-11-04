@@ -33,7 +33,7 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 	     }
 	     else if (ds.getMethod(methodSigniture).getCalled() || "<init>".equals(name) || "uncaughtException".equals(name)) {
 	    	 //debug
-	    	 addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, "LEFT_CALL " + methodSigniture);
+	    	 addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, "LEFT_CALL " + methodSigniture, 0);
 	    	 
 	    	 //debug
 		     if (this.name.equals("DrawerController") && name.contains("init")) {
@@ -43,7 +43,7 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 	    	 return mv;
 	     }
 	     else {
-	    	addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, Constants.FILTERED_MARKER + methodSigniture);
+	    	addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, Constants.FILTERED_MARKER + methodSigniture, 0);
 		    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Thread", "dumpStack", "()V", false);
 		     
 		    int i =  desc.lastIndexOf(')');

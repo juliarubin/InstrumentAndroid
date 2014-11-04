@@ -28,13 +28,26 @@ public class BasicClassVisitor extends ClassNode {
 		super.visit(version, access, name, signature, superName, interfaces);
 	}
 	
-	public void addPrintoutStatement(MethodVisitor mv, String fileName, String tag, String msg) {
+	/* flag == 0 --> write to log only,
+	 * flag == 1 --> write to data file only
+	 * flas == 2 --> write to both
+	 */
+	public void addPrintoutStatement(MethodVisitor mv, String fileName, String tag, String msg, int flag) {
 		//mv.visitVarInsn(Opcodes.ALOAD, 0);
 		mv.visitLdcInsn(fileName);
 		mv.visitLdcInsn(tag);
 		mv.visitLdcInsn(msg);
+		if (flag == 0) {
+			mv.visitInsn(Opcodes.ICONST_0);
+		}
+		else if (flag == 1) {
+			mv.visitInsn(Opcodes.ICONST_1);
+		}
+		else {
+			mv.visitInsn(Opcodes.ICONST_2);
+		}
 
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "julia/XXX_Utils", "XXX_julia_log", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", false);
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "julia/XXX_Utils", "XXX_julia_log", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V", false);
 	}
 	
 /*	

@@ -54,7 +54,7 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		  Method m = new Method(methodSigniture);
 		  ds.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
-		  addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture);
+		  addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
 
 /*
  *   // insert GETSTATIC
