@@ -13,6 +13,9 @@ import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
+import soot.jimple.toolkits.callgraph.CallGraph;
+
+import com.android.drop.features.data.CallGraphWrapper;
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.DataStructure;
@@ -29,7 +32,7 @@ public class Instrumenter {
 	public static void main(String[] args) {
 		
 		
-		Utils.runSystemCommand("/usr/local/bin/asmPrepare " + Constants.APP_NAME);
+		//Utils.runSystemCommand("/usr/local/bin/asmPrepare " + Constants.APP_NAME);
 		
 		if (args.length < 1) {
 			System.err.println("Provide instrumentation type");
@@ -42,14 +45,16 @@ public class Instrumenter {
 			return;
         }
 		
-		
-		
 		if (FILTER.equals(instrumentationType)) {
 			ds.readFromFile(Constants.DATA_FILE);
 			ds.processExecutionLog(Constants.EXECUTED_LOG_FILE);
-			ClassHierarchy hierarchy = ClassHierarchy.getInstance();
-			hierarchy.reset();
+			
+			//build class hierarchy
+			ClassHierarchy.getInstance().reset();
 			loopOverFiles(PREPROCESS);
+			
+			//build call graph
+			//CallGraph cg = CallGraphWrapper.getInstance().getSootCallGraph();
 		}
 		
 		loopOverFiles(instrumentationType);
@@ -62,11 +67,11 @@ public class Instrumenter {
 			ds.dumpToFile(Constants.FILTER_DATA_FILE);           
 		}
 		Utils.runSystemCommand("/usr/local/bin/asmPack " + Constants.APP_NAME + " " + instrumentationType);
-	    Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
+	   // Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
 	}
 
 	private static void loopOverFiles(String instrumentationType) {
-		File inputClassFolder = new File(Constants.ASM_DECOMPILED_INPUT_DIR + Constants.APP_NAME);
+		File inputClassFolder = new File(Constants.DECOMPILED_INPUT_DIR + Constants.APP_NAME);
 		File instrumentedClassFolder = new File(Constants.ASM_DECOMPILED_OUTPUT_DIR + Constants.APP_NAME + "_" + instrumentationType);
 			
 		Collection<File> classFiles = FileUtils.listFiles(inputClassFolder, new RegexFileFilter(CLASS_FILE_REGEX), DirectoryFileFilter.DIRECTORY);

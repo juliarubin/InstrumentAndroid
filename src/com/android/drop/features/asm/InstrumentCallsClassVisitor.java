@@ -33,20 +33,11 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 	
 
 	
-	private class InstrumentMethodAdapter extends AdviceAdapter {
-		
-		protected String className;
-		protected String name;
-		protected String desc;
-		protected String methodSigniture;
+	private class InstrumentMethodAdapter extends BasicMethodAdapter {
 		
 		protected InstrumentMethodAdapter(final int api, final MethodVisitor mv,
 	            String className, final int access, final String name, final String desc) {
-			super(api, mv, access, name, desc);
-	        this.className = className;
-	        this.name = name;
-	        this.desc = desc;
-	        methodSigniture = className + "." + name +  desc;
+			super(api, mv, className, access, name, desc, Constants.INST_DEV_LOG_FILE, InstrumentCallsClassVisitor.this.instrumentationType);
 		}
 		
 		@Override
@@ -54,7 +45,7 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		  Method m = new Method(methodSigniture);
 		  ds.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
-		  addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
+		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
 
 /*
  *   // insert GETSTATIC

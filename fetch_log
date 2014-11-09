@@ -1,0 +1,11 @@
+#!/bin/tcsh -fx
+
+set apkDir = /Volumes/D/data/minst/apks/
+set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
+set device = emulator-5554
+#set device = ZX1D322N92
+
+$adb kill-server
+$adb start-server
+sleep 40
+$adb -s $device pull /data/data/$1/$2.log $apkDir/../logs/$1_$2_dev.log

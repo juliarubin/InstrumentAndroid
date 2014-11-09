@@ -11,4 +11,4 @@ mkdir $apkDir/decompiled/orig/$1
 cd $apkDir/decompiled/orig/$1
 jar xf $apkDir/decompiled/orig/$1_dex2jar.jar
 
-/Applications/JD-GUI.app/Contents/MacOS/jd-gui $apkDir/decompiled/orig/$1_dex2jar.jar &
+#/Applications/JD-GUI.app/Contents/MacOS/jd-gui $apkDir/decompiled/orig/$1_dex2jar.jar &
