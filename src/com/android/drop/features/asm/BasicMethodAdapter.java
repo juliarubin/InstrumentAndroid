@@ -35,12 +35,14 @@ public class BasicMethodAdapter extends AdviceAdapter {
 			(owner.equals("org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
 			(owner.equals("android/webkit/WebView") && name.equals("loadUrl")) ||		
 			(owner.equals("java/net/DatagramSocket") && name.equals("send")) ||		
-			(owner.equals("OpenSSLSocketImpl$SSLOutputStream") && name.equals("write")) ||	
+			(owner.equals("OpenSSLSocketImpl$SSLOutputStream") && name.equals("write")) ||
+			(owner.equals("java.net.Socket") && name.equals("connect")) ||	 	
 			(owner.equals("libcore.io.Posix") && name.equals("sendto")) ||
 			(owner.equals("libcore.io.Posix") && name.equals("sendtoBytes"))) {
 			
 			AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-					"CONNECTION from " + methodSigniture + " via " + owner + "." + name, 0);
+					"CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
+			AsmUtils.addPrintStackTrace(mv);
 			}
 	}
 

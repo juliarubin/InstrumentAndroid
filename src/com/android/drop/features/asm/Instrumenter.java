@@ -67,7 +67,7 @@ public class Instrumenter {
 			ds.dumpToFile(Constants.FILTER_DATA_FILE);           
 		}
 		Utils.runSystemCommand("/usr/local/bin/asmPack " + Constants.APP_NAME + " " + instrumentationType);
-	   // Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
+	    //Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
 	}
 
 	private static void loopOverFiles(String instrumentationType) {

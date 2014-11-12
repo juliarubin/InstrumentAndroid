@@ -72,7 +72,7 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 		    }
 		    	
 		    AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, printMarker + methodSigniture, 0);
-		    mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Thread", "dumpStack", "()V", false);
+		    AsmUtils.addPrintStackTrace(mv);
 		    
 			String returnType = desc.substring(desc.lastIndexOf(')')+1, desc.length());
 			AsmUtils.addReturnStatement(mv, returnType);

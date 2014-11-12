@@ -72,7 +72,11 @@ public class AsmUtils {
 		}
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, superClass, name, desc, false);
 	}
-
+	
+	public static void addPrintStackTrace(MethodVisitor mv) {
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "java/lang/Thread", "dumpStack", "()V", false);
+	}
+	
 	public static void addReturnStatement(MethodVisitor mv, final String returnType) {
 		
 		if ("V".equals(returnType)) {

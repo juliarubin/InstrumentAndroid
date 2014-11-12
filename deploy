@@ -2,18 +2,17 @@
 
 set apkDir = /Volumes/D/data/minst/apks/
 set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
-set device = emulator-5554
-#set device = ZX1D322N92
+#set device = emulator-5554
+set device = ZX1D322N92
 
 #/Users/mjulia/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/tools/emulator -avd android_4.4.2 -partition-size 2048 &
 
 $adb -s $device uninstall $1
-
-#$adb -s $device push ~/empty.log /data/$1/$2.log
 
 $adb -s $device logcat -c
 $adb -s $device logcat > $apkDir/../logs/$1_$2_logcat.log &
 
 $adb -s $device install -r $apkDir/asmOutput/$1_$2.apk
 
+#$adb -s $device push ~/empty.log /data/data/$1/$2.log
 
