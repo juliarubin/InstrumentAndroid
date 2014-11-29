@@ -10,12 +10,7 @@ import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.ClassNode;
 
-import soot.jimple.toolkits.callgraph.CallGraph;
-
-import com.android.drop.features.data.CallGraphWrapper;
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.DataStructure;
@@ -67,7 +62,7 @@ public class Instrumenter {
 			ds.dumpToFile(Constants.FILTER_DATA_FILE);           
 		}
 		Utils.runSystemCommand("/usr/local/bin/asmPack " + Constants.APP_NAME + " " + instrumentationType);
-	    //Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
+	    Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
 	}
 
 	private static void loopOverFiles(String instrumentationType) {

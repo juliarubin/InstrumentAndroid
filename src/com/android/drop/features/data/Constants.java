@@ -6,10 +6,11 @@ public class Constants {
 
 	//public static String APP_NAME = "com.walmart.android";
 	//public static String APP_NAME = "com.google.android.apps.translate";
-	//public static String APP_NAME = "com.devuni.flashlight";
+	public static String APP_NAME = "com.devuni.flashlight";
+	//public static String APP_NAME = "com.example.jj";
 	//public static String APP_NAME = "com.cleanmaster.mguard";
 	//public static String APP_NAME = "com.facebook.katana";
-	public static String APP_NAME = "com.appershopper.ios7lockscreen";
+	//public static String APP_NAME = "com.appershopper.ios7lockscreen";
 	
 	public static String BASE_DIR = "/Volumes/D/data/minst/";
 	

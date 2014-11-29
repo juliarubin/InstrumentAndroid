@@ -16,6 +16,9 @@ public class AsmUtils {
 	 */
 	public static void addPrintoutStatement(MethodVisitor mv, String fileName, String tag, String msg, int flag) {
 		//mv.visitVarInsn(Opcodes.ALOAD, 0);
+		
+		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "julia/XXX_Utils", "getInstance", "()Ljulia/XXX_Utils;", false);
+		
 		mv.visitLdcInsn(fileName);
 		mv.visitLdcInsn(tag);
 		mv.visitLdcInsn(msg);
@@ -28,8 +31,8 @@ public class AsmUtils {
 		else {
 			mv.visitInsn(Opcodes.ICONST_2);
 		}
-
-		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "julia/XXX_Utils", "XXX_julia_log", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V", false);
+		mv.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "julia/XXX_Utils", "XXX_julia_log", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V", false);
+//		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "julia/XXX_Utils", "XXX_julia_log", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V", false);
 	}
 	
 	public static void addExcludedPopupForView(MethodVisitor mv) {

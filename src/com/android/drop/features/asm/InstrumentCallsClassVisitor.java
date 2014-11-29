@@ -45,26 +45,19 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		  ds.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
 		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
+		}
 
-/*
- *   // insert GETSTATIC
-		  super.visitFieldInsn(org.objectweb.asm.Opcodes.GETSTATIC,
-                                                           "java/lang/System", // field class
-                                                           "out",              // field name
-                                                           "Ljava/io/PrintStream;"); // field type
-		  
-          // insert ldc "Am in method xxx"
-          final String str = Constants.LOG_MARKER + methodSigniture;
-          super.visitLdcInsn(str);
-          
-          // insert invokevirtual
-          super.visitMethodInsn(org.objectweb.asm.Opcodes.INVOKEVIRTUAL,
-                                                          "java/io/PrintStream", // class name
-                                                          "println",             // method name
-                                                           "(Ljava/lang/String;)V", false); // desc
-        }
- */
-        }
+		@Override
+		public void visitMethodInsn(int opcode, String owner, String name,
+			String desc, boolean itf) {
+			super.visitMethodInsn(opcode, owner, name, desc, itf);
+		
+			if (isConnection(owner, name)) { 
+				AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+						"CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
+				AsmUtils.addPrintStackTrace(mv);
+			}
+		}
     };
 	
 

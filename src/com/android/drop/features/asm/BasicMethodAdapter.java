@@ -24,26 +24,23 @@ public class BasicMethodAdapter extends AdviceAdapter {
         this.instrumentationType = instrumentationType;
 	}
 	
-	@Override
-	public void visitMethodInsn(int opcode, String owner, String name,
-			String desc, boolean itf) {
-		super.visitMethodInsn(opcode, owner, name, desc, itf);
-		
+	protected boolean isConnection(String owner, String name) {
 		if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
-			(owner.equals("java/net/URL") && name.equals("openStream")) ||
 			(owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
 			(owner.equals("org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
-			(owner.equals("android/webkit/WebView") && name.equals("loadUrl")) ||		
-			(owner.equals("java/net/DatagramSocket") && name.equals("send")) ||		
+			(owner.equals("org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
+			(owner.equals("java/net/URL") && name.equals("openStream")) ||
+			(owner.equals("android/webkit/WebView") && name.equals("loadUrl")) ||
+			(owner.equals("android/webkit/WebView") && name.equals("loadData")) ||
+			(owner.equals("java/net/DatagramSocket") && name.equals("send")) ||
 			(owner.equals("OpenSSLSocketImpl$SSLOutputStream") && name.equals("write")) ||
-			(owner.equals("java.net.Socket") && name.equals("connect")) ||	 	
+			(owner.equals("java.net.Socket") && name.equals("connect")) ||
 			(owner.equals("libcore.io.Posix") && name.equals("sendto")) ||
 			(owner.equals("libcore.io.Posix") && name.equals("sendtoBytes"))) {
-			
-			AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-					"CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
-			AsmUtils.addPrintStackTrace(mv);
+				return true;
 			}
+		else {
+			return false;
+		}
 	}
-
 }

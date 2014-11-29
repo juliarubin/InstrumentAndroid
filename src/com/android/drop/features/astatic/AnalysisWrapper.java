@@ -1,4 +1,4 @@
-package com.android.drop.features.data;
+package com.android.drop.features.astatic;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -6,39 +6,40 @@ import java.util.Collections;
 import org.xmlpull.v1.XmlPullParserException;
 
 import soot.PackManager;
-import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.infoflow.android.SetupApplication;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.options.Options;
 
-public class CallGraphWrapper {
-	private static CallGraphWrapper instance = null;
+import com.android.drop.features.data.Constants;
+
+public class AnalysisWrapper {
+	private static AnalysisWrapper instance = null;
 	private static CallGraph sootCallGraph = null;
 
-	private CallGraphWrapper() {
+	private AnalysisWrapper() {
 	}
 	
-	public static CallGraphWrapper getInstance() {
+	public static AnalysisWrapper getInstance() {
 		if (instance == null) {
-			instance = new CallGraphWrapper();
-			init();
+			instance = new AnalysisWrapper();
+			//initCallGraphGen();
 		}
 		return instance;
 	}
 	
 	public static CallGraph getSootCallGraph() {
 		if (sootCallGraph == null) {
-			init();
+			initCallGraphGen();
 		}
 		return sootCallGraph;
 	}
 	
-	private static void init() {
+	private static void initCallGraphGen() {
 		SetupApplication app = new SetupApplication(Constants.SOOT_ANDROID_PLATFORM, Constants.INPUT_DIR + Constants.APP_NAME + ".apk");
 		try {
-			app.calculateSourcesSinksEntrypoints(Constants.BASE_DIR  + "SourcesAndSinks.txt");
+			app.calculateSourcesSinksEntrypoints(Constants.BASE_DIR  + "SourcesAndSinks_empty.txt");
 			soot.G.reset();
 			
 			Options.v().set_src_prec(Options.src_prec_apk);
@@ -62,8 +63,9 @@ public class CallGraphWrapper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-
+	}
+	
+	public static void main(String[] args) {
 		
 	}
 }
