@@ -27,13 +27,20 @@ public class Constants {
 	
 	public static String DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".methods.log";
 	public static String FILTER_DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".methods_filter.log";
+	public static String BLOCK_STATEMENTS_FILE = BASE_DIR + "res/" + APP_NAME + "_toBlock.txt";
 	
 	public static String EXECUTED_LOG_FILE = BASE_DIR + "logs/" + APP_NAME + "_instrument_dev.log";
 	
 	public static final String INST_DEV_LOG_FILE = "/data/data/" + APP_NAME + "/instrument.log";
 	public static final String FILTER_DEV_LOG_FILE = "/data/data/" + APP_NAME + "/filter.log";
 	
+	
+	public static final String SOURCES_AND_SINKS_FILE = BASE_DIR + "res/" + APP_NAME + "_SourcesAndSinks" + ".txt";
+	public static final String ENTRYPOINTS_FILE = BASE_DIR + "res/" + APP_NAME + "_Entrypoints_" + ".txt";
+	
 	public static String LOG_MARKER = "INST_CALL ";
 	public static String FILTERED_MARKER = "FILTERED_CALL ";
+	public static String SOURCE_MARKER = "_SOURCE_ ";
+	public static String SINK_MARKER = "_SINK_ ";
 	public static String EXCLUDED = "Excluded";
 }

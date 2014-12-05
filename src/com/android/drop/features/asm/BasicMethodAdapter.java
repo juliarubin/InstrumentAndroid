@@ -26,7 +26,8 @@ public class BasicMethodAdapter extends AdviceAdapter {
 	
 	protected boolean isConnection(String owner, String name) {
 		if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
-			(owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
+			(owner.equals("java/net/URL") && name.equals("openStream")) ||
+			//(owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
 			(owner.equals("org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
 			(owner.equals("org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
 			(owner.equals("java/net/URL") && name.equals("openStream")) ||
@@ -35,8 +36,14 @@ public class BasicMethodAdapter extends AdviceAdapter {
 			(owner.equals("java/net/DatagramSocket") && name.equals("send")) ||
 			(owner.equals("OpenSSLSocketImpl$SSLOutputStream") && name.equals("write")) ||
 			(owner.equals("java.net.Socket") && name.equals("connect")) ||
-			(owner.equals("libcore.io.Posix") && name.equals("sendto")) ||
-			(owner.equals("libcore.io.Posix") && name.equals("sendtoBytes"))) {
+			(owner.equals("libcore/io/Posix") && name.equals("sendto")) ||
+			(owner.equals("libcore/io/Posix") && name.equals("sendtoBytes")) ||
+			(owner.equals("libcore/net/http/HttpsURLConnectionImpl") && name.equals("getInputStream")) ||
+			(owner.equals("libcore/net/http/HttpURLConnectionImpl") && name.equals("getInputStream")) ||
+			(name.equals("getOutputStream")) ||
+			(name.equals("transact")) ||
+			(name.equals("getInputStream")) 
+) {
 				return true;
 			}
 		else {

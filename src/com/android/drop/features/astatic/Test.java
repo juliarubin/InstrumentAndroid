@@ -25,9 +25,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import soot.jimple.infoflow.InfoflowResults;
 import soot.jimple.infoflow.InfoflowResults.SinkInfo;
 import soot.jimple.infoflow.InfoflowResults.SourceInfo;
-import soot.jimple.infoflow.android.AndroidSourceSinkManager.LayoutMatchingMode;
 import soot.jimple.infoflow.android.SetupApplication;
-import soot.jimple.infoflow.data.pathBuilders.DefaultPathBuilderFactory.PathBuilder;
 import soot.jimple.infoflow.handlers.ResultsAvailableHandler;
 import soot.jimple.infoflow.ipc.IIPCManager;
 import soot.jimple.infoflow.solver.IInfoflowCFG;
@@ -89,19 +87,19 @@ public class Test {
 //	private static int timeout = -1;
 //	private static int sysTimeout = -1;
 	
-	private static boolean stopAfterFirstFlow = false;
-	private static boolean implicitFlows = false; //Julia changed false
-	private static boolean staticTracking = true;
-	private static boolean enableCallbacks = true;
-	private static boolean enableExceptions = true;
-	private static int accessPathLength = 5; //julia changed 5
-	private static LayoutMatchingMode layoutMatchingMode = LayoutMatchingMode.MatchSensitiveOnly; // julia changed MatchSensitiveOnly;
-	private static boolean flowSensitiveAliasing = true; //julia changed true
-//	private static boolean computeResultPaths = true;
+//	private static boolean stopAfterFirstFlow = false;
+//	private static boolean implicitFlows = false; //Julia changed false
+//	private static boolean staticTracking = true;
+//	private static boolean enableCallbacks = true;
+//	private static boolean enableExceptions = true;
+//	private static int accessPathLength = 5; //julia changed 5
+//	private static LayoutMatchingMode layoutMatchingMode = LayoutMatchingMode.MatchAll; // julia changed MatchSensitiveOnly;
+//	private static boolean flowSensitiveAliasing = true; //julia changed true
+////	private static boolean computeResultPaths = true;
 	private static boolean aggressiveTaintWrapper = false;
 	private static boolean librarySummaryTaintWrapper = false;
 	private static String summaryPath = "";
-	private static PathBuilder pathBuilder = PathBuilder.ContextInsensitiveSourceFinder; //julia changed PathBuilder.ContextInsensitiveSourceFinder;
+//	private static PathBuilder pathBuilder = PathBuilder.ContextInsensitiveSourceFinder; //julia changed PathBuilder.ContextInsensitiveSourceFinder;
 	
 //	private static CallgraphAlgorithm callgraphAlgorithm = CallgraphAlgorithm.AutomaticSelection; 
 	
@@ -473,15 +471,15 @@ public class Test {
 				app = new SetupApplication(androidJar, fileName, ipcManager);
 			}
 
-			app.setStopAfterFirstFlow(stopAfterFirstFlow);
-			app.setEnableImplicitFlows(implicitFlows);
-			app.setEnableStaticFieldTracking(staticTracking);
-			app.setEnableCallbacks(enableCallbacks);
-			app.setEnableExceptionTracking(enableExceptions);
-			app.setAccessPathLength(accessPathLength);
-			app.setLayoutMatchingMode(layoutMatchingMode);
-			app.setFlowSensitiveAliasing(flowSensitiveAliasing);
-			app.setPathBuilder(pathBuilder);
+//			app.setStopAfterFirstFlow(stopAfterFirstFlow);
+//			app.setEnableImplicitFlows(implicitFlows);
+//			app.setEnableStaticFieldTracking(staticTracking);
+//			app.setEnableCallbacks(enableCallbacks);
+//			app.setEnableExceptionTracking(enableExceptions);
+//			app.setAccessPathLength(accessPathLength);
+//			app.setLayoutMatchingMode(layoutMatchingMode);
+//			app.setFlowSensitiveAliasing(flowSensitiveAliasing);
+//			app.setPathBuilder(pathBuilder);
 			
 			final ITaintPropagationWrapper taintWrapper;
 			if (librarySummaryTaintWrapper) {
@@ -497,7 +495,9 @@ public class Test {
 				taintWrapper = easyTaintWrapper;
 			}
 			app.setTaintWrapper(taintWrapper);
-			app.calculateSourcesSinksEntrypoints(Constants.BASE_DIR  + "SourcesAndSinks.txt");
+			
+			//julia changed
+			app.calculateSourcesSinksEntrypoints(Constants.SOURCES_AND_SINKS_FILE);
 			
 			
 			

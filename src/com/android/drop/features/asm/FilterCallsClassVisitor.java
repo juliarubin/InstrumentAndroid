@@ -7,11 +7,11 @@ import org.objectweb.asm.tree.MethodNode;
 
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.DataStructure;
+import com.android.drop.features.data.ExecutedMethodsManager;
 
 public class FilterCallsClassVisitor extends BasicClassVisitor {
 	
-	FilterCallsClassVisitor(ClassVisitor classvisitor, DataStructure ds, String instrumentationType) {
+	FilterCallsClassVisitor(ClassVisitor classvisitor, ExecutedMethodsManager ds, String instrumentationType) {
 		super(classvisitor, ds, instrumentationType);
 	}
 
@@ -20,60 +20,86 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
             final String desc, final String signature,
             final String[] exceptions) {
 			
-		MethodVisitor mv = classWriterVisitor.visitMethod(access, name, desc, signature, exceptions);
-		FilterMethodAdapter methodAdapter = new FilterMethodAdapter(Opcodes.ASM5, mv, this.name, access, name, desc);
 		if ((access & (Opcodes.ACC_ABSTRACT | Opcodes.ACC_NATIVE)) > 0) {
-            return methodAdapter;
+            return classWriterVisitor.visitMethod(access, name, desc, signature, exceptions);
         }
 		
 		String methodSigniture = this.name + "." + name +  desc;
+		ClassHierarchy hierarchy = ClassHierarchy.getInstance();
+		
+		boolean leaveFullBody = false;
+		boolean systemCallback = false;
+		boolean uiClick = false;
 		
 		if (ds.getMethod(methodSigniture) == null) {
 			System.err.println("The method from an app is not found in data structure: " + methodSigniture);
-			//leave the method as is
-			return methodAdapter;
+			leaveFullBody = true;
 	     }
 		
 		if (ds.getMethod(methodSigniture).getCalled() || "<init>".equals(name) || "uncaughtException".equals(name)) {
-	    	 //also leave the method as is
-	    	 return methodAdapter;
+			leaveFullBody = true;
 	     }
 		
-		//now filter
-		mv.visitCode();
-		
-	    ClassHierarchy hierarchy = ClassHierarchy.getInstance();
-	    String printMarker =  Constants.FILTERED_MARKER;
-	    			    
+		if (("onCreate".equals(name) || "onDestroy".equals(name) || "onPause".equals(name) || "onPostCreate".equals(name) ||
+			  	"onPostResume".equals(name) || "onRestart".equals(name) || "onResume".equals(name) || "onStart".equals(name) ||
+		    	"onStop".equals(name) || "onAttach".equals(name)) && 
+		    	hierarchy.isAncestors(this.name, "android/app/Activity", 0)) {	
+			systemCallback = true;
+		}
 		if (("onClick".equals(name) && "(Landroid/view/View;)V".equals(desc)) ||
-		  	("onFocusChange".equals(name) && "(Landroid/view/View;Z)V".equals(desc)) ||
-		   	("onEditorAction".equals(name) && "(Landroid/widget/TextView;ILandroid/view/KeyEvent;)Z".equals(desc))) {
-		   	AsmUtils.addExcludedPopupForView(mv);
-		   	printMarker = "MODIFIED CALL ";
-	    }
-		 //FIXME walmart search menu
-//		 else if (("onMenuItemSelected".equals(name) && "(ILandroid/view/MenuItem;)Z".equals(desc))) {
-//		    	addExcludedPopupForMenu(mv);
-//		    	printMarker = "MODIFIED CALL ";
-//		 }
-		 else if (("onCreate".equals(name) || "onDestroy".equals(name) || "onPause".equals(name) || "onPostCreate".equals(name) ||
-		  	"onPostResume".equals(name) || "onRestart".equals(name) || "onResume".equals(name) || "onStart".equals(name) ||
-	    	"onStop".equals(name) || "onAttach".equals(name)) && 
-	    	hierarchy.isAncestors(this.name, "android/app/Activity", 0)) {		    		    	
-			 AsmUtils.addCallToSuper(mv, name, desc, this.superName);
-			 printMarker = "MODIFIED CALL ";
-		 }
+			  	("onFocusChange".equals(name) && "(Landroid/view/View;Z)V".equals(desc)) ||
+			   	("onEditorAction".equals(name) && "(Landroid/widget/TextView;ILandroid/view/KeyEvent;)Z".equals(desc))) {
+			uiClick = true;
+		}
+		
+//		if (!leaveFullBody && !systemCallback && !uiClick) {
+//			//just remove the method
+//			return null;
+//		}
+		
+		MethodVisitor mv = classWriterVisitor.visitMethod(access, name, desc, signature, exceptions);
+		FilterMethodAdapter methodAdapter = new FilterMethodAdapter(Opcodes.ASM5, mv, this.name, access, name, desc);
+		
+//		//julia debug
+		if (this.name.startsWith("android/webkit/WebView")) {
+			//name.equals("<init>")) {	
+			AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
+					"exec " + this.name + "." + name + desc, 2);
+			AsmUtils.addPrintStackTrace(mv);
+		}
+		
+		if (leaveFullBody) {
+			//return the full method after instrumentation
+			return methodAdapter;
+		}
+
+		//now empty the method body
+		String CHANGE_TYPE = Constants.FILTERED_MARKER;
+		mv.visitCode();
+	
+		if (uiClick) {
+			AsmUtils.addExcludedPopupForView(mv);
+			CHANGE_TYPE = "MODIFIED CALL ";
+		}
+			
+	//FIXME walmart search menu
+//		else if (("onMenuItemSelected".equals(name) && "(ILandroid/view/MenuItem;)Z".equals(desc))) {
+//			 addExcludedPopupForMenu(mv);
+//		}
+		else if (systemCallback) {		    		    	
+			AsmUtils.addCallToSuper(mv, name, desc, this.superName);
+			CHANGE_TYPE = "MODIFIED CALL ";
+		}
 		    	
-		AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, printMarker + methodSigniture, 0);
+		//AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, CHANGE_TYPE + methodSigniture, 0);
 		    
-	    String returnType = desc.substring(desc.lastIndexOf(')')+1, desc.length());
+		String returnType = desc.substring(desc.lastIndexOf(')')+1, desc.length());
 		AsmUtils.addReturnStatement(mv, returnType);			
 		
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
-	        
-		return null;
-        
+
+		return null;      
     }
 	
 	private class FilterMethodAdapter extends BasicMethodAdapter {
@@ -95,16 +121,24 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 //				return;
 //			}
 //			
-			//if (methodSigniture.startsWith("com/millennialmedia/")) {
-			//	AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-			//			"exec " + owner + "." + name + " from " + methodSigniture, 2);
-			//	return;
-			//}
+//			String stat = "STILL";
+			
+			//julia debug
+			if (
+					(owner.startsWith("android/view/ViewGroup") && name.startsWith("addView")) ||
+					(owner.startsWith("android/os/Parcel") && (name.startsWith("obtain") || name.startsWith("readStrongBinder")))
+				) {
+				AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+						"exec " + owner + "." + name + desc + " from " + methodSigniture, 2);
+				AsmUtils.addPrintStackTrace(mv);
+				
+			}
+			
 			if (!isConnection(owner, name)) {
 				return;
 			}
 			
-			String stat = "STILL";
+			
 //			
 //			if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
 //			    (owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
@@ -140,9 +174,9 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 //			}
 //			
 //			
-			AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-					stat + " CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
-			AsmUtils.addPrintStackTrace(mv);
+			//AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+			//		stat + " CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
+			//AsmUtils.addPrintStackTrace(mv);
 		}
 	}
 }
