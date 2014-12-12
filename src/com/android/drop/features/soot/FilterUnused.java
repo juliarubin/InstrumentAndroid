@@ -32,7 +32,7 @@ import soot.jimple.NullConstant;
 import soot.options.Options;
 */
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.ExecutedMethodsManager;
+import com.android.drop.features.data.DataManager;
 import com.android.drop.features.data.Method;
 
 public class FilterUnused {

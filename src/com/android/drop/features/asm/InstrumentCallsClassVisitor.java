@@ -1,23 +1,18 @@
 package com.android.drop.features.asm;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.ExecutedMethodsManager;
 import com.android.drop.features.data.Method;
+import com.android.drop.features.data.Statement;
 
 public class InstrumentCallsClassVisitor extends BasicClassVisitor {
     
-	InstrumentCallsClassVisitor(ClassVisitor classvisitor, ExecutedMethodsManager ds, String instrumentationType) {
-		super(classvisitor, ds, instrumentationType);
+	public InstrumentCallsClassVisitor(ClassVisitor classvisitor, String instrumentationType) {
+		super(classvisitor, instrumentationType);
 	}
 
 	@Override
@@ -48,9 +43,10 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		@Override
         protected void onMethodEnter() {
 		  Method m = new Method(methodSigniture);
-		  ds.addMethod(m);
+		  dm.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
-		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
+		  //julia - enable here to perform filtering
+		  //AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
 		}
 
 		@Override
@@ -95,6 +91,8 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 						Constants.SOURCE_MARKER + owner + "." + name + desc +
 						" from " + methodSigniture, 2);
 						AsmUtils.addPrintStackTrace(mv);
+						Statement statement = new Statement(methodSigniture, owner + "." + name + desc, 0);
+						dm.addStatement(statement);
 			}
 			
 			//sinks
@@ -151,6 +149,8 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 								Constants.SINK_MARKER + owner + "." + name + desc +
 								" from " + methodSigniture, 2);
 						AsmUtils.addPrintStackTrace(mv);
+						Statement statement = new Statement(methodSigniture, owner + "." + name + desc, 1);
+						dm.addStatement(statement);
 			}
 			
 		}

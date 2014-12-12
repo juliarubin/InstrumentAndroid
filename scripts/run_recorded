@@ -1,0 +1,10 @@
+#!/bin/tcsh -fx
+
+set apkDir = /Volumes/D/data/minst/apks/
+set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
+#set device = emulator-5554
+set device = ZX1D322N92
+
+$adb shell sh /data/local/tmp/$1\_events.sh
+$adb pull sdcard/Pictures/ScreenShots $1\_screens$2
+$adb shell rm -r sdcard/Pictures/ScreenShots/

@@ -7,12 +7,12 @@ import org.objectweb.asm.tree.MethodNode;
 
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.ExecutedMethodsManager;
+import com.android.drop.features.data.DataManager;
 
 public class FilterCallsClassVisitor extends BasicClassVisitor {
 	
-	FilterCallsClassVisitor(ClassVisitor classvisitor, ExecutedMethodsManager ds, String instrumentationType) {
-		super(classvisitor, ds, instrumentationType);
+	public FilterCallsClassVisitor(ClassVisitor classvisitor, String instrumentationType) {
+		super(classvisitor, instrumentationType);
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 		boolean systemCallback = false;
 		boolean uiClick = false;
 		
-		if (ds.getMethod(methodSigniture) == null) {
+		if (dm.getMethod(methodSigniture) == null) {
 			System.err.println("The method from an app is not found in data structure: " + methodSigniture);
 			leaveFullBody = true;
 	     }
 		
-		if (ds.getMethod(methodSigniture).getCalled() || "<init>".equals(name) || "uncaughtException".equals(name)) {
+		if (dm.getMethod(methodSigniture).getCalled() || "<init>".equals(name) || "uncaughtException".equals(name)) {
 			leaveFullBody = true;
 	     }
 		

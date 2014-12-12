@@ -4,18 +4,18 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
-import com.android.drop.features.data.ExecutedMethodsManager;
+import com.android.drop.features.data.DataManager;
+import com.android.drop.features.runner.Instrumenter;
 
 public class BasicClassVisitor extends ClassNode {
 
 	protected ClassVisitor classWriterVisitor;
-	protected ExecutedMethodsManager ds;
+	protected DataManager dm = Instrumenter.dm;
 	protected String instrumentationType;
 
-	BasicClassVisitor(ClassVisitor classvisitor, ExecutedMethodsManager ds, String instrumentationType) {
+	BasicClassVisitor(ClassVisitor classvisitor, String instrumentationType) {
 		super(Opcodes.ASM5);
 		classWriterVisitor = classvisitor;
-		this.ds = ds;
 		this.instrumentationType = instrumentationType;
 	}
 	

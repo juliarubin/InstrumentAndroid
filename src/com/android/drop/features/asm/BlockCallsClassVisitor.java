@@ -8,12 +8,12 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.ExecutedMethodsManager;
+import com.android.drop.features.runner.Instrumenter;
 
 public class BlockCallsClassVisitor extends BasicClassVisitor {
 	
-	BlockCallsClassVisitor(ClassVisitor classvisitor, ExecutedMethodsManager ds, String instrumentationType) {
-		super(classvisitor, ds, instrumentationType);
+	public BlockCallsClassVisitor(ClassVisitor classvisitor, String instrumentationType) {
+		super(classvisitor, instrumentationType);
 	}
 
 	@Override
@@ -66,11 +66,12 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 //				
 //			}
 			
-			if (!Instrumenter.statementsToBlock.containsKey(methodSigniture)) {
+			HashMap<String, List<String>> statementsToBlock = Instrumenter.dm.getStatementsToBlock();
+			if (!statementsToBlock.containsKey(methodSigniture)) {
 				return;
 			}
 
-			List<String> statementsToBlockInMethod = Instrumenter.statementsToBlock.get(methodSigniture);
+			List<String> statementsToBlockInMethod = statementsToBlock.get(methodSigniture);
 			
 			boolean found = false;
 			for (String s : statementsToBlockInMethod) {

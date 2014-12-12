@@ -1,10 +1,8 @@
-package com.android.drop.features.asm;
+package com.android.drop.features.runner;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -13,10 +11,13 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 
-import com.android.drop.features.data.BlockedStatementsManager;
+import com.android.drop.features.asm.BlockCallsClassVisitor;
+import com.android.drop.features.asm.FilterCallsClassVisitor;
+import com.android.drop.features.asm.InstrumentCallsClassVisitor;
+import com.android.drop.features.asm.PreprocessClassVisitor;
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.ExecutedMethodsManager;
+import com.android.drop.features.data.DataManager;
 
 public class Instrumenter {
 	
@@ -25,10 +26,9 @@ public class Instrumenter {
 	private static final String FILTER = "filter";
 	private static final String BLOCK = "block";
 	private static final String PREPROCESS = "preprocess";
-	
-	public static ExecutedMethodsManager ds = new ExecutedMethodsManager();
-	public static HashMap<String, List<String>> statementsToBlock = null;
 		
+	public static DataManager dm = new DataManager();
+	
 	public static void main(String[] args) {
 		
 		
@@ -49,28 +49,25 @@ public class Instrumenter {
 		ClassHierarchy.getInstance().reset();
 		loopOverFiles(PREPROCESS);
 		
-		if (FILTER.equals(instrumentationType)) {
-			ds.readFromFile(Constants.DATA_FILE);
-			ds.processExecutionLog(Constants.EXECUTED_LOG_FILE);
-					
-			//build call graph
-			//CallGraph cg = CallGraphWrapper.getInstance().getSootCallGraph();
-		}
-		else if (BLOCK.equals(instrumentationType)) {
-			statementsToBlock = BlockedStatementsManager.getBlockStatements(Constants.BLOCK_STATEMENTS_FILE);
+		//build call graph
+		//CallGraph cg = CallGraphWrapper.getInstance().getSootCallGraph();
+		
+		if (instrumentationType.equals(FILTER)) {
+			dm.readMethodsFromFile(Constants.METHOD_DATA_FILE);
 		}
 		
+		if (instrumentationType.equals(BLOCK)) {
+			dm.readStatementsToBlockFromFile(Constants.STATEMENTS_TO_BLOCK_FILE);
+		}
 		
 		loopOverFiles(instrumentationType);
 		
 		
-		if (INSTRUMENT.equals(instrumentationType)) {
-			ds.dumpToFile(Constants.DATA_FILE);    
-			
+		if (instrumentationType.equals(INSTRUMENT)) {
+			dm.dumpMethodsToFile(Constants.METHOD_DATA_FILE); 
+			dm.dumpStatementsToFile(Constants.STATEMENT_DATA_FILE);
 		}
-		else {
-			ds.dumpToFile(Constants.FILTER_DATA_FILE);           
-		}
+
 		Utils.runSystemCommand("/usr/local/bin/asmPack " + Constants.APP_NAME + " " + instrumentationType);
 	    Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
 	}
@@ -93,13 +90,13 @@ public class Instrumenter {
 	            ClassVisitor cv = null;
 	            
 	            if (INSTRUMENT.equals(instrumentationType)) {
-	            	cv = new InstrumentCallsClassVisitor(classWriter, ds, instrumentationType);
+	            	cv = new InstrumentCallsClassVisitor(classWriter, instrumentationType);
 	            }
 	            else if (FILTER.equals(instrumentationType)) {
-	            	cv = new FilterCallsClassVisitor(classWriter, ds, instrumentationType);
+	            	cv = new FilterCallsClassVisitor(classWriter, instrumentationType);
 	            }
 	            else if (BLOCK.equals(instrumentationType)) {
-	            	cv = new BlockCallsClassVisitor(classWriter, ds, instrumentationType);
+	            	cv = new BlockCallsClassVisitor(classWriter, instrumentationType);
 	            }
 	            else if (PREPROCESS.equals(instrumentationType)) {
 	            	cv = new PreprocessClassVisitor(); 

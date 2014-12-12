@@ -20,7 +20,7 @@ import soot.jimple.internal.JSpecialInvokeExpr;
 import soot.options.Options;
 */
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.ExecutedMethodsManager;
+import com.android.drop.features.data.DataManager;
 import com.android.drop.features.data.Method;
 
 
