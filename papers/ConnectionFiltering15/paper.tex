@@ -1,0 +1,180 @@
+% This is "sig-alternate.tex" V2.0 May 2012
+% This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
+\documentclass{sig-alternate}
+
+
+% http://hughanchor.blogspot.com/2006/01/pdflatex-and-letter-paper.html
+%\setlength{\pdfpagewidth}{8.5in}
+%\setlength{\pdfpageheight}{11in}
+
+
+%\documentclass[10pt, letterpaper, conference, compsocconf, nofonttune]{IEEEtran}
+\usepackage{boxedminipage}
+\usepackage{algorithmic}
+\usepackage{algorithm}
+\usepackage{times}
+\usepackage{url}
+\usepackage{wrapfig}
+\usepackage{stfloats}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{amssymb}
+%\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{textcomp}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{relsize}
+%\usepackage[ulem=normalem]{changes}
+
+\pagestyle{plain}
+%\pagenumbering{arabic}
+
+%\fontdimen4=0
+
+% *** SUBFIGURE PACKAGES ***
+\usepackage[tight,footnotesize]{subfigure}
+% subfigure.sty was written by Steven Douglas Cochran. This package makes it
+% easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
+% work, it is a good idea to load it with the tight package option to reduce
+% the amount of white space around the subfigures. subfigure.sty is already
+% installed on most LaTeX systems. The latest version and documentation can
+% be obtained at:
+% http://www.ctan.org/tex-archive/obsolete/macros/latex/contrib/subfigure/
+% subfigure.sty has been superceeded by subfig.sty.
+
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+%\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+%\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+%\fi
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{le-ga-cy}
+
+%\renewcommand{\baselinestretch}{0.94}
+%\renewcommand{\dbltopfraction}{1.0}
+%\renewcommand{\textfraction}{0.07}
+%\renewcommand{\topfraction}{1.0}	
+%\renewcommand{\bottomfraction}{1.0}	
+%\renewcommand{\floatpagefraction}{0.95}	% require fuller float pages
+%	% N.B.: floatpagefraction MUST be less than topfraction !!
+%\renewcommand{\dblfloatpagefraction}{0.95}	% require fuller float pages
+%\setcounter{topnumber}{4}
+%\setcounter{bottomnumber}{4}
+%\setcounter{totalnumber}{4}     % 2 may work better
+%\setcounter{dbltopnumber}{4}    % for 2-column pages
+
+%\newcounter{topicnum}
+%\newcommand{\mylabel}[1]{\hfil\mbox{#1}}
+
+%-------------------------------------------------------------------------
+% Typography of terms and keywords
+
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{darkpurple}{rgb}{0.5,0,0.5}
+\definecolor{orange}{rgb}{1,0.5,0.2}
+\definecolor{purple}{rgb}{1,0,1}
+
+\newcommand{\jr}[1]{{\textsf{JR}[\sffamily\color{blue} #1}]}
+%-------------------------------------------------------------------------
+
+\newenvironment{compactnumbered}%
+{\begin{list}{\arabic{topicnum}.}{\renewcommand{\makelabel}{\mylabel}%
+		\usecounter{topicnum}%
+		\setlength{\parsep}{0pt}%
+        \setlength{\parskip}{-0.5in}%
+		\setlength{\labelwidth}{0.1in}%
+		\setlength{\leftmargin}{0.25in}%
+		\setlength{\itemsep}{0pt}%
+}}{\end{list}}
+
+%\newtheorem{crl}{Corollary}
+%\newtheorem{theor}{Theorem}
+%\newtheorem{lm}{Lemma}
+%\newtheorem{pf}{Proof}
+%\newtheorem{defn}{Definition}
+%\newtheorem{prp}{Property}
+
+%\newenvironment{definition}{{\vspace{0.1 em}}{\noindent} \defn }{\vspace{0.2 em}}
+%\newenvironment{conclusion}{{\vspace{0.1 em}}\conc }{\vspace{0.2 em}}
+%\newenvironment{consequence}
+%{\vspace{0.2 em} \noindent {{\bf Corollary}} }{\vspace{0.2 em}}
+
+%\newenvironment{proof}{{\vspace{0.05in}} \pf }{\vspace{0.05in}}
+%\newenvironment{definition}{{\vspace{0.05in}} \defn }{{\vspace{0.05in}}}
+%\newenvironment{lemma}{{\vspace{0.05in}} \lm }{{\vspace{0.05in}}}
+%\newenvironment{corollary}{{\vspace{0.05in}} \crl }{{\vspace{0.05in}}}
+%\newenvironment{theorem}{{\vspace{0.05in}} \theor }{{\vspace{0.05in}}}
+%\newenvironment{property}{{\vspace{0.05in}} \prp }{{\vspace{0.05in}}}
+
+\begin{document}
+
+% --- Author Metadata here ---
+%\conferenceinfo{WOODSTOCK}{'97 El Paso, Texas USA}
+%\CopyrightYear{2007} % Allows default copyright year (20XX) to be over-ridden - IF NEED BE.
+%\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
+% --- End of Author Metadata ---
+
+\title{Some Title}
+
+%\numberofauthors{2}
+%\author{
+%\alignauthor
+%Julia Rubin \\
+%       \affaddr{University of Toronto, Canada}\\
+%       \affaddr{and}\\
+%       \affaddr{IBM Research at Haifa, Israel}\\
+%       \email{mjulia@il.ibm.com}
+%\alignauthor
+%Andrei Kirshin \\
+%       \affaddr{IBM Research at Haifa, Israel}\\
+%       \email{kirshin@il.ibm.com}
+%}
+
+
+\maketitle
+\begin{abstract}
+Abstract
+\end{abstract}
+
+% A category with the (minimum) three required fields
+%\category{D.2.7}{Software Engineering}{Distribution, Maintenance, and Enhancement}[Restructuring, reverse engineering, and reengineering]
+%\category{D.2.7}{Software Engineering}{Distribution, Maintenance, and Enhancement}[Version Control]
+%\category{D.2.8}{Software Engineering}{Metrics}[complexity measures]
+%
+
+%\terms{Design, Algorithms}
+%\vspace{-0.1in}
+%\keywords{Software product lines, software configuration management, SCM.}
+
+\input{introduction}
+
+%\vspace{-0.05in}
+%\bibliographystyle{latex8}
+\bibliographystyle{abbrv}
+%\bibliographystyle{IEEEtran}
+%{\small
+\bibliography{00}
+%}
+\end{document}
