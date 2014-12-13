@@ -2,7 +2,9 @@ package com.android.drop.features.runner;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -33,6 +35,8 @@ public class Instrumenter {
 		
 		
 		//Utils.runSystemCommand("/usr/local/bin/asmPrepare " + Constants.APP_NAME);
+		
+		long start = System.currentTimeMillis();
 		
 		if (args.length < 1) {
 			System.err.println("Provide instrumentation type");
@@ -68,6 +72,11 @@ public class Instrumenter {
 			dm.dumpStatementsToFile(Constants.STATEMENT_DATA_FILE);
 		}
 
+		long end = System.currentTimeMillis();
+		//SimpleDateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+		//System.out.println("Execution time is " + formatter.format(end - start) + " m:ss:SSS");
+		System.out.println(instrumentationType + " execution time is " + (end - start) + " ms");
+		
 		Utils.runSystemCommand("/usr/local/bin/asmPack " + Constants.APP_NAME + " " + instrumentationType);
 	    Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
 	}
@@ -90,7 +99,7 @@ public class Instrumenter {
 	            ClassVisitor cv = null;
 	            
 	            if (INSTRUMENT.equals(instrumentationType)) {
-	            	cv = new InstrumentCallsClassVisitor(classWriter, instrumentationType);
+	            	cv = new InstrumentCallsClassVisitor(classWriter, instrumentationType);	            	
 	            }
 	            else if (FILTER.equals(instrumentationType)) {
 	            	cv = new FilterCallsClassVisitor(classWriter, instrumentationType);

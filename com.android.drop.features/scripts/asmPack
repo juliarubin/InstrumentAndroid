@@ -13,8 +13,21 @@ $andrTools/dex2jar-0.0.9.15/d2j-jar2dex.sh -f -o classes.dex ../$appName.jar
 
 #create new apk
 cp $apkDir/orig/$1.apk $apkDir/asmOutput/$appName.apk
+zip $apkDir/asmOutput/$appName.apk -d META-INF/SNAPCHAT.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/SNAPCHAT.RSA
+zip $apkDir/asmOutput/$appName.apk -d META-INF/BUBBLEWI.RSA
+zip $apkDir/asmOutput/$appName.apk -d META-INF/BUBBLEWI.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/WHATSAPP.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/WHATSAPP.RSA
+zip $apkDir/asmOutput/$appName.apk -d META-INF/RELEASE.RSA
+zip $apkDir/asmOutput/$appName.apk -d META-INF/RELEASE.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/ZEGDE-BE.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/ZEGDE-BE.RSA
+zip $apkDir/asmOutput/$appName.apk -d META-INF/KIK.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/KIK.RSA
 zip $apkDir/asmOutput/$appName.apk -d META-INF/CERT.SF
 zip $apkDir/asmOutput/$appName.apk -d META-INF/CERT.RSA
+
 zip -r $apkDir/asmOutput/$appName.apk classes.dex
 rm classes.dex
 

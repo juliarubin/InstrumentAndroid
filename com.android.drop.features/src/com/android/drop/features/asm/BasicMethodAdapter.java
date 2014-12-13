@@ -23,7 +23,8 @@ public class BasicMethodAdapter extends AdviceAdapter {
         this.logFileName = logFileName;
         this.instrumentationType = instrumentationType;
 	}
-	
+
+	/*
 	protected boolean isConnection(String owner, String name) {
 		if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
 			(owner.equals("java/net/URL") && name.equals("openStream")) ||
@@ -50,4 +51,5 @@ public class BasicMethodAdapter extends AdviceAdapter {
 			return false;
 		}
 	}
+	*/
 }

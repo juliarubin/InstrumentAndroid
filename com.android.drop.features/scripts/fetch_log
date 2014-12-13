@@ -1,0 +1,6 @@
+#!/bin/tcsh -fx
+
+set apkDir = /Volumes/D/data/minst/apks/
+set app = $1
+
+adb pull /data/data/$app/instrument.log $apkDir/../logs/$app\_instrument_dev.log

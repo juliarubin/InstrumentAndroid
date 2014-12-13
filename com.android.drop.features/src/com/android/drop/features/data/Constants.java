@@ -4,15 +4,15 @@ public class Constants {
 
 	
 //top 20
-//	public static String APP_NAME = "com.facebook.orca";
+//	public static String APP_NAME = "com.facebook.orca";  //INSTRUMENTATION FAILS. TOO LARGE?
 //	public static String APP_NAME = "com.facebook.katana";
-//	public static String APP_NAME = "com.pandora.android";
-//	public static String APP_NAME = "com.instagram.android";
+//	public static String APP_NAME = "com.pandora.android"; //DONE 
+//	public static String APP_NAME = "com.instagram.android"; //INSTRUMENTED VERSION DOES NOT WORK. Something with annotations.
 //	public static String APP_NAME = "com.snapchat.android";
-//	public static String APP_NAME = "com.surpax.ledflashlight.panel";
+//	public static String APP_NAME = "com.surpax.ledflashlight.panel"; // INSTRUMENTATION FAILS. Jar2Dex fails 
 //	public static String APP_NAME = "com.netflix.mediaclient";
 //	public static String APP_NAME = "com.skype.raider";
-//	public static String APP_NAME = "com.king.candycrushsaga";
+//	public static String APP_NAME = "com.king.candycrushsaga"; //DONE
 
 //	public static String APP_NAME = "com.grillgames.guitarrockhero";
 //	public static String APP_NAME = "com.twitter.android";
@@ -20,16 +20,16 @@ public class Constants {
 //	public static String APP_NAME = "com.whatsapp";
 //	public static String APP_NAME = "com.spotify.music";
 //	public static String APP_NAME = "net.zedge.android";
-//	public static String APP_NAME = "com.crimsonpine.stayinline";
-//	public static String APP_NAME = "air.com.sgn.cookiejam.gp";
+//	public static String APP_NAME = "com.crimsonpine.stayinline"; //DONE
+//	public static String APP_NAME = "air.com.sgn.cookiejam.gp"; //DONE
 //	public static String APP_NAME = "com.walmart.android";
 //	public static String APP_NAME = "com.sega.cityrush";
-//	public static String APP_NAME = "com.ebay.mobile";
+	public static String APP_NAME = "com.ebay.mobile";
 	
 	//tests
 	//public static String APP_NAME = "com.walmart.android";
 	//public static String APP_NAME = "com.google.android.apps.translate";
-	public static String APP_NAME = "com.devuni.flashlight";
+	//public static String APP_NAME = "com.devuni.flashlight";
 	//public static String APP_NAME = "com.example.jj";
 	//public static String APP_NAME = "com.cleanmaster.mguard";
 	//public static String APP_NAME = "com.facebook.katana";

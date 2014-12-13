@@ -1,0 +1,9 @@
+#!/bin/tcsh -fx
+
+set app = $1
+
+adb shell getevent -t > $app/$app\_events.txt
+python ./decode_events.py $app/$app\_events.txt > $app/$app\_events.sh
+
+adb push $app/$app\_events.sh /data/local/tmp/
+adb shell chmod 755 /data/local/tmp/$app\_events.sh

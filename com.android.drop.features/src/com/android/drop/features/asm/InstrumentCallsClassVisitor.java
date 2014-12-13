@@ -46,7 +46,7 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		  dm.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
 		  //julia - enable here to perform filtering
-		  //AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
+		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
 		}
 
 		@Override
@@ -66,6 +66,7 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 //				AsmUtils.addPrintStackTrace(mv);
 //				//mv.visitInsn(ICONST_0);
 //			}
+			
 			
 			//sources
 			if (

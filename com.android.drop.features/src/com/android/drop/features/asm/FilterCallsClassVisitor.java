@@ -134,9 +134,9 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 				
 			}
 			
-			if (!isConnection(owner, name)) {
-				return;
-			}
+//			if (!isConnection(owner, name)) {
+//				return;
+//			}
 			
 			
 //			
