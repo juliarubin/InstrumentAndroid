@@ -3,11 +3,9 @@ package com.android.drop.features.asm;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.tree.MethodNode;
 
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
-import com.android.drop.features.data.DataManager;
 
 public class FilterCallsClassVisitor extends BasicClassVisitor {
 	
@@ -43,7 +41,7 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 		if (("onCreate".equals(name) || "onDestroy".equals(name) || "onPause".equals(name) || "onPostCreate".equals(name) ||
 			  	"onPostResume".equals(name) || "onRestart".equals(name) || "onResume".equals(name) || "onStart".equals(name) ||
 		    	"onStop".equals(name) || "onAttach".equals(name)) && 
-		    	hierarchy.isAncestors(this.name, "android/app/Activity", 0)) {	
+		    	hierarchy.isAncestors(this.name, "android/app/Activity")) {	
 			systemCallback = true;
 		}
 		if (("onClick".equals(name) && "(Landroid/view/View;)V".equals(desc)) ||

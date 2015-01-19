@@ -5,32 +5,34 @@ public class Constants {
 	
 //top 20
 //	public static String APP_NAME = "com.facebook.orca";  //INSTRUMENTATION FAILS. TOO LARGE?
-//	public static String APP_NAME = "com.facebook.katana";
+//	public static String APP_NAME = "com.facebook.katana"; //DONE. dynamically loads classes from resources that do teh connection
 //	public static String APP_NAME = "com.pandora.android"; //DONE 
 //	public static String APP_NAME = "com.instagram.android"; //INSTRUMENTED VERSION DOES NOT WORK. Something with annotations.
-//	public static String APP_NAME = "com.snapchat.android";
+//	public static String APP_NAME = "com.snapchat.android"; //CHAT excluded
 //	public static String APP_NAME = "com.surpax.ledflashlight.panel"; // INSTRUMENTATION FAILS. Jar2Dex fails 
-//	public static String APP_NAME = "com.netflix.mediaclient";
-//	public static String APP_NAME = "com.skype.raider";
+//	public static String APP_NAME = "com.netflix.mediaclient"; //WANTS money
+//	public static String APP_NAME = "com.skype.raider"; //CHAT excluded
 //	public static String APP_NAME = "com.king.candycrushsaga"; //DONE
-
 //	public static String APP_NAME = "com.grillgames.guitarrockhero";
-//	public static String APP_NAME = "com.twitter.android";
-//	public static String APP_NAME = "kik.android";
-//	public static String APP_NAME = "com.whatsapp";
-//	public static String APP_NAME = "com.spotify.music";
-//	public static String APP_NAME = "net.zedge.android";
+	
+//	public static String APP_NAME = "com.twitter.android"; //DONE
+//	public static String APP_NAME = "kik.android"; //CHAT - excluded
+//	public static String APP_NAME = "com.whatsapp";   //CHAT - excluded
+//	public static String APP_NAME = "com.spotify.music"; //DONE
+//	public static String APP_NAME = "net.zedge.android"; //DONE
 //	public static String APP_NAME = "com.crimsonpine.stayinline"; //DONE
 //	public static String APP_NAME = "air.com.sgn.cookiejam.gp"; //DONE
-//	public static String APP_NAME = "com.walmart.android";
-//	public static String APP_NAME = "com.sega.cityrush";
-	public static String APP_NAME = "com.ebay.mobile";
+	public static String APP_NAME = "com.walmart.android"; //DONE
+//	public static String APP_NAME = "com.sega.cityrush"; //FOR PAYMENT
+//	public static String APP_NAME = "com.ebay.mobile"; //INSTUENTED VERSION CRASHES
 	
 	//tests
+	//public static String APP_NAME = "com.g6677.android.princesshs";
 	//public static String APP_NAME = "com.walmart.android";
 	//public static String APP_NAME = "com.google.android.apps.translate";
 	//public static String APP_NAME = "com.devuni.flashlight";
 	//public static String APP_NAME = "com.example.jj";
+	//public static String APP_NAME = "com.example.testreflectionapp";
 	//public static String APP_NAME = "com.cleanmaster.mguard";
 	//public static String APP_NAME = "com.facebook.katana";
 	//public static String APP_NAME = "com.appershopper.ios7lockscreen";
@@ -51,7 +53,7 @@ public class Constants {
 	public static String METHOD_DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".methods.log";
 	public static String STATEMENT_DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".statements.log";
 	//public static String FILTER_METHOD_DATA_FILE = BASE_DIR + "logs/" + APP_NAME + ".methods_filter.log";
-	public static String STATEMENTS_TO_BLOCK_FILE = BASE_DIR + "conf/" + APP_NAME + "_toBlock.txt";
+	public static String STATEMENTS_TO_BLOCK_FILE = BASE_DIR + "conf/" + APP_NAME + "_toBlock1.txt";
 	
 	public static String EXECUTED_LOG_FILE = BASE_DIR + "logs/" + APP_NAME + "_instrument_dev.log";
 	

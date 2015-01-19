@@ -144,8 +144,10 @@ public class Test {
 //			return;
 		
 		List<String> apkFiles = new ArrayList<String>();
-		//String apkName = Constants.INPUT_DIR + Constants.APP_NAME + ".apk";
-		String apkName = Constants.ASM_OUTPUT_DIR + Constants.APP_NAME + "_filter.apk";
+		String apkName = Constants.INPUT_DIR + Constants.APP_NAME + ".apk";
+		//String apkName = Constants.ASM_OUTPUT_DIR + Constants.APP_NAME + "_filter.apk";
+	
+		
 		File apkFile = new File(apkName);
 		String extension = apkFile.getName().substring(apkFile.getName().lastIndexOf("."));
 		if (apkFile.isDirectory()) {
@@ -487,8 +489,8 @@ public class Test {
 			}
 			else {
 				final EasyTaintWrapper easyTaintWrapper;
-				if (new File("../soot-infoflow/EasyTaintWrapperSource.txt").exists())
-					easyTaintWrapper = new EasyTaintWrapper("../soot-infoflow/EasyTaintWrapperSource.txt");
+				if (new File("../../soot-infoflow/EasyTaintWrapperSource.txt").exists())
+					easyTaintWrapper = new EasyTaintWrapper("../../soot-infoflow/EasyTaintWrapperSource.txt");
 				else
 					easyTaintWrapper = new EasyTaintWrapper("EasyTaintWrapperSource.txt");
 				easyTaintWrapper.setAggressiveMode(aggressiveTaintWrapper);

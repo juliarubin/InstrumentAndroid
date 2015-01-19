@@ -4,6 +4,8 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import soot.TrapManager;
+
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.Method;
@@ -46,7 +48,7 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		  dm.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
 		  //julia - enable here to perform filtering
-		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
+		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 1);
 		}
 
 		@Override
@@ -76,18 +78,23 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 					(owner.equals("org/apache/http/client/DefaultHttpClient") && name.equals("execute")) ||
 					(owner.equals("java/net/URL") && name.equals("openConnection")) ||
 					(owner.equals("java/net/URL") && name.equals("openStream")) ||
-					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URLConnection", 0) && name.equals("connect")) ||
-					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpURLConnection", 0) && name.equals("connect")) ||
-					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpsURLConnection", 0) && name.equals("connect")) ||
-					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/JarURLConnection", 0) && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URLConnection") && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpURLConnection") && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpsURLConnection") && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/JarURLConnection") && name.equals("connect")) ||
 					
-					(owner.equals("java/net/Socket") && name.equals("<init>")) ||
-					(owner.equals("javax.net.ssl.SSLSocket") && name.equals("<init>")) ||
-					(owner.equals("org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl$SSLOutputStream") && name.equals("<init>")) ||
+					(owner.equals("java/net/Socket") && name.equals("getOutputStream")) ||
+					(owner.equals("javax/net/ssl/SSLSocket") && name.equals("getOutputStream")) ||
+					(owner.equals("org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream")) ||
 					(owner.equals("libcore/io/Posix") && name.equals("<init>")) ||
 					
-					(owner.equals("android/os/Parcel") && name.equals("obtain")) 
-			 ) {
+					//(ClassHierarchy.getInstance().isAncestors(owner, "android/content/Context") && name.equals("startService")) ||
+//					(ClassHierarchy.getInstance().isAncestors(owner, "android/content/Context") && name.equals("bindService")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "android/os/IBinder") && name.equals("transact")) 
+					//(owner.equals("android/os/Parcel") && name.equals("obtain")) ||
+					//(owner.equals("android/os/Parcel") && name.equals("obtain")) 
+					//(owner.equals("android/os/Parcel") && name.equals("obtain")) 
+			 ){
 						AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
 						Constants.SOURCE_MARKER + owner + "." + name + desc +
 						" from " + methodSigniture, 2);
@@ -97,24 +104,24 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 			}
 			
 			//sinks
-			if (
+			if (					
 					(owner.equals("android/view/ViewGroup") && name.equals("addView")) ||
 					(owner.equals("android/view/ViewGroup") && name.equals("addFocusables")) ||
 					(owner.equals("android/view/ViewGroup") && name.equals("addTouchables")) ||
-					(owner.equals("android/view/ViewGroup") && name.equals("addChildrenForAccessibility")) ||
-					(owner.equals("android/widget/TextSwitcher") && name.equals("addView")) ||
+			        (owner.equals("android/view/ViewGroup") && name.equals("addChildrenForAccessibility")) ||
+				    (owner.equals("android/widget/TextSwitcher") && name.equals("addView")) ||
 					(owner.equals("android/widget/ViewSwitcher") && name.equals("addView")) ||
-					(owner.equals("android/view/WindowManagerImpl") && name.equals("addView")) ||
-					(owner.equals("android/view/WindowManagerImpl$CompatModeWrapper") && name.equals("addView")) ||
-					
-					(ClassHierarchy.getInstance().isAncestors(owner, "android/view/ViewManager", 0) && name.equals("addView")) ||
-					(ClassHierarchy.getInstance().isAncestors(owner, "android/view/ViewManager", 0) && name.equals("updateViewLayout")) ||
-									
-					(owner.equals("android/app/Dialog") && name.equals("setContentView")) ||
-					(owner.equals("android/support/v7/app/ActionBarActivityDelegate") && name.equals("setContentView")) ||				
+			        (owner.equals("android/view/WindowManagerImpl") && name.equals("addView")) ||
+			        (owner.equals("android/view/WindowManagerImpl$CompatModeWrapper") && name.equals("addView")) ||
+				
+			        (ClassHierarchy.getInstance().isAncestors(owner, "android/view/ViewManager") && name.equals("addView")) ||
+				    (ClassHierarchy.getInstance().isAncestors(owner, "android/view/ViewManager") && name.equals("updateViewLayout")) ||
+				    
+				    (owner.equals("android/app/Dialog") && name.equals("setContentView")) ||
+					(owner.equals("android/support/v7/app/ActionBarActivityDelegate") && name.equals("setContentView")) ||
 					(owner.equals("android/support/v7/app/ActionBarActivityDelegateBase") && name.equals("setContentView")) ||
 					(owner.equals("android/support/v7/app/ActionBarActivityDelegateICS") && name.equals("setContentView")) ||
-					
+
 					(owner.equals("android/webkit/WebView") && name.equals("loadData")) ||
 					(owner.equals("android/webkit/WebView") && name.equals("loadDataWithBaseURL")) ||
 					(owner.equals("android/webkit/WebView") && name.equals("loadUrl")) ||
@@ -123,28 +130,28 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 					(owner.equals("android/view/View") && name.equals("layout"))  ||
 					(owner.equals("android/view/View") && name.equals("onDraw"))  ||
 					(owner.equals("android/view/View") && name.equals("onAttachedToWindow"))  ||
-					
-					(owner.equals("android/view/ImageView") && name.equals("onLayout")) ||
-					(owner.equals("android/view/ImageView") && name.equals("layout"))  ||
-					(owner.equals("android/view/ImageView") && name.equals("onDraw"))  ||
-					(owner.equals("android/view/ImageView") && name.equals("onAttachedToWindow"))  ||
-					
-					(owner.equals("android/view/KeyboardView") && name.equals("onLayout")) ||
-					(owner.equals("android/view/KeyboardView") && name.equals("layout"))  ||
-					(owner.equals("android/view/KeyboardView") && name.equals("onDraw"))  ||
-					(owner.equals("android/view/KeyboardView") && name.equals("onAttachedToWindow"))  ||
-					
+
+					(owner.equals("android/widget/ImageView") && name.equals("onLayout")) ||
+					(owner.equals("android/widget/ImageView") && name.equals("layout"))  ||
+					(owner.equals("android/widget/ImageView") && name.equals("onDraw"))  ||
+					(owner.equals("android/widget/ImageView") && name.equals("onAttachedToWindow"))  ||
+
+					(owner.equals("android/inputmethodservice/KeyboardView") && name.equals("onLayout")) ||
+					(owner.equals("android/inputmethodservice/KeyboardView") && name.equals("layout"))  ||
+					(owner.equals("android/inputmethodservice/KeyboardView") && name.equals("onDraw"))  ||
+					(owner.equals("android/inputmethodservice/KeyboardView") && name.equals("onAttachedToWindow"))  ||
+
 					(owner.equals("android/widget/AnalogClock") && name.equals("onLayout")) ||
 					(owner.equals("android/widget/AnalogClock") && name.equals("layout"))  ||
-					(owner.equals("android/widget/AnalogClock") && name.equals("onDraw"))  ||
+					(owner.equals("android/widget/AnalogClock") &&name.equals("onDraw"))  ||
 					(owner.equals("android/widget/AnalogClock") && name.equals("onAttachedToWindow"))  ||
-					
+
 					(owner.equals("android/widget/TextView") && name.equals("onLayout")) ||
 					(owner.equals("android/widget/TextView") && name.equals("layout"))  ||
 					(owner.equals("android/widget/TextView") && name.equals("onDraw"))  ||
 					(owner.equals("android/widget/TextView") && name.equals("onAttachedToWindow"))  ||
 					(owner.equals("android/widget/TextView") && name.equals("append"))  ||
-					(owner.equals("android/widget/TextView") && name.equals("setText")) 
+					(owner.equals("android/widget/TextView") && name.equals("setText"))
 			) {
 						AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
 								Constants.SINK_MARKER + owner + "." + name + desc +

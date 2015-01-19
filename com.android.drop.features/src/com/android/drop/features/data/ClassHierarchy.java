@@ -44,37 +44,38 @@ public class ClassHierarchy {
 		}
 	}
 	
-	/* flag==0 --> super class
-	 * flag==1 --> interface
-	 */
-	public boolean isAncestors(String className, String superName, int flag) {
-		if (flag == 0) {
-			if (!hierarchy.containsKey(className) || hierarchy.get(className).superClass == null) {
-				return false;
-			}
-			if (hierarchy.get(className).superClass.equals(superName)) {
+	
+	public boolean isAncestors(String className, String superName) {
+		if (className.equals(superName)) {
+			return true;
+		}
+		
+		//we don't know anything about this class or it has no ancestors
+		if (!hierarchy.containsKey(className) || (hierarchy.get(className).superClass == null && hierarchy.get(className).interfaces.isEmpty())) {
+			return false;
+		}
+		
+		if (hierarchy.get(className).superClass.equals(superName)) {
+			return true;
+		}
+		
+		for (String s: hierarchy.get(className).interfaces) {
+			if (s.equals(superName)) {
 				return true;
 			}
-			else {
-				return isAncestors(hierarchy.get(className).superClass, superName, flag);
+		}
+		
+		if (isAncestors(hierarchy.get(className).superClass, superName)) {
+			return true;
+		}
+		
+		for (String s: hierarchy.get(className).interfaces) {
+			if (isAncestors(s, superName)) {
+				return true;
 			}
 		}
-		else {
-			if (!hierarchy.containsKey(className) || hierarchy.get(className).interfaces.isEmpty()) {
-				return false;
-			}
-			else {
-				for (String s: hierarchy.get(className).interfaces) {
-					if (s.equals(superName)) {
-						return true;
-					}
-					else if (isAncestors(s, superName, flag)) {
-						return true;
-					}
-				}
-				return false;
-			}
-		}
+		
+		return false;
 	}
 	
 	private class Ancestors {

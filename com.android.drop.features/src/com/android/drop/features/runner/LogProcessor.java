@@ -20,7 +20,7 @@ public class LogProcessor {
 		dm.dumpStatementsToBlockToFile(Constants.STATEMENTS_TO_BLOCK_FILE);
 		
 		//for flowdroid
-		dm.dumpSourceSinkEntryPoints(Constants.SOURCES_AND_SINKS_FILE, Constants.ENTRYPOINTS_FILE);
+		//dm.dumpSourceSinkEntryPoints(Constants.SOURCES_AND_SINKS_FILE, Constants.ENTRYPOINTS_FILE);
 	
 	}
 

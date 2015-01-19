@@ -7,6 +7,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.runner.Instrumenter;
 
@@ -26,6 +27,17 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
         }
 				
 		MethodVisitor mv = classWriterVisitor.visitMethod(access, name, desc, signature, exceptions);
+		
+//		//julia debug
+//				if (
+//						(this.name.startsWith("com/google/android/gms/internal/v") && name.startsWith("af")) 
+//					) {
+//					AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
+//							"HERE " + this.name + "." + name + desc + " from " + signature, 2);
+//					AsmUtils.addPrintStackTrace(mv);
+//					
+//				}
+		
 		BlockMethodAdapter methodAdapter = new BlockMethodAdapter(Opcodes.ASM5, mv, this.name, access, name, desc);
 
 		return methodAdapter;      
@@ -40,7 +52,7 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 		@Override
 		public void visitMethodInsn(int opcode, String owner, String name,
 				String desc, boolean itf) {
-			super.visitMethodInsn(opcode, owner, name, desc, itf);
+			//super.visitMethodInsn(opcode, owner, name, desc, itf);
 			
 			//TODO add statement count for identical calls within the same method
 		
@@ -55,19 +67,22 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 //			
 //			String stat = "STILL";
 			
-//			//julia debug
-//			if (
-//					(owner.startsWith("android/view/ViewGroup") && name.startsWith("addView")) ||
-//					(owner.startsWith("android/os/Parcel") && (name.startsWith("obtain") || name.startsWith("readStrongBinder")))
-//				) {
-//				AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-//						"exec " + owner + "." + name + desc + " from " + methodSigniture, 2);
-//				AsmUtils.addPrintStackTrace(mv);
-//				
-//			}
+			
 			
 			HashMap<String, List<String>> statementsToBlock = Instrumenter.dm.getStatementsToBlock();
 			if (!statementsToBlock.containsKey(methodSigniture)) {
+				super.visitMethodInsn(opcode, owner, name, desc, itf);
+				
+//				//julia debug
+//				if (
+//						(owner.startsWith("com/google/android/gms/internal/v") && name.startsWith("af")) 
+//					) {
+//					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+//							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
+//					AsmUtils.addPrintStackTrace(mv);
+//					
+//				}
+				
 				return;
 			}
 
@@ -80,16 +95,19 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 					break;
 				}
 			}
+			
+			boolean toBlock = false;
 
-			if (!found) {
+			if (!found || !toBlock) {
+				super.visitMethodInsn(opcode, owner, name, desc, itf);
 				return;
 			}
-			
+
 			//now block
 			
 			AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
 					"BLOCKED " + owner + "." + name + desc + " from " + methodSigniture, 2);
-			//AsmUtils.addPrintStackTrace(mv);
+			AsmUtils.addPrintStackTrace(mv);
 			
 			
 			//if the call knows to throw an exception --> do that
@@ -98,27 +116,53 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 			//otherwise, just exit the method
 			
 			if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
-			    (owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
+				(owner.equals("java/net/URL") && name.equals("openStream")) ||
+			   (ClassHierarchy.getInstance().isAncestors(owner, "java/net/URLConnection") && name.equals("connect")) ||
+		       (ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpURLConnection") && name.equals("connect")) ||
+		    	(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpsURLConnection") && name.equals("connect")) ||
+				(ClassHierarchy.getInstance().isAncestors(owner, "java/net/JarURLConnection") && name.equals("connect")) ||
+				(owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
 			    (owner.equals("org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
-			    (owner.equals("org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute"))) {
-				mv.visitTypeInsn(NEW, "java/io/IOException");
-				mv.visitInsn(DUP);
-				mv.visitLdcInsn("BLOCKED CONNECT");
-				mv.visitMethodInsn(INVOKESPECIAL, "java/io/IOException", "<init>", "(Ljava/lang/String;)V", false);
-				mv.visitInsn(ATHROW);
+			    (owner.equals("org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
+			    (owner.equals("java/net/Socket") && name.equals("getOutputStream")) ||
+				(owner.equals("javax/net/ssl/SSLSocket") && name.equals("getOutputStream")) ||
+				(owner.equals("org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream")))
+				{
+					super.visitMethodInsn(opcode, owner, name, desc, itf);
+					mv.visitTypeInsn(NEW, "java/io/IOException");
+					mv.visitInsn(DUP);
+					mv.visitLdcInsn("BLOCKED CONNECT");
+					mv.visitMethodInsn(INVOKESPECIAL, "java/io/IOException", "<init>", "(Ljava/lang/String;)V", false);
+					mv.visitInsn(ATHROW);
+					return;
 			}
-			else if (owner.equals("android/os/Parcel") && name.equals("obtain")) {
-				mv.visitVarInsn(ASTORE, 1);
-				mv.visitVarInsn(ALOAD, 1);
-				mv.visitMethodInsn(INVOKEVIRTUAL, "android/os/Parcel", "recycle", "()V", false);
-				
-				String returnType = methodSigniture.substring(methodSigniture.lastIndexOf(')')+1, methodSigniture.length());
-				AsmUtils.addReturnStatement(mv, returnType);	
-			}
-//			else if (owner.equals("java/net/URL") && name.equals("openStream")) {
+//			if (owner.equals("android/os/Parcel") && name.equals("obtain")) {
+//				mv.visitVarInsn(ASTORE, 1);
+//				mv.visitVarInsn(ALOAD, 1);
+//				mv.visitMethodInsn(INVOKEVIRTUAL, "android/os/Parcel", "recycle", "()V", false);
 //				
+//				String returnType = methodSigniture.substring(methodSigniture.lastIndexOf(')')+1, methodSigniture.length());
+//				AsmUtils.addReturnStatement(mv, returnType);	
+//			    return;
 //			}
-//			else if (owner.equals("android/webkit/WebView") && name.equals("loadUrl")) {
+			if (ClassHierarchy.getInstance().isAncestors(owner, "android/os/IBinder") && name.equals("transact")) {
+				mv.visitTypeInsn(NEW, "android/os/RemoteException");
+				mv.visitInsn(DUP);
+				mv.visitLdcInsn("BLOCKED TRANSACT");
+				mv.visitMethodInsn(INVOKESPECIAL, "android/os/RemoteException", "<init>", "(Ljava/lang/String;)V", false);
+				mv.visitInsn(ATHROW);
+				return;
+			}
+//			if (ClassHierarchy.getInstance().isAncestors(owner, "android/content/Context") && name.equals("startService")) {
+//				mv.visitTypeInsn(NEW, "java/lang/SecurityException");
+//				mv.visitInsn(DUP);
+//				mv.visitLdcInsn("BLOCKED START SERVICE");
+//				mv.visitMethodInsn(INVOKESPECIAL, "java/lang/SecurityException", "<init>", "(Ljava/lang/String;)V", false);
+//				mv.visitInsn(ATHROW);
+//				return;
+//			}
+			
+//			if (owner.equals("android/webkit/WebView") && name.equals("loadUrl")) {
 //				
 //			}
 //			else if (owner.equals("java/net/DatagramSocket") && name.equals("send")) {
