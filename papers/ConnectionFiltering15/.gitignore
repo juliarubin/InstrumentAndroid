@@ -1,7 +1,7 @@
 /.DS_Store
-/*.aux
-/*.bbl
-/*.blg
-/*.dvi
-/*.log
-/*.gz
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.log
+*.gz

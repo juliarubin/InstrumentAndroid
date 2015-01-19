@@ -1,4 +1,198 @@
 \section{Introduction}
-\label{sec:intro}
+\label{sec:intro} 
+Mobile applications enjoy almost permanent connectivity and ability to exchange information with their own backends, third-party servers and other applications installed on the same device. 
+Recent studies show that during this information exchange, applications often release sensitive information about their users, such as location, phone number or unique device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}. 
+With privacy being an increased concern, followup works investigate feasibility of obfuscating or blocking completely such release of sensitive information~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}.
+Yet, users often deliberately trade their privacy for receiving a desired service from an application, 
+e.g., finding friends within a certain radius from their current location. 
+In such cases, preventing the release of the user's location would render an application privacy-preserving but effectively useless. 
 
-Just a citation~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10}.
+Once an application gains access to the user's sensitive information, it can, in addition to utilizing the information for the purpose assumed by the user, also release it to unauthorized third parties.
+Permission systems of contemporary mobile platforms cannot prevent such scenarios as they only require applications to declare the \emph{type} of information they want to access, not the \emph{purpose} of the access. 
+Existing information leakage detection techniques for mobile applications~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,Egele:Kruegel:Kirda:Vign:NDSS11,Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14, Tripp:Rubin:SEC14,DroidSafe} 
+also cannot be employed for that purpose: they flag each identified release of sensitive information as a potential privacy breach, regardless of its designated use. 
+The non-trivial task of classifying the purpose of information release is then left to the user. 
+
+%This paper aims at distinguishing between these two types of information releases -- those that are expected and are essential for the desired application functionality and those that are not. 
+%Towards this end, we focus on identifying information release points that are ``hidden'' from the user, i.e., neither success nor failure to establish connection at these points affects the user-observable application functionality. 
+
+This paper takes a first step towards performing such classification automatically. 
+Specifically, we focus on identifying information release statements that are \emph{unnecessary} for  
+the application execution, i.e., those that do not contribute to the observable application behavior.
+%Specifically, we explore the impact of information exchange denial on the behavior of application. 
+%An empirical analysis of multiple top-popular Android application from the Google Play store reveals that, in many cases, 
+%connection failures are either silently ignored by an application or written to the log file, without 
+%any noticeable effect on the application executions.
+%In fact, only around 10\% of connection sites exercised by the analyzed applications directly contribute to the user-observable application functionality.
+We empirically investigate the nature of information releases in ten top-popular Android application from the Google Play store, exploring the impact of connection denial at each 
+executed statement on the overall behavior of the analyzed application.
+We then design a static application analysis technique for identifying information release sites that can be deemed unnecessary: their failure has no impact on the behavior of the application. 
+
+\vspace{0.1in}
+\noindent 
+{\bf Information Release in Android Applications.}
+We conduct an empirical study whose goal is to explore and quantify the amount of unnecessary connections performed by Android applications. 
+We focus on the three most common connection types: HTTP, socket and RPC.
+The first two are used to communicate with various backend servers -- the application's own and third parties'; 
+the last one is used to communicate with other applications and services running on the same device.
+
+Our study is dynamic in nature and is performed in three phases. 
+In the first phase, we establish a baseline application behavior. 
+Similarly to the approach in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, we record a script triggering the application functionality via a serious of interactions with the application's user interface. 
+After each interaction, we capture a screenshot of the device to record the application state. 
+
+In the second phase, we instrument the application to log information about 
+triggered connection statements. The instrumented apk is then installed and executed on a mobile device using the recorded script. 
+
+In the third phase, we investigate the impact of each triggered connection on the overall behavior of the application.
+Specifically, for each triggered connection, we produce a version of the application with the corresponding connection being disabled while all remaining connections stay intact. Disabling is achieved by replacing the connection statement with the
+statement that indicated connection failure, e.g., that throws an exception that occurs when the connection fails due to the device being put in airplane mode. 
+We then install the modified application and run it using the previously recorded script. The screenshots documenting 
+the execution of the modified application are compared to those of the original one. We consider executions as equivalent if they result in screenshots that differ only in the content of advertisement information, messages in social network applications such as twitter, and the devices status bar. 
+We also separately note connections that contribute to presenting the advertisement content, if teh analyzed application has any. 
+
+Our analysis reveals that an almost 90\% of the connection statements exercised by the applications do not lead to any noticeable affect on the observable application functionality.
+Around 30\% of these correspond to HTTP and socket communication. The rest correspond to RPC calls to internal services installed on the device: notably, but not exclusively, google advertising and analytics, which further communicate with external services. 
+Moreover, in applications that present advertisement material, about 60\% of the connections that do affect the observable application behavior are used for the advertising purposes only. 
+
+A manual byte code inspection of the identified ``hidden'' connections shows that failures are often either silently ignored by the application, e.g., with an empty exception \emph{catch} block, or written to the log file without being propagated to the user. 
+This behavior is indicative for the connections being \emph{unessential} for the application behavior and, in some cases, even harmful. 
+%
+%We claim that these connections, hidden from the user, are indicative for potential unexpected operations performed by an application.
+In fact, the only application out of ten we analyzed that leaked the unique device id to the internet did that via such a hidden connection; 
+identifying and blocking the connection eliminated the information leakage without affecting the application behavior and other information exchange 
+operations that the application performed. 
+
+
+%We empirically analyze xx android applications from the list of yy most popular free applications on GooglePlay, focusing on the impact of successes / failures to establish connection on the overall behavior of the analyzed application. 
+%The analysis reveals that applications ``silently'' handle the majority of connection failures by discarding connection error without producing any visible effect on the user-observable application functionality.  In fact, only zz\% of the triggered connection sites propagate information about a failure (or, dually, a success) of that operation to the user.
+
+
+\vspace{0.1in}
+\noindent 
+{\bf Detecting Unnecessary Connections.}
+Inspired by the findings, we devise a static application analysis technique for detecting cases when connection failures are
+``silently''  ignored by the application, i.e., when information about a connection failure is not propagated back to the end user.
+Our technique search for cases when exceptions resulting from connection attempts are caught by an applications without giving any visual message to the user. 
+{\bf TDB: designed to be conservative etc.}
+
+We evaluate the technique on the ``truth set'' produced manually during the above empirical analysis and show that it is able to identify xx\% of the ``silent'' information releases (xxx cases for all analyzed applications), introducing only yy false-positive and zz false-negative results. 
+
+Applying the analysis on additional zz top-popular applications from Google Play reveals that ww\% of connection sites established by these applications can be deemed unnecessary.
+{\bf TBD}
+
+
+\vspace{0.1in}
+\noindent 
+{\bf Significance of the Work.}
+Our work focuses on begun mobile applications available in popular application stores and installed by thousand of users.
+By identifying and highlighting application functionality hidden from the user, it aims at improving transparency and, ultimately, quality of these applications. 
+ 
+We are largely inspired by the positive trend of improvement that we recently observed in the application development community.
+One of its manifestation is the increased awareness to privacy considerations, which is likely affected by multiple studies, including our own, that highlight
+potential privacy violation in applications from popular application stores~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}.
+Indeed, we observed that newer versions of the analyzed application in many cases no longer suffer from the previously identified privacy breaches.  
+This improvement trend reassures and further emphasize the significance of this work, as an additional step towards achieving better application quality and increasing trust between developers and their users. 
+
+
+
+%Furthermore, applying our classification and blocking technique to 12 app that were identified as leaking sensitive information in a previous study~\cite{Tripp:Rubin:SEC14} classified all information transfers as non-essential and produced a version of each application that is equivalent to the original one, but does not leak any sensitive information.
+
+
+\vspace{0.1in}
+\noindent 
+{\bf Contributions.}
+The paper makes the following contributions:
+\begin{enumerate}
+\item It sets a new problem of distinguishing between essential and unessential release of information by mobile applications in an automated manner. This problem is orthogonal and complementary to that of identifying sensitive information flow, which was the focus on numerous earlier works. 
+Highlighting unessential information releases in existing mobile applications is expected to improve transparency and contribute to the overall quality of the field. 
+%Put together, the two allow establishing practically useful, \emph{differential}  privacy: the applications can be restricted to using private information only ``when needed'', without leaking it to unauthorized parties.
+\item It proposes a dynamic approach for detecting unnecessary releases of information in Android applications which does not 
+does not require access to the application source code. 
+The approach relies on interactive injection of connection failures and identification of cases in which injected failures have no visible affect on the observable application functionality. 
+\item It provides empirical evidence for the prevalence of such unnecessary connection in real-life applications. Specifically, it shows that 90\% of the connections attempted by 10 top-popular free applications on GooglePlay fall into that category.    
+\item It proposes an static technique that operates on application binaries and identifies unnecessary connection -- those where failures are not propagated back to the application's user. The precision and recall of the technique is xx and yy, respectively, when evaluated against the empirically established truth set. 
+When applied on 50 top-popular free applications on Google Play, the technique is able to identify xx\% of connections made by these applications as unnecessary.
+\end{enumerate}
+
+The remainder of the paper is structured as follows. Section~\ref{sec:study} describes the empirical study we conducted for gaining insights into the nature of information releases in mobile applications. Section~\ref{sec:analysis} presents the static analysis technique designed for identifying unnecessary information releases. 
+Section~\ref{sec:evaluation} discusses results of its evaluation on real-live examples. Section~\ref{sec:limitations} discusses the limitation of our work. Section~\ref{sec:related} presents the related work, while Section~\ref{sec:conclusions}  the paper and discusses future work. 
+
+
+%A detailed study of xx top-popular apps shows that apps have xx information transfer instances on average, out of which xx\% do not have any effect on the application behavior and yy\% are there for presenting advantaging content. Blocking them produced a version that is equivalent.
+%
+%Furthermore, applying our classification and blocking technique to 12 app that were identified as leaking sensitive information in a previous study~\cite{Tripp:Rubin:SEC14} classified all information transfers as non-essential and produced a version of each application that is equivalent to the original one, but does not leak any sensitive information.
+%
+%Malicious app can still steal info by using the same , but our focus is on beguine apps.   
+%
+%We draw several conclusions from our study:
+%1. Applications perform many operations "under-the-hood".
+%2. The current permission model of guards information sources and sinks is insufficient for providing reasonable protection to the user as there is not transparency on \emph{how} the information is used. 
+%To reduce users' privacy concerns, mobile applications should provide better description on possibly multiple way they use the information. 
+%3. There is a good reason to believe that, at least for non-enterprise applications usually found on , information transfer that does not affect user-visible functionality are not essential and can be blocked. 
+%4. Our approach for blocking non-essential information provides simple, yet powerful way to block leakages of sensitive info.
+
+
+%Recent studies show that a substantial number of mobile applications release sensitive information about their user to third party services, e.g., for advertising and analytics purposes~\cite{TBD,TBD}. 
+%Numerous approaches have recently been proposed to identify and, in some cases, block such leakages~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,TBD,TBD,TBD}. 
+%Most such approaches are based on static or dynamic information flow analysis and focused mostly on the accuracy of the leakage detection, i.e., identifying in a reliable manner whether the information from a sensitive source (usually phone and device ids, location, etc.) reaches a sensitive sink (usually, internet, another application on the same device, etc.). 
+%Several works further build up on these approaches and propose mechanisms for obfuscating  information, e.g., by faking the location and device ids~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}. 
+%
+%Yet, these approaches do not distinguish between \emph{essential} and \emph{non-essential} information releases, e.g., when an application sends out location for providing the users with accurate trip instructions vs. for collecting statistic information about them. 
+%In other words, while these approaches focus on identifying cases when the information deemed sensitive is release by an application, the task of classifying the identified cases as essential and non-essential is rather performed manually.  
+%This task usually requires a non-negligible effort and a deep familiarity with the analyzed application. 
+%Likewise, techniques that obfuscate the released information also cannot ensure that they did not shadow ``too much'' data and that the resulting application will still retain its original 
+%functionality~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS2011}. 
+%
+%%We focus on consumer (rather than enterprise) mobile applications whose primary goal is to serve their users. 
+%%These applications are found in public application repositories such as Google Play and Apple App Store and are commonly downloaded by both private and enterprise users. 
+%
+%In this paper, we take a closer look at the problem of information release classification and shadowing. 
+%%whose primary goal is to provision the user with the described functionality. 
+%% and are commonly downloaded by both private and enterprise users.
+%We study in detail xx of the most  
+%We propose to consider as \emph{essential} those information releases that lead to a certain user-visible application functionality. 
+%%The main idea behind our work is that only the releases of information which enable user-visible application functionality are \emph{essential}.
+%That is, ``hidden'' releases of information that 
+%
+%%that do not affect any functionality visible to the user are thus considered \emph{non-essential} and can be \emph{shadowed} without affecting the application's behavior. 
+%
+%Based on this idea, we devise a dynamic technique that identifies information release sites executed by an application in a particular run and blocking   
+%
+%
+%
+%Main idea is to classify.
+%
+%To experient with teh idea, we implemented a dymanic technique.
+%
+%We performed a detailed analysis of navigation system application. 
+%
+%An emprical study shows that xx% 
+%
+%Moreover, all leakages from prev work were identified as non-essential and blocked. The resulting application has the same behaviour but without any identifiable leakages   
+%
+%By analyzing XX of the most-popular android applications from Google Play, 
+%we show that, on average, xx\% of the information release sites exercised by an application 
+%\emph{do not affect any user-observable application behavior}.
+%Since the primary goal of the analyzed mobile applications (and, in fact, most non-enterprise applications found in public repositories such as Google Play and Apple App Store) is to provision the user with the disclosed functionality, 
+%we deem such ``under-the-hood`` information release sites as \emph{non-essential}.
+%
+%We show that \emph{blocking} the non-essential information release sites results an application that has equivalent to the original one w.r.t. the exercised application behaviors.    
+%
+%Moreover, we show that applying the proposed classification and blocking technique to 15 android application that were identified in an earlier study~\cite{Tripp:Rubin:SEC14} as those that leak sensitive information classified all information releases as not-essential and successfully blocked them. Thus, we believe  all  as those that leak  information allowed us to   
+%
+%\paragraph{Information Release Sites}
+%
+%\paragraph{}
+%
+%\paragraph{}
+%
+%To summarize, this paper makes the following three contributions:
+%\begin{itemize}
+%\item An approach towards classifying information released by an application as \emph{essential} and  
+%\item An empirical analysis and classification of information released revealed by xx of the most-popular applications for Google Play that relieves the 
+%\item A dynamic technique for identifying and disabling only those information release sites that are deemed non-essential w.r.t. an exercised application executions.
+%\item A validation of applicability and robustness of the technique on the 
+%\item A validation of the ability of the approach to eliminate leakage  to 
+%\end{itemize}
+
