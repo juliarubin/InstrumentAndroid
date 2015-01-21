@@ -26,7 +26,10 @@
 \usepackage{xspace}
 \usepackage{xcolor}
 \usepackage{relsize}
+\usepackage{array}
 %\usepackage[ulem=normalem]{changes}
+
+\newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 
 \pagestyle{plain}
 %\pagenumbering{arabic}
@@ -97,6 +100,8 @@
 \definecolor{purple}{rgb}{1,0,1}
 
 \newcommand{\jr}[1]{{\textsf{JR}[\sffamily\color{blue} #1}]}
+
+
 %-------------------------------------------------------------------------
 
 \newenvironment{compactnumbered}%
@@ -108,6 +113,9 @@
 		\setlength{\leftmargin}{0.25in}%
 		\setlength{\itemsep}{0pt}%
 }}{\end{list}}
+
+
+
 
 %\newtheorem{crl}{Corollary}
 %\newtheorem{theor}{Theorem}
@@ -136,7 +144,7 @@
 %\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
 % --- End of Author Metadata ---
 
-\title{Unnecessary Information Releases in Mobile Applications}
+\title{Non-Essential Communication in Mobile Applications}
 
 %\numberofauthors{3}
 %\author{
@@ -155,6 +163,12 @@
 
 \maketitle
 \begin{abstract}
+Abstract
+
+Abstract
+
+Abstract
+
 Abstract
 %This paper aims at identifying and eliminating  ``hidden'' release of information in mobile applications that do not affect the observable application functionality. 
 %An empirical analysis of multiple top-popular Android application from the Google Play store,

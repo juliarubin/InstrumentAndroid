@@ -10,17 +10,30 @@ import com.android.drop.features.data.Method;
 
 public class ResultsProcessor {
 	
+//	public static String[] apps = {
+//		"com.facebook.katana", 
+//		"com.pandora.android",
+//		"com.king.candycrushsaga",
+//		"com.grillgames.guitarrockhero",
+//		"com.twitter.android",
+//		"com.spotify.music",
+//		"net.zedge.android",
+//		"com.crimsonpine.stayinline",
+//		"air.com.sgn.cookiejam.gp",
+//		"com.walmart.android"
+//	};
+	
 	public static String[] apps = {
-		//"com.facebook.katana", 
-		"com.pandora.android",
-		"com.king.candycrushsaga",
-		"com.grillgames.guitarrockhero",
-		"com.twitter.android",
-		"com.spotify.music",
-		"net.zedge.android",
-		"com.crimsonpine.stayinline",
-		"air.com.sgn.cookiejam.gp",
-		"com.walmart.android"
+	"air.com.sgn.cookiejam.gp",
+	"com.crimsonpine.stayinline",
+	"com.facebook.katana",
+	"com.grillgames.guitarrockhero",
+	"com.king.candycrushsaga",
+	"com.pandora.android",
+	"com.spotify.music",
+	"com.twitter.android",
+	"com.walmart.android",
+	"net.zedge.android"
 	};
 	
 //	public static String[] apps = {
@@ -51,11 +64,72 @@ public class ResultsProcessor {
 			staticUnknown = new HashSet<String>();
 			
 			readDynamicResults(RES_DIR + app + "_toBlock1_final.txt");
-			readStaticResults(RES_DIR + "connection-exception-analysis.20150119_1530/" + app + "/droidsafe-gen/connection-error-analysis.txt");
+			readStaticResults(RES_DIR + "connection-exception-analysis.20150120_0000/" + app + "/droidsafe-gen/connection-error-analysis.txt");
 			//compare();
-			compare1();
+//			compare1();
+			stat1();
 		}
-	
+	}
+
+	private static void stat1() {
+		float ads = 0;
+		for (String s : dynamicNeeded) {
+			if (s.contains("needed") && s.contains("ad")) {
+				ads++;
+			}
+		}
+		
+		System.out.println("Total: " + (dynamicNeeded.size() + dynamicNotCalled.size() + dynamicUnneeded.size()) + 
+				" triggred = " + (dynamicNeeded.size() + dynamicUnneeded.size()) + 
+				" (" + (1.0*(dynamicNeeded.size() + dynamicUnneeded.size())/(dynamicNeeded.size() + dynamicNotCalled.size() + dynamicUnneeded.size())) + ")" +
+				" non-essential " + dynamicUnneeded.size() + 
+				" (" + (1.0*dynamicUnneeded.size()/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")" +
+				" ads = " + ads + 
+				" (" + (ads/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")" +
+				" essential excluding ads " + (dynamicNeeded.size() - ads) + 
+				" (" + (1.0*(dynamicNeeded.size() -ads)/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")"
+				);
+		
+		
+		float correctNonEssential = 0, mistakesAds = 0, mistakes = 0;
+		
+		for (String s : staticUnhandled) {
+			if (dynamicUnneeded.contains(s)) {
+				correctNonEssential++;
+			}
+			else {
+				mistakes++;			
+				String needed = getDynamicNeeded(s);
+				if (needed.contains("needed") && needed.contains("ad")) {
+					 mistakesAds++;
+				 }
+				else {
+					System.out.println(s);
+				}
+			}
+		}
+		
+//		System.out.println("Correctly detected non-essential " + correctNonEssential + "/" + dynamicUnneeded.size() +
+//				" (" + (correctNonEssential*1.0/dynamicUnneeded.size()) + ")" +
+//				" ads " + correctAds + "/" + ads + 
+//				" (" + (correctAds*1.0/ads) + ")" +
+//				" FP " + mistakes + "/" + staticUnhandled.size() +
+//				" (" + (mistakes/staticUnhandled.size()) + ")" 
+//				); 
+				
+		System.out.println("Correctly detected non-essential (precision) " + correctNonEssential + "/" + staticUnhandled.size() +
+				" (" + (correctNonEssential*1.0/staticUnhandled.size()) + ")" +
+				" recall " + correctNonEssential + "/" + dynamicUnneeded.size() +
+				" (" + (correctNonEssential*1.0/dynamicUnneeded.size()) + ")" +
+				" missclasified non-essentials (FP) " +
+				" FP " + mistakes + "/" + staticUnhandled.size() +
+				" (" + (mistakes/staticUnhandled.size()) + ")" + 
+				" out of those ads " + mistakesAds
+				
+//				" recall including ads" + (correctNonEssential + mistakesAds) + "/" + (dynamicUnneeded.size() + ads) +
+//				" (" + ((correctNonEssential + mistakesAds)/(dynamicUnneeded.size() + ads)) + ")"
+				); 
+		
 	}
 
 	private static void compare1() {
@@ -70,16 +144,16 @@ public class ResultsProcessor {
 			}
 		}
 		
-		for (String s : dynamicUnneeded) {
-			if (!staticUnhandled.contains(s)) {
-				if (staticHandled.contains(s)) {
-					System.out.println("Dynamic unneeded/Static handled: " + s);
-				}
-				if (staticUnknown.contains(s)) {
-					System.out.println("Dynamic unneeded/Static unknown: " + s);
-				}
-			}
-		}
+//		for (String s : dynamicUnneeded) {
+//			if (!staticUnhandled.contains(s)) {
+//				if (staticHandled.contains(s)) {
+//					System.out.println("Dynamic unneeded/Static handled: " + s);
+//				}
+//				if (staticUnknown.contains(s)) {
+//					System.out.println("Dynamic unneeded/Static unknown: " + s);
+//				}
+//			}
+//		}
 		
 		System.out.println("Static unhandled = " + staticUnhandled.size() + "; dynamic unneeded = " + dynamicUnneeded.size() + 
 		"; overlap = " + correct + "; static unhandled but dymanic needed = " + incorrect);
@@ -163,12 +237,19 @@ public class ResultsProcessor {
 	}
 	
 	private static boolean containsDynamicNeeded(String s) {
-		for (String s1 : dynamicNeeded) {
-			if (s1.contains(s)) {
-				return true;
-			}
+		if (getDynamicNeeded(s) != null) {
+			return true;
 		}
 		return false;
+	}
+	
+	private static String getDynamicNeeded(String s) {
+		for (String s1 : dynamicNeeded) {
+			if (s1.contains(s)) {
+				return s1;
+			}
+		}
+		return null;
 	}
 
 	private static void readDynamicResults(String filename) {
