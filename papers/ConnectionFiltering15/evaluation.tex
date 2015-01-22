@@ -4,25 +4,26 @@
 \centering
 \tabcolsep=1.5pt
 %\resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|C{2.9cm}|C{2.9cm}|C{2.2cm}|C{2.2cm}|}
+\begin{tabular}{|l|C{2.5cm}|C{2.5cm}|C{2.5cm}|C{2.5cm}|}
 \hline
-\textbf{Applications}   & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}}  & \multicolumn{2}{c|}{\textbf{Misclassified non-essential (FP)}} \\
+\multirow{3}{*}{\textbf{Applications}} & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}} & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}}    \\
+                                       & \multicolumn{2}{c|}{}                                          & \multicolumn{2}{c|}{\textbf{(counting ads as non-essential)}}                       \\
 \cline{2-5}
-                        & Precision & Recall                                & Total & Excluding Ads                                           \\
+        & Precision   & Recall            & Precision   & Recall   \\
 \hline
 %--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp        & 1/1 (100.0\%)       &  1/3 (33.3\%)     & 0      & 0 \\
-com.crimsonpine.stayinline      & 9/14 (64.3\%)       & 9/13 (69.2\%)     & 5      & 0 \\
-com.grillgames.guitarrockhero   & 15/20 (75.0\%)      & 15/30 (50.0\%)    & 5      & 0 \\
-com.king.candycrushsaga         & 1/1 (100.0\%)       & 1/3 (33.3\%)      & 0      & 0 \\
-com.pandora.android             & 0/0                 & 0/9 (0\%)           & 0      & 0 \\
-com.spotify.music               & 2/3 (66.7\%)        & 2/21 (9.5\%)      & 1      & 1 \\
-com.twitter.android             & 3/3 (100.0\%)       & 3/6 (50.0\%)      & 0      & 0 \\
-com.walmart.android             & 3/4 (75.0\%)        & 3/5 (60.0\%)      & 1      & 1 \\
-net.zedge.android               & 13/16 (81.3\%)      & 13/16 (81.3\%)    & 3      & 0 \\
+air.com.sgn.cookiejam.gp        & 1/1 (100.0\%)     & 1/3 (33.3\%)   & 1/1   (100.0\%)   & 1/3   (33.3\%)   \\
+com.crimsonpine.stayinline      & 9/14 (64.3\%)     & 9/13 (69.2\%)   & 14/14 (100.0\%)   & 14/18 (77.8\%)   \\
+com.grillgames.guitarrockhero   & 15/20 (75.0\%)    & 15/30 (50.0\%)  & 20/20 (100.0\%)   & 20/35 (57.1\%)  \\
+com.king.candycrushsaga         & 1/1 (100.0\%)     & 1/3 (33.3\%)    & 1/1   (100.0\%)   & 1/3   (33.3\%)    \\
+com.pandora.android             & 0/0               & 0/9 (0\%)       & 0/0               & 0/9      (0\%)    \\
+com.spotify.music               & 2/3 (66.7\%)      & 2/21 (9.5\%)    & 2/3    (66.7\%)   & 2/21   (9.5\%)    \\
+com.twitter.android             & 3/3 (100.0\%)     & 3/6 (50.0\%)    & 3/3   (100.0\%)   & 3/6   (50.0\%)    \\
+com.walmart.android             & 3/4 (75.0\%)      & 3/5 (60.0\%)    & 3/4    (75.0\%)   & 3/5   (60.0\%)    \\
+net.zedge.android               & 13/16 (81.3\%)    & 13/16 (81.3\%)  & 16/16 (100.0\%)   & 16/19 (84.2\%)  \\
 \hline
 %--------------------------------------------------------------------
-Totals (average)                 & 82.8\%      & 43.0\%     & 1.667  & 0.222 \\
+Totals (average)                & 82.8\%     & 43.0\%    & 92.7\%        & 45.0\%       \\
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
@@ -40,3 +41,35 @@ As shown in Table~\ref{tbl:eval}, there are only two mis-classified non-essentia
 
 
 2) Run on 100 apps and report the number of findings, execution time, most common non-essential APIs(?) 
+
+\begin{table}[t]
+\caption{Insert Caption here.}
+\label{tbl:insertTableLabelHere}
+\centering
+\tabcolsep=1.5pt
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|l|C{1.8cm}|C{1.8cm}|C{1.8cm}||C{1.8cm}|}
+\hline
+%--------------------------------------------------------------------
+                    & Non-Essential & Essential     & Unknown       & Exec. time \\
+\hline
+%--------------------------------------------------------------------
+Total (xx apps)     & x             & x             & x             & x          \\
+Avg. per app        & x             & x             & x             & x          \\
+\hline
+%--------------------------------------------------------------------
+\end{tabular}
+}% resizebox
+\end{table}
+
+
+1) Total number of all non-essential connections in all apps
+2) Avg. number of non-essential connections per app
+3) Total number of all essential connections in all apps
+4) Avg. number of essential connections per app
+5) Total number of all unknown connections in all apps
+6) Avg. number of unknown connections per app
+7) Top 20 callers in non-essential connections, calculated as follows:
+a number of occurrences of each non-essential connection in all apps
+is calculated, and for the top 20 most frequent results, the callees
+are reported (the "from" part of the reported line)

@@ -22,11 +22,11 @@ RPC communication with other applications and services installed on the same mob
 \hline
 & \textbf{Class or Interface} & \textbf{Method} & \textbf{Indication of Failure}\\
 \hline
- 1. & java.net.URL                       & openConnection()  & java.io.IOException \\
- 2. & java.net.URLConnection             & connect()         & java.io.IOException \\
- 3. & org.apache.http.client.HttpClient  & execute()         & java.io.IOException \\
- 4. & java.net.Socket                    & getOutputStream() & java.io.IOException \\
- 5. & android.os.IBinder                 & transact()        & android.os.RemoteException \\
+ 1. & java.net.URL                       & openConnection  & java.io.IOException \\
+ 2. & java.net.URLConnection             & connect         & java.io.IOException \\
+ 3. & org.apache.http.client.HttpClient  & execute         & java.io.IOException \\
+ 4. & java.net.Socket                    & getOutputStream & java.io.IOException \\
+ 5. & android.os.IBinder                 & transact        & android.os.RemoteException \\
 \hline
 \end{tabular}
 }%resizebox
@@ -247,12 +247,15 @@ Google services are commonly, but not exclusively, used by numerous applications
 
 \vspace{0.1in}
 \noindent 
-{\bf Manual Code Inspection and Lessons Learned.}
+{\bf Lessons Learned.}
 The collected statistics show that no principle distinction between essential and non-essential connections  
-can be made just by considering connection types and their destinations. That observation invites more sophisticated 
-techniques for identifying the non-essential communication performed by the applications. 
+can be made just by considering connection types and their destinations. 
+That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where authors 
+show that blocking all messages to advertising and analytics services made more than 60\% of the applications either less functional or completely dysfunctional. 
+We conclude that a more sophisticated 
+techniques for identifying the non-essential communication performed by the applications is required. 
 
-Towards this end, we manually investigated some of the application binaries, to gain more insights into the way applications treat non-necessary connections of each of the identified type and communication target. 
+We manually investigated binaries of several analyzed applications, to gain more insights into the way applications treat non-necessary connections of each of the identified type and communication target. 
 We noticed that, in a large number of cases, connection failures are silently ignored by the applications without producing any visual indication to the user. 
 That is, the exception triggered by the connection failure of a non-essential connection is either caught and ignored locally in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. 
 
