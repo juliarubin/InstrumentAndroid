@@ -72,12 +72,12 @@ the block explicitly throws the same exception object, or throws a new
 exception object.  The process of searching the stack for a handler
 begins anew.
 
-\item \textsc{\bfseries{Definition (Failure Handling)}}. The
-failure handling of a connection call $s$ for exception type $e$ is
-defined as the execution path that starts when an exception of type
-$e$ propagates to connection call $s$ and ends when the last
-\lstinline!catch! block is exited that handles $e$ or any rethrown
-exceptions of $e$.
+\item \textsc{\bfseries{Definition (Failure Handling)}}. The failure
+  handling of a connection call $s$ for exception type $e$ is defined
+  as the execution path that starts when an exception of type $e$
+  propagates to connection call $s$ and ends when the {\it last}
+  \lstinline!catch! block is exited that handles $e$ or a rethrown
+  exceptions of $e$.
 \end{description}
 
 Intuitively, the failure handling of $s$ on $e$ is the computation
@@ -392,7 +392,7 @@ possible handlers of each rethrown exception (lines
 finds a call to a native method, we assume that it will throw all
 exceptions it is defined to throw, handler analysis spawns a
 \textsc{FindCatches} instance for each exception declared throws
-(line~\ref{alg:native-method-line}).  If call is encountered that
+(line~\ref{alg:native-method-line}).  If a call is encountered that
 could target a UI method, then the statement that began the handler
 analysis is considered essential since the error handling affects the
 user interface (line~\ref{alg:ui-method-found}).
@@ -440,15 +440,15 @@ overriding methods of the methods listed in the table as UI methods.
 
 A stack of pairs of method call statement and method is maintained
 during the analysis.  The analysis uses the stack to focus the handler
-search in \textsc{FindCatches}, after a method call has been performed
-by a handler further up the stack. When the analysis if initiated for
+search in \textsc{FindCatches} after a method call has been performed
+by a handler further up the stack. When we initiate the analysis for
 a connection call, the stack is empty and the analysis in
 \textsc{FindCatches} has to search all possible stacks (predecessor of
 the containing method) for handlers of the connection statement's
 exception.  However, once a handler is found, and the handler calls a
 sequence of methods that ends in a possible rethrown exception, the
 sequence of methods defines the only stack that should be searched for
-a handler of the rethrown exception.  The stack is pushed to in line
+a handler of the rethrown exception.  The stack is pushed in line
 \ref{alg-push-stack-lines} of \textsc{AnalyzeHandler} for each method
 call of a reachable handler code.  During the handler search of the
 execution stack in \textsc{FindCatches}, the
@@ -483,6 +483,16 @@ exceptions. If a caught exception statement\footnote{A caught
 $c$ is analyzed for all checked exceptions that could be thrown.  This
 is performed in \textsc{GetPossibleThrownTypes} call on 
 line \ref{alg:getpossiblethrowntypes} of \textsc{AnalyzeHandler}.
+
+If any other type of statement is a definition that reaches the thrown
+value, then the analysis cannot determine the exception type and the
+connection call (or rethrown exception statement) is considered
+essential (line \ref{alg:unknown-last-def-throw}).  If only
+allocations and caught exception statements reach the thrown value,
+then the handler analysis spawns a new \textsc{FindCatches} instance
+to analyze the failure handling.  The classification of the thrown
+statement is propagated to the current excepting statement in
+line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
 
 \begin{figure}[t]
 \begin{algorithmic}[1]
@@ -543,22 +553,12 @@ definition is a caught exception statement, then
 the nesting try block statements and continue the calculation.  If a
 definition of any other statement type can reach the thrown value,
 then the procedure returns null to denote that it cannot calculate the
-thrown type (line~\ref{alg:getpossiblethrown-return-null}.  This
-situation causes the examined connection call or rethrown statement to
-be labeled essential (we have not included the code in the algorithms
-to propagate this situation to the essential set, though it is in our
-implementation).
+thrown type (line~\ref{alg:getpossiblethrown-return-null}).  This
+situation causes the examined connection call or rethrown statement in
+\textsc{AnalyzeHandler} to be labeled essential (we have not included
+the code in the algorithms to propagate this situation to the
+essential set, though it is in our implementation).
 
-
-If any other type of statement is a definition that reaches the thrown
-value, then the analysis cannot determine the exception type and the
-connection call (or rethrown exception statement) 
-is considered essential (line \ref{alg:unknown-last-def-throw}).
-If only allocations and caught exception statements reach the thrown
-value, then the handler analysis spawns a new \textsc{FindCatches}
-instance to analyze the failure handling.  The classification of the
-thrown statement is propagated to the current excepting statement in
-line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
 
 
 \subsection{Helper Procedures}
