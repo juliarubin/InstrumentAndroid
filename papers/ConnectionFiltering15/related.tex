@@ -1,0 +1,65 @@
+\section{Related Work}
+\label{sec:related}
+Most close to our are works that employ user-centric analysis to identify spurious application behaviors and that investigate information propagation in mobile applications.   
+From a technical point of view, our work relies on static application analysis for Android and on exception analysis for  Java. 
+We thus discuss the related work along these four dimensions. 
+
+\vspace{0.1in}
+\noindent 
+{\bf User-Centric Analysis for Identifying Spurious Behaviors in Mobile Applications.}
+Huang et al.~\cite{Huang:Zhang:Tan:Wang:Liang:ICSE14} propose a technique, AsDroid, for identifying contradictions between a user interaction function and the behavior that it performs. 
+This technique associates intents with certain sensitive APIs, such as HTTP access or SMS send operations, and tracks the propagation
+of these intents through the application call graph, thus establishing correspondence between APIs and the UI elements they affect. 
+It then uses the established correspondence to compare intents with the text related to the UI elements. Mismatches are treated as potentially stealthy behaviors. 
+In our work, we do not assume that all operations are triggered by the UI
+and do not rely on textual descriptions of UI elements.
+
+CHABADA~\cite{Gorla:Tavecchia:Gross:Zeller:ICSE14} compares natural language descriptions of applications, clusters them by description topics, and then identifies outliers by observing API usage within each cluster. Essentially, this system identifies applications whose behavior would be unexpected given their description. Instead, our approach focuses on identifying unexpected behaviors given the actual user experience, not just the description of the application.
+
+Elish et al.~\cite{Elish:Yao:Ryder:MOST12} propose an approach for identifying malware by tracking dependencies between the definition and the use of user-generated data. They deem sensitive function calls that are not triggered by a user gesture as malicious. However, in our experience, the absence of a data dependency between a user gesture and a sensitive call is not always indicative for suspicious behavior: applications such as twitter and walmart can initiate HTTP calls to show the most up-to-date information to their user, without any explicit user request. Moreover, malicious behaviors can be performed as a side-effect of any user-triggered operation. We thus take an inverse approach, focusing on identifying operations that do not affect the user experience.
+
+\vspace{0.1in}
+\noindent 
+{\bf Information Propagation in Mobile Applications.}
+The most prominent technique for dynamic information propagation tracking in Android is TaintDroid~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10}, which detects flows of information from a selected set of sensitive sources to a set of sensitive sinks.
+TaintDroid is used, extended and customized by several follow-up research projects.
+For example, the Kynoid system~\cite{Schreckling:Posegga:Koestler:Schaff:WISTP12} extends it with user-defined security policies, which include temporal constraints on data processing as well as restrictions on
+destinations to which data is released.
+Several static information flow analysis techniques for tracking propagation of information from sensitive sources to sinks have also been recently developed~\cite{
+%Yang:Yang:WCSE12, Gibler:Crussell:Erickson:Chen:TRUST12, 
+Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15,Klieber:Flynn:Bhosale:Jia:Bauer:SOAP14,Li:Bartel:Klein:Traon:Arzt:Rasthofer:Bodden:Octeau:McDaniel:CoRR14}.
+The first two ensure accurate detection of information flows within a single application, while the last two -- across multiple applications. 
+
+McCamant and Ernst~\cite{McCamant:Ernst:PLDI08} take a quantitative approach to information flow: they cast information-flow security to a network-flow-capacity problem and describe a dynamic technique for measuring the amount of secret data that leaks to public observers. 
+Tripp and Rubin~\cite{Tripp:Rubin:SEC14} propose to extend the information flow analysis with a Bayesian notion of statistical classification, which conditions the judgment whether a release point is
+legitimate on the evidence arising at that point, e.g., the similarity between the data
+values about to be released and the data obtained via the source APIs. 
+
+Our work is orthogonal and complimentary to all the above: while they focus on providing precise information flow tracking capabilities and detecting cases when sensitive information flows outside of the application and/or mobile device, 
+our focus is on distinguishing between essential and non-essential flows. 
+
+The authors of AppFence~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11} build up on TaintDroid and explore approaches for either obfuscating or completely blocking the identified cases of sensitive information release.
+Their study shows that blocking all such cases renders more than 65\% of the application either less functional or completely dysfunctional, blocking cases when information flows to advertisement and analytics services ``hurts'' 10\% of the applications, and blocking the communication with the advertisement and analytics services altogether -- more than 60\% of the applications.
+Our work has a complementary nature as we rather attempt to identify cases when communication can be disabled without affecting the application functionality. 
+Our approach for assessing the user-observable effect of that operation is similar to the one they used though. 
+
+Both MudFlow~\cite{Avdiienko:Kuznetsov:Gorla:Zeller:Arzt:Rasthofer:Bodden:ICSE15} and AppContext~\cite{Yang:Xiao:Andow:Li:Xie:Enck:ICSE15} build up on the FlowDroid static information flow analysis system~\cite{Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14} and propose approaches 
+for detecting malicious applications by learning ``normal'' application behavior patterns and then identifying outliers. 
+The first work considers flows of information between sensitive sources and sinks, while the second  -- contexts, i.e., the events and conditions, that cause the security-sensitive behaviors to occur. 
+Our work has a complementary nature as we focus on identifying non-essential rather than malicious behaviors, aiming to preserve the overall user experience. 
+
+Shen et al.~\cite{Shen:Vishnubhotla:Todarka:Arora:Dhandapani:Lehner:Ko:Ziarek:ASE14} contribute FlowPermissions -- 
+an approach that extends the Android permission model with a mechanism for allowing the users to examine and grant permissions per an information flow within an application, e.g., a permission to read
+the phone number and send it over the network or to another application already installed on the device. 
+While our approaches have a similar ultimate goal -- to provide visibility into the holistic behavior of the applications installed on a user's phone -- our techniques are entirely orthogonal. 
+
+\vspace{0.1in}
+\noindent 
+{\bf Static Application Analysis for Android.}
+Zhang et al.~\cite{Zhang:Lue:Ernst:ISSTA12} contribute a reflection-aware call graph construction algorithm for 
+multithreaded GUI applications. They instantiate it for four popular Java GUI frameworks, including Android. 
+{\bf TBD.}
+
+\vspace{0.1in}
+\noindent 
+{\bf Exception Analysis for Java.}
