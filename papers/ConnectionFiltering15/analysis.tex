@@ -46,13 +46,91 @@ either of the two criteria.
 
 Android applications are developed in Java, and program execution
 follows the semantics of Java. In an Android application, each
-connection call may generate an exception that reaches a subset of the
-program's \lstinline!catch! blocks.  
+connection call $s$ may generate an exception (of dynamic type $e$)
+that reaches a subset of the program's \lstinline!catch! blocks.  At
+runtime, when $e$ is triggered by $s$, the executing method's trap
+table is consulted, and if no \lstinline!catch! blocks are defined to
+handle $e$ at $s$, then $e$ is passed back up the stack, to the
+calling method at the calling statement, and the process repeats.  If
+the Android runtime is returned to during the stack unwinding, the
+application is typically exited with an error.  
 
-The static analysis considers each connection call and analyzes the
-exception handling path f
+\noindent\textsc{\bfseries{Definition (Rethrown Exception)}}.  A
+rethrown exception occurs when a \lstinline!catch! block catches an
+exception, but before the block is exited, a statement reachable from
+the block explicitly throws the same exception object, or throws a new
+exception object.  The process of searching the stack for a handler
+begins anew.
 
+\begin{figure}
+    \begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)}]
+public class Example {
+    void f() {
+        try {
+            g();
+            (*@{\it stmtA};@*)
+        } catch (MyException e) {
+            (*@{\it stmtB};@*)
+        }
+        (*@{\it stmtC};@*)
+    }
 
+    void g() throws MyException {
+        try {
+            (*@{\it stmtD};@*)
+            connect();  //throws RemoteException (*@\label{connect-fig}@*)
+            (*@{\it stmtE};@*)
+        } catch (RemoteException e) {
+            (*@{\it stmtF};@*)
+            throw new MyException();            
+        }        
+        (*@{\it stmtG};@*)
+    }
+}
+\end{lstlisting}
+\caption{\label{fig:failure-handling}An example of failure handling of
+}
+\end{figure}
+
+\noindent\textsc{\bfseries{Definition (Failure Handling)}}. The
+failure handling of a connection call $s$ for exception type $e$ is
+defined as the execution path that starts when an exception of type
+$e$ propagates to connection call $s$ and ends with the statement
+immediately when the last \lstinline!catch! block is exited that
+handles $e$ or any rethrown exceptions of $e$.
+
+Intuitively, the failure handling of $s$ on $e$ is the computation
+that handles $e$ and any failure triggered by the handling of $e$
+(through rethrown exceptions).  Failure handling is finished when all
+exceptions triggered by $e$ are handled and flow returns to ``normal''
+execution.  
+
+Figure~\ref{fig:failure-handling} lists a small Java example to
+illustrate failure handling.  Method \lstinline!f! invokes method
+\lstinline!g!.  In \lstinline!g!, a connection call is encountered on
+line~\ref{connect-fig}; assume during execution this connection call
+throws a \lstinline!RemoteException!.  The failure handling for this
+combination of connection call and exception is the set of statements:
+{\it stmtF}, \lstinline!throw new MyException()!, and {\it stmtB}.
+These statements are executed from the start of the handling of thrown
+\lstinline!RemoteException! to the end of the handling of the rethrown
+\lstinline!MyException!.
+
+\noindent\textsc{\bfseries{Problem}}: \todo{finish this}
+
+Our static failure-handling analysis conservatively calculates all
+possible failure handling for exceptions that denotes connection
+failure for each connection call in the application.  It also
+determines whether it is possible for an exception to propagate back
+into the Android runtime during error handling. \todo{finish this}
+
+Our analysis inspects the behavior of a connection call's failure
+handling of exceptions that indicate a connection failure.  If there
+exists a failure-handling path of $s$ on $e$ that may include a call
+to a method that notifies the user of the failure, then $s$ is
+considered essential.  Furthermore, if it is possible for $e$, when
+triggered at $s$, to propagate back up the stack to the Android
+runtime, $s$ is considered essential.
 
 
 \subsection{Static Analysis of Android Applications}
@@ -110,16 +188,85 @@ Something~\cite{Fu2007}.
 * unchecked exceptions
 
 
+\subsection{Reconstructing {\ttfamily{catch}} Blocks}
 
 
-
+\begin{algorithm}
+\caption{Find \lstinline!catch! blocks for exception throw at statement.}\label{alg:findcatches}
 \begin{algorithmic}[1]
-\If {$i\geq maxval$}
-    \State $i\gets 0$
-\Else
-    \If {$i+k\leq maxval$}
-        \State $i\gets i+k$
-    \EndIf
-\EndIf
-\end{algorithmic}
+\algblockdefx[HEADER]{inputdef}{outputdef}[1]%
+{\textbf{Input}: #1}[1]{\textbf{Output}: #1}
+\Procedure{FindCatches}{meth, stmt, ex, visiting, stack, cg}
 
+\If {(stmt, ex) $\in$ visiting || (stmt, ex) $\in$ essential}
+    \State \textbf{return}
+\EndIf
+
+\State visiting $\gets$ visiting $\cup$ (stmt, ex)
+
+\State catchBlockStart $\gets$ \textsc{FindCompatCatch}(meth, stmt, ex)
+
+\If {catchBlockStart $=$ \textbf{null} }
+\If {\textsc{IsEventHandler}(meth)}
+\State essential $\gets$ essential $\cup$ (stmt, ex)
+\State \textbf{return}
+\EndIf
+\For { (predStmt, predMeth) $\in$ \textsc{GetPreds}(cg, meth)}
+
+\If {stack $\neq \emptyset$ \textbf{and} (predStmt, predMeth) $\neq$ \textsc{Peek}(stack)}
+\State \textbf{continue}
+\EndIf 
+
+\State newStack $\gets$ stack
+\State \textsc{Pop}(newStack)
+
+\State \textsc{FindCatches}(predMeth, predStmt, ex, 
+\State         \hspace{2cm}visiting, newStack, cg)
+\If {(predStmt, ex) $\in$ essential}
+\State essential $\gets$ essential $\cup$ (stmt, ex)
+\State \textbf{return}
+\EndIf
+\EndFor
+\Else 
+\State catchStmts $\gets$ \textsc{GetCatchStmts}(catchBlockStart)
+\State \textsc{AnalyzeHandling}(meth, stmt, catchStmts,
+\State \hspace{2cm}visiting, $\emptyset$, stack, cg)
+\EndIf
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+\caption{Analyze reachable statements during handling for UI
+  interaction or rethrown exceptions.}\label{alg:analyzehandler}
+\begin{algorithmic}[1]
+\algblockdefx[HEADER]{inputdef}{outputdef}[1]%
+{\textbf{Input}: #1}[1]{\textbf{Output}: #1}
+\Procedure{AnalyzeHandler}{meth, exceptStmt, stmts, 
+       visiting, handledStmts, stack, cg}
+\If {stmts $\in$ handledStmts}
+\State \textbf{return}
+\EndIf
+\State handledStmts $\gets$ handledStmts $\cup$ stmts
+
+\For {each stmt $\in$ stmts}
+\If {\textsc{HasInvoke}(stmt)}
+\For {(succStmt, succMeth) $\in$ \textsc{GetSuccs}(cg, stmt)}
+\If {\textsc{IsUIMethod}(succMeth)}
+\State essential $\gets$ essential $\cup$ exceptStmt
+\State \textbf{return}
+\Else 
+\State newStack $\gets$ stack
+\State \textsc{Push}(newStack, (succStmt, succMeth))
+\EndIf 
+
+\EndFor
+\ElsIf {\textsc{IsThrowStmt}(stmt)}
+\State s
+\EndIf
+\EndFor
+
+\EndProcedure
+\end{algorithmic}
+\end{algorithm}
