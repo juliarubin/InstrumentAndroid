@@ -182,16 +182,13 @@
 
 \maketitle
 \begin{abstract}
-Abstract
-
-Abstract
-
-Abstract
-
-Abstract
-%This paper aims at identifying and eliminating  ``hidden'' release of information in mobile applications that do not affect the observable application functionality. 
-%An empirical analysis of multiple top-popular Android application from the Google Play store,
-%reveals that a large number of information release sites exercised by the applications do not lead to any noticeable affect on the observable application functionality. 
+This paper studies communication patterns in mobile applications.
+Our experience shows that 65\% of communication performed via HTTP, socket and RPC connection statement encoded in
+top-popular Android applications from Google Play can be deemed non-essential: these connections do not have any effect on the user-observable application functionality. 
+We explore properties of such ``hidden'' connections, concluding that neither type nor the communication destination are indicative for the connection being non-essential. 
+Studying syntactic patterns of these connections lead us to devising a static analysis technique that 
+is able to detect those with 84\% -90\% precision and 63\%-64\% recall, depending on whether advertisement is treated as  essential or not. 
+We use our technique to analyze the 500 top-popular Android applications from Google Play, determining that 
 %More specifically, failures to establish connection at these sites are either silently ignored by the application or written to the log file, without being propagated to the user.
 %
 %Inspired by the study, we devise a static application analysis technique for identifying case when connection failures are
