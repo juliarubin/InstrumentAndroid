@@ -50,7 +50,7 @@ connection call $s$ may generate an exception (of dynamic type $e$)
 that reaches a subset of the program's \lstinline!catch! blocks.  At
 runtime, when $e$ is triggered by $s$, the executing method's trap
 table is consulted, and if no \lstinline!catch! blocks are defined to
-handle $e$ at $s$, then $e$ is passed back up the stack, to the
+handle $e$ at $s$, then $e$ is passed back up the stack to the
 calling method at the calling statement, and the process repeats.  If
 the Android runtime is returned to during the stack unwinding, the
 application is typically exited with an error.  
@@ -63,7 +63,7 @@ exception object.  The process of searching the stack for a handler
 begins anew.
 
 \begin{figure}
-    \begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)}]
+\begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)},basicstyle=\ttfamily\scriptsize]
 public class Example {
     void f() {
         try {
@@ -78,7 +78,7 @@ public class Example {
     void g() throws MyException {
         try {
             (*@{\it stmtD};@*)
-            connect();  //throws RemoteException (*@\label{connect-fig}@*)
+            connect();  //throws RemoteException (*@\label{connect-fig-line}@*)
             (*@{\it stmtE};@*)
         } catch (RemoteException e) {
             (*@{\it stmtF};@*)
@@ -89,26 +89,29 @@ public class Example {
 }
 \end{lstlisting}
 \caption{\label{fig:failure-handling}An example of failure handling of
+  of a connection call at line ~\ref{connect-fig-line}.  Statements
+  {\it stmtF}, \lstinline!throw new MyException()!, and {\it stmtB}
+  are in the failure handling of this statement for exception \lstinline!RemoteException!.
 }
 \end{figure}
 
 \noindent\textsc{\bfseries{Definition (Failure Handling)}}. The
 failure handling of a connection call $s$ for exception type $e$ is
 defined as the execution path that starts when an exception of type
-$e$ propagates to connection call $s$ and ends with the statement
-immediately when the last \lstinline!catch! block is exited that
-handles $e$ or any rethrown exceptions of $e$.
+$e$ propagates to connection call $s$ and ends when the last
+\lstinline!catch! block is exited that handles $e$ or any rethrown
+exceptions of $e$.
 
 Intuitively, the failure handling of $s$ on $e$ is the computation
 that handles $e$ and any failure triggered by the handling of $e$
 (through rethrown exceptions).  Failure handling is finished when all
-exceptions triggered by $e$ are handled and flow returns to ``normal''
+exceptions triggered by $e$ are handled and flow returns to normal
 execution.  
 
 Figure~\ref{fig:failure-handling} lists a small Java example to
 illustrate failure handling.  Method \lstinline!f! invokes method
 \lstinline!g!.  In \lstinline!g!, a connection call is encountered on
-line~\ref{connect-fig}; assume during execution this connection call
+line~\ref{connect-fig-line}; assume during execution this connection call
 throws a \lstinline!RemoteException!.  The failure handling for this
 combination of connection call and exception is the set of statements:
 {\it stmtF}, \lstinline!throw new MyException()!, and {\it stmtB}.
@@ -116,22 +119,19 @@ These statements are executed from the start of the handling of thrown
 \lstinline!RemoteException! to the end of the handling of the rethrown
 \lstinline!MyException!.
 
-\noindent\textsc{\bfseries{Problem}}: \todo{finish this}
+\noindent\textsc{\bfseries{Problem}}: Analyze each connection call,
+$s$, in an Android application to determine whether the application
+could possibly exit on a failure at $s$ or could modify the user
+interface during a failure handling path of $s$.
 
-Our static failure-handling analysis conservatively calculates all
-possible failure handling for exceptions that denotes connection
-failure for each connection call in the application.  It also
-determines whether it is possible for an exception to propagate back
-into the Android runtime during error handling. \todo{finish this}
-
-Our analysis inspects the behavior of a connection call's failure
-handling of exceptions that indicate a connection failure.  If there
-exists a failure-handling path of $s$ on $e$ that may include a call
-to a method that notifies the user of the failure, then $s$ is
-considered essential.  Furthermore, if it is possible for $e$, when
-triggered at $s$, to propagate back up the stack to the Android
+To solve this problem statically, our failure-handling analysis
+conservatively calculates all possible failure handling for exceptions
+that denotes connection failure for each connection call in the
+application.  If there exists a failure-handling path of $s$ on $e$
+that may include a call to a method that notifies the user of the
+failure, then $s$ is considered essential.  If it is possible for $e$,
+when triggered at $s$, to propagate back up the stack to the Android
 runtime, $s$ is considered essential.
-
 
 \subsection{Static Analysis of Android Applications}
 
@@ -173,16 +173,60 @@ source code of the Android runtime and API because of the size and
 multi-language nature of this code base.  Thus static analysis must
 either model the Android application execution environment, or account
 for possible dynamic program behaviors with conservative analysis
-choices.  We choose the later strategy in our analysis to account f
+choices, otherwise some runtime behaviors could be unconsidered.
+Precise, whole-program analysis runs the high-risk of missing dynamic
+program behavior and not scaling to real-world Android
+application~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
+
+After much experimentation with analysis choices, we choose to
+implement a best-effort conservative, though scalable whole-program
+analysis coupled with local data-flow analysis. Our analysis builds a
+call graph using class hierarchy analysis (CHA)
+analysis~\cite{Dean1995} and augments the call graph to account for
+reflected method calls.  Our failure-handling analysis
+over-approximates the runtime behaviors of the applications, and
+under-approximates the connection calls that could be non-essential.
 
 \subsection{Call Graph Construction}
 
-Our algorithm computes a static call graph as the program
-representation of the Android application.  A call graph represents
-the possible dynamic calling relationship between methods of the
-application.  Each node represents a method, and each edge, $(f,g)$
-indicates that $f$ may call $g$ at run time.  
+Our algorithm first computes a static call graph based on CHA
+analysis.  A call graph represents the possible dynamic calling
+relationship between methods of the application.  Each node represents
+a method, and each edge, $(f,g)$ indicates that $f$ may call $g$ at
+run time.
 
+To compute our call graph, we augment the application code with the
+DroidSafe Android Device Implementation
+(ADI)~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.  The ADI
+is a Java-based model of the Android runtime and API that attempts to
+present full runtime semantics for commonly-used classes of the
+runtime and API.  Our call graph construction does not traverse into
+Android API methods.  However, we found it necessary to account for
+API calls that immediately jump back into the application.  For
+example, if an application method, $m$ calls
+\lstinline!Thread.start()! on a receiver that is an application class,
+$t$, we found it necessary to add the edge to the callgraph ($m$,
+$t$.\lstinline!run()!).  This includes the started the thread $t$ in
+failure analysis if $m$ is encountered.
+
+To achieve this in general, we add to the call graph edges of the type
+($m$, $n$) where there is an edge ($m$, \lstinline!api-method!), the
+call of \lstinline!api-method! is passed a value that is a reference
+to an application class, and \lstinline!api-method! calls method $n$
+on the passed application class value.  This strategy adds to our
+callgraph, the edges for the \lstinline!Thread.start()! to the
+\lstinline!Thread.run()! discussed above.
+
+Furthermore, the call graph is augmented to account for reflected
+method calls in the application using the following policy.  When a
+reflected call is found, we add edges to the graph that target all
+methods of the same package domain as the caller (e.g.,
+\texttt{com.google}, {com.facebook}).  The edges are pruned by the
+following strategy: if the number of arguments and argument types to
+the call can be determined using a def-use analysis~\cite{Aho2006},
+then we limit the edges to only targets that have the same number and
+types of arguments.  This strategy works well for us in
+practice and very aggressive accounts for reflection semantics.
 
 
 \subsection{Failure Handler Static Analysis}
@@ -327,7 +371,7 @@ cg)
 \textsc{FindCatches} \ref{alg:stack-check-line}.  Searches all possible stacks
 if the stack is null, otherwise, we are in the middle of a forward
 search, so we can prune the stack unwinding with the forward path we
-took in ...
+took in ...stays on track..
 
 
 \ref{alg:native-method-line}
