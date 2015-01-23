@@ -1,7 +1,19 @@
 \section{Limitations and Threats to Validity}
 \label{sec:limitations}
+In this section we discuss the limitations of our empirical study and our static technique for detecting non-essential connections.
 
-Limitation of dynamic analysis -- it only considers the executed passes. This is how we compared. 
+\vspace{0.1in}
+\noindent 
+{\bf Empirical Study.}
+Our empirical study has a dynamic nature and thus suffers from the well-known limitations of dynamic analysis: it does not provide an exhaustive exploration of an application behavior, thus the findings apply only to the execution paths explored during the analysis. 
+Even though we made an effort to cover all application functionality visible to us, we probably missed some behaviors, e.g., those triggered under system setting different from ours. 
+We attempted to mitigate this problem by performing all our dynamic experiments on the same device, at the same location and temporally close to each other.  
+We also automated our execution scripts in order to compare behaviors of different application versions under the same scenario and settings. 
+We only report on the results comparing these similar runs.  
+
+During our analysis, we disabled connections individually, one by one. We thus could not determine cases then 
+
+uted passes. This is how we compared. 
 Several operations in the same connection statement.
 Cannot handle cases when two blocked points depend on each other.
 

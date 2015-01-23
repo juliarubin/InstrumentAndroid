@@ -1,18 +1,18 @@
 \section{Introduction}
 \label{sec:intro} 
 Mobile applications enjoy almost permanent connectivity and the ability to exchange information with their own back-end, third-party servers and other applications installed on the same device. 
-During such information exchange, applications often release sensitive information about their users, such as location, phone number or unique device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}. 
+During such information exchange, applications often release sensitive information about their users, e.g., location, phone number or unique device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}. 
 With privacy being an increased concern, multiple works propose approaches for tracking the release of 
 sensitive information~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,Egele:Kruegel:Kirda:Vign:NDSS11,Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14, Tripp:Rubin:SEC14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. Follow-up works investigate the
 feasibility of obfuscating or blocking it completely~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}.
 
 Yet, users often deliberately trade their privacy for receiving a desired service from an application, 
-e.g., finding friends close to their current location. 
-In such cases, preventing the release of the user's location would render an application privacy-preserving but effectively useless. 
+e.g., getting navigation instructions from their current location. 
+In such cases, preventing the release of location would render an application privacy-preserving but effectively useless.
 %Permission systems of contemporary mobile platforms cannot prevent an application that obtains a user consent to access sensitive data from release it to unauthorized third parties
-%Once an application gains access to the user's sensitive information, it can, in addition to utilizing the information for the purpose assumed by the user, also .
+% Once an application gains access to the user's sensitive information, it can, in addition to utilizing the information for the purpose assumed by the user, also .
 %Permission systems of contemporary mobile platforms cannot distinguish between these different usages as they only require applications to declare the \emph{type} of information they want to access, not the \emph{purpose} of the access. and have no means to capture the ``semantics'' of its use. 
-Existing approaches provide no means for differentiating between information releases that are \emph{essential} for the desired application functionality and those that are \emph{non-essential} and can be avoided: 
+Existing approaches cannot distinguish between information releases that are essential for the desired application functionality and those that are not: 
 they flag each release of sensitive information as a potential privacy breach, regardless of its designated use.
 The non-trivial task of classifying the \emph{purpose} of each information release is then left to the user. 
 
@@ -26,28 +26,28 @@ The non-trivial task of classifying the \emph{purpose} of each information relea
 %any noticeable effect on the application executions.
 %In fact, only around 10\% of connection sites exercised by the analyzed applications directly contribute to the user-observable application functionality.
 
-This paper makes a step towards performing such distinction automatically, looking at the impact of communication established by an application on its user-observable behavior. 
-We focus on user-centric mobile applications available in popular application stores, such as Google Play. 
-For these applications, preserving user-observable behavior can be seen as the main factor determining the necessity of information release. 
+This paper makes a step towards performing such distinction automatically, 
+by looking at the impact of communication established by an application on the application user-observable behavior. 
+We rely on the assumption that for most mobile applications available in popular application stores, such as Google Play, 
+preserving user-observable behavior can be seen as the main factor determining the necessity of information release. 
 
 Our in-depth investigation of ten top-popular Android applications from Google Play shows that non-essential communication which does not affect user-observable behavior is surprisingly common.
 In fact, we noticed that some applications spawn services that communicate with third-party servers even when the application itself is not active any longer and the user has no clues that it left some of its services running in the background. 
 Identifying such communication helps improving transparency; disabling it helps to eliminate potential privacy breaches, and to save, often expensive, communication bandwidth. 
-In our study, the only application out of ten that leaked the unique device id to the internet did that via such a hidden connection, while 
-%;
-%identifying and blocking 
-disabling the connection eliminated the information leakage without affecting the application behavior and other information exchange operations that the application performed.
+In our analysis, the only application out of ten that leaked the unique device id to the internet did that via such a hidden connection, while disabling the connection eliminated the information leakage without affecting the application behavior and other information exchange operations that the application performed.
 
 %Towards this end,  
 %%TWe empirically investigate the impact of connection denials on the overall behavior of ten top-popular Android applications from the Google Play store.
 %we devise a static application analysis technique for identifying statements that can be deemed \emph{non-essential}: their failure are silently ignored by the applications
 %without interfering the applications' behavior. 
 
+In this work, we aim at answering the following research question. 
 
 \vspace{0.1in}
 \noindent 
-{\bf Communication in Android Applications.}
-We conduct an empirical study to explore and quantify the amount of non-essential connections performed by Android applications, as well as to identify any patterns that can distinguish between essential and non-essential information release. 
+{\bf RQ1: Does non-essential communication occur in real-life applications?}
+To get an  estimate on the significance of the problem, we conduct an empirical study 
+that focuses on identifying and investigating the nature of non-essential communication in ten top-popular applications in Google Play. 
 We focus on the three most common connection types: HTTP, socket and RPC.
 The first two are used to communicate with various backend servers -- the application's own and third parties'; 
 the last one is used to communicate with other applications and services running on the same device.
@@ -67,26 +67,33 @@ We then install the modified application and run it using the previously recorde
 the execution of the modified application are compared to those of the original one. We consider executions as equivalent if they result in screenshots that differ only in the content of advertisement information, messages in social network applications such as twitter, and the devices status bar. 
 We also separately note connections that contribute to presenting the advertisement content, if the analyzed application has any. 
 
-Our analysis reveals that around 65\% of the connection statements exercised by the applications do not lead to any noticeable effect on the observable application functionality.
+Our study reveals that around 65\% of the connection statements exercised by the applications do not lead to any noticeable effect on the observable application functionality.
 Slightly more than 25\% of these correspond to HTTP and socket communication. The rest correspond to RPC calls to internal services installed on the device: notably, but not exclusively, Google advertising and analytics, which further communicate with external services. 
 Moreover, in applications that present advertisement material, about 60\% of the connections that do affect the observable application behavior are used for the advertising purposes only.
 
-We conclude that neither the type nor the target for communication are sufficient for distinguishing between essential and non-essential connections.
+\vspace{0.1in}
+\noindent 
+{\bf RQ2: Which syntactic properties are likely to indicate non-essential communication?}
+As one of the observations conclude that neither the type nor the target for communication are sufficient for distinguishing between essential and non-essential connections.
 % In a sense, our finding are consistent with~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where authors show that blocking messages to advertising and analytics services made a majority the applications either less functional or completely dysfunctional, so the connection target by itself is not a sufficient distinguishing factor. 
 A manual byte code inspection of the identified non-essential connections shows that failures are often either silently ignored by the application, e.g., with an empty exception \emph{catch} block, or written to a log file without being propagated to the user. 
 This behavior is indicative for the connections being \emph{non-essential} for the application behavior and, in some cases, even harmful. 
 %
 %We claim that these connections, hidden from the user, are indicative for potential unexpected operations performed by an application.
  
-
+%Targets are not indicative, AppFence case. We show that most malware writers basically
+%copy/paste code from fellow developer code and from
+%public tutorials/samples from the Web~\cite{Allix:Jerome:Bissyande:Klein:State:Traon:COMPSAC14}
 
 %We empirically analyze xx android applications from the list of yy most popular free applications on GooglePlay, focusing on the impact of successes / failures to establish connection on the overall behavior of the analyzed application. 
 %The analysis reveals that applications ``silently'' handle the majority of connection failures by discarding connection error without producing any visible effect on the user-observable application functionality.  In fact, only zz\% of the triggered connection sites propagate information about a failure (or, dually, a success) of that operation to the user.
 
 
+
+
 \vspace{0.1in}
 \noindent 
-{\bf Detecting Non-Essential Connections.}
+{\bf RQ3: How well can non-essential communication be determined statically?}
 Inspired by the findings, we devise a static application analysis technique for detecting cases when connection failures are
 ``silently''  ignored by the application, i.e., when information about a connection failure is not propagated back to the end user.
 Our technique searches for cases when exceptions resulting from connection attempts are caught by an application without giving any visual message to the user. 
@@ -94,17 +101,18 @@ Our technique searches for cases when exceptions resulting from connection attem
 
 We evaluate the technique on the ``truth set'' produced manually during the above empirical analysis and show that it is able to identify xx\% of the ``silent'' information releases (xxx cases for all analyzed applications), introducing only yy false-positive and zz false-negative results. 
 
-Applying the analysis on additional zz top-popular applications from Google Play reveals that ww\% of connection sites established by these applications can be deemed unnecessary.
-{\bf TBD}
-
-Our paper aims at answering the following research questions:
 
 \vspace{0.1in}
-{\bf RQ1:} What \% of connections is non essential?
+\noindent 
+{\bf RQ4: How often non-essential communication occur in real-life applications?}
 
-{\bf RQ2:} How many can be found?
+\noindent 
+{\bf RQ5: What are the most common destinations of non-essential communication?}
 
-{\bf RQ3:} What types of non-essential communication exists?
+
+
+Applying the analysis on additional zz top-popular applications from Google Play reveals that ww\% of connection sites established by these applications can be deemed unnecessary.
+{\bf TBD}
 
 
 \vspace{0.1in}
@@ -119,14 +127,7 @@ potential privacy violation in applications from popular application stores~\cit
 Indeed, we observed that newer versions of the analyzed applications in many cases no longer exhibit the previously identified privacy breaches.  
 This improvement trend reassures and further emphasizes the significance of this work as an additional step towards achieving better application quality and increasing trust between users and application developers. 
 
-{\bf Add research questions, gradual functionality disabling, waste of bandwidth argument, walmart example. 
-Targets are not indicative, AppFence case. We show that most malware writers basically
-copy/paste code from fellow developer code and from
-public tutorials/samples from the Web~\cite{Allix:Jerome:Bissyande:Klein:State:Traon:COMPSAC14}
-
-
-}
-
+Our ultimate goal is gradual functionality disabling
 
 
 %Furthermore, applying our classification and blocking technique to 12 app that were identified as leaking sensitive information in a previous study~\cite{Tripp:Rubin:SEC14} classified all information transfers as non-essential and produced a version of each application that is equivalent to the original one, but does not leak any sensitive information.
@@ -142,7 +143,7 @@ Highlighting non-essential information releases in existing mobile applications 
 %Put together, the two allow establishing practically useful, \emph{differential}  privacy: the applications can be restricted to using private information only ``when needed'', without leaking it to unauthorized parties.
 \item It proposes a dynamic approach for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
 The approach relies on interactive injection of connection failures and identification of cases in which the injected failures do not effect the observable application functionality. 
-\item It provides empirical evidence for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 90\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
+\item It provides empirical evidence for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 65\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
 \item It proposes a static technique that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The precision and recall of the technique is xx and yy, respectively, when evaluated against the empirically established truth set. 
 When applied on the 50 top-popular free applications on Google Play, the technique is able to identify xx\% of connections made by these applications as non-essential.
 \end{enumerate}
