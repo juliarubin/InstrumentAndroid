@@ -1,45 +1,3 @@
-@article{Fu2005,
-abstract = {This paper presents a new compile-time analysis that enables a testing methodology for white-box coverage testing of error recovery code (i.e., exception handlers) of server applications written in Java, using compiler-directed fault injection. The analysis allows compiler-generated instrumentation to guide the fault injection and to record the recovery code exercised. (An injected fault is experienced as a Java exception.) The analysis 1) identifies the exception-flow "def-uses" to be tested in this manner, 2) determines the kind of fault to be requested at a program point, and 3) finds appropriate locations for code instrumentation. The analysis incorporates refinements that establish sufficient context sensitivity to ensure relatively precise def-use links and to eliminate some spurious def-uses due to demonstrably infeasible control flow. A runtime test harness calculates test coverage of these links using an exception def-catch metric. Experiments with the methodology demonstrate the utility of the increased precision in obtaining good test coverage on a set of moderately sized server benchmarks.},
-author = {Fu, Chen and Milanova, Ana and Ryder, Barbara Gershon and Wonnacott, David G.},
-doi = {10.1109/TSE.2005.51},
-file = {:Users/mgordon/Google Drive/research/references/Fu et al/Robustness testing of Java server applications/Fu et al. - 2005 - Robustness testing of Java server applications.pdf:pdf},
-issn = {00985589},
-journal = {IEEE Transactions on Software Engineering},
-keywords = {Def-use testing,Exceptions,Java,Reliability,Test coverage metrics},
-pages = {292--311},
-title = {{Robustness testing of Java server applications}},
-volume = {31},
-year = {2005}
-}
-@inproceedings{Yi1999,
-abstract = {Current JDK Java compiler relies too much on programmer's specification for checking against uncaught exceptions of the input program. It is not elaborate enough to remove programmer's unnecessary handlers (when programmer's specifications are too many) nor suggest to programmers for specialized handlings (when programmer's specifications are too general). We propose a static analysis of Java programs that estimates their exception flows independently of the programmer's specifications. This analysis is an extension of a class analysis to Java's exception mechanism. Its cost-effectiveness balance is suggested by sparsely analyzing the program at method-level (hence reducing the number of unknowns in the flow equations).},
-author = {Yi, Kwangkeun and Chang, Byeong-Mo},
-booktitle = {Proc. ECOOP Workshop},
-file = {:Users/mgordon/Google Drive/research/references/Yi, Chang/Exception Analysis for Java/Yi, Chang - 1999 - Exception Analysis for Java.pdf:pdf},
-keywords = {N/A},
-pages = {111--112},
-title = {{Exception Analysis for Java}},
-year = {1999}
-}
-@inproceedings{Qiu2010,
-abstract = {Exception handling mechanism in modern programming languages is frequently used to build robust systems. However, it presents more daze for software developers because of exception propagation. Centering on the question: \&\#x201C;For raising exception, how to identify where handles the exception?\&\#x201D; we analyze the dependency between exception propagation and method call. Then associating the method with exception types by the relationship of throw (declared explicitly in method signature) or catch, this paper builds the Software Extended Dependency Graph and proposes a static exception propagation path extraction algorithm, so we can analyze exception propagation hops, the exception hierarchy and exception propagation boundary.},
-author = {Qiu, Xiang and Zhang, Li and Lian, Xiaoli},
-booktitle = {Proceedings of the 2010 IEEE International Conference on Progress in Informatics and Computing, PIC 2010},
-doi = {10.1109/PIC.2010.5688009},
-file = {:Users/mgordon/Google Drive/research/references/Qiu, Zhang, Lian/Static analysis for java exception propagation structure/Qiu, Zhang, Lian - 2010 - Static analysis for java exception propagation structure.pdf:pdf},
-isbn = {9781424467860},
-keywords = {Exception handling,Exception propagation,Paths extraction},
-pages = {1040--1046},
-title = {{Static analysis for java exception propagation structure}},
-volume = {2},
-year = {2010}
-}
-@inproceedings{Dean1995,
-author = {Dean, Jeffrey and Grove, David and Chambers, Craig},
-booktitle = {Proceedings of the 9th European Conference on Object-Oriented Programming (ECOOP 95)},
-title = {{Optimization of Object-Oriented Programs Using Static Class Hierarchy Analysis}},
-year = {1995}
-}
 @inproceedings{Byeong-MoChang2002,
 abstract = {We first present a static analysis based on a set-based framework, which estimates exception propagation paths of Java programs. We construct an exception propagation graph from the static analysis information, which includes the origin of exceptions, handler of exceptions, and propagation paths of exceptions. We have implemented the exception propagation analysis and a visualization tool which visualizes propagation paths of exceptions using the exception propagation graph. This propagation information can guide programmers to detect uncaught exceptions, handle exceptions more specifically, and put exception handlers at appropriate places by tracing exception propagation.},
 author = {{Byeong-Mo Chang} and {Jang-Wu Jo} and {Soon Hee Her}},
@@ -70,25 +28,24 @@ title = {{Interprocedural exception analysis for Java}},
 url = {http://dl.acm.org/citation.cfm?id=372202.372786},
 year = {2001}
 }
-@article{Sinha1998,
-abstract = {Analysis techniques, such as control flow, data flow, and control
-dependence, are used for a variety of maintenance tasks, including
-regression testing, dynamic execution profiling, and static and dynamic
-slicing. To be applicable to programs in languages, such as Java and C++
-however, these analysis techniques should, to the extent possible,
-account for the effects of exception occurrences and exception handling
-constructs. The paper presents techniques to construct intraprocedural
-and interprocedural representations on which existing techniques can be
-performed and demonstrates their applicability to several maintenance
-tasks},
-author = {Sinha, S. and Harrold, M.J.},
-doi = {10.1109/ICSM.1998.738526},
-file = {:Users/mgordon/Google Drive/research/references/Sinha, Harrold/Analysis of programs with exception-handling constructs/Sinha, Harrold - 1998 - Analysis of programs with exception-handling constructs.pdf:pdf},
-isbn = {0-8186-8779-7},
-issn = {1063-6773},
-journal = {Proceedings. International Conference on Software Maintenance (Cat. No. 98CB36272)},
-title = {{Analysis of programs with exception-handling constructs}},
-year = {1998}
+@inproceedings{Dean1995,
+author = {Dean, Jeffrey and Grove, David and Chambers, Craig},
+booktitle = {Proceedings of the 9th European Conference on Object-Oriented Programming (ECOOP 95)},
+title = {{Optimization of Object-Oriented Programs Using Static Class Hierarchy Analysis}},
+year = {1995}
+}
+@article{Fu2005,
+abstract = {This paper presents a new compile-time analysis that enables a testing methodology for white-box coverage testing of error recovery code (i.e., exception handlers) of server applications written in Java, using compiler-directed fault injection. The analysis allows compiler-generated instrumentation to guide the fault injection and to record the recovery code exercised. (An injected fault is experienced as a Java exception.) The analysis 1) identifies the exception-flow "def-uses" to be tested in this manner, 2) determines the kind of fault to be requested at a program point, and 3) finds appropriate locations for code instrumentation. The analysis incorporates refinements that establish sufficient context sensitivity to ensure relatively precise def-use links and to eliminate some spurious def-uses due to demonstrably infeasible control flow. A runtime test harness calculates test coverage of these links using an exception def-catch metric. Experiments with the methodology demonstrate the utility of the increased precision in obtaining good test coverage on a set of moderately sized server benchmarks.},
+author = {Fu, Chen and Milanova, Ana and Ryder, Barbara Gershon and Wonnacott, David G.},
+doi = {10.1109/TSE.2005.51},
+file = {:Users/mgordon/Google Drive/research/references/Fu et al/Robustness testing of Java server applications/Fu et al. - 2005 - Robustness testing of Java server applications.pdf:pdf},
+issn = {00985589},
+journal = {IEEE Transactions on Software Engineering},
+keywords = {Def-use testing,Exceptions,Java,Reliability,Test coverage metrics},
+pages = {292--311},
+title = {{Robustness testing of Java server applications}},
+volume = {31},
+year = {2005}
 }
 @inproceedings{Fu2007,
 abstract = {Although it is common in large Java programs to rethrow exceptions, existing exception-flow analyses find only single exception-flow links, thus are unable to identify multiple-link exception propagation paths. This paper presents a new static analysis that, when combined with previous exception-flow analyses, computes chains of semantically-related exception-flow links, and thus reports entire exception propagation paths, instead of just discrete segments of them. These chains can be used 1) to show the error handling architecture of a system, 2) to assess the vulnerability of a single component and the whole system, 3) to support better testing of error recovery code, and 4) to facilitate the tracing of the root cause of a logged problem. Empirical findings and a case history for Tomcat show that a significant portion of the chains found in our benchmarks span multiple components, and thus are hard to find manually.},
@@ -115,4 +72,54 @@ pages = {59--69},
 title = {{An uncaught exception analysis for Java}},
 volume = {72},
 year = {2004}
+}
+@inproceedings{Qiu2010,
+abstract = {Exception handling mechanism in modern programming languages is frequently used to build robust systems. However, it presents more daze for software developers because of exception propagation. Centering on the question: \&\#x201C;For raising exception, how to identify where handles the exception?\&\#x201D; we analyze the dependency between exception propagation and method call. Then associating the method with exception types by the relationship of throw (declared explicitly in method signature) or catch, this paper builds the Software Extended Dependency Graph and proposes a static exception propagation path extraction algorithm, so we can analyze exception propagation hops, the exception hierarchy and exception propagation boundary.},
+author = {Qiu, Xiang and Zhang, Li and Lian, Xiaoli},
+booktitle = {Proceedings of the 2010 IEEE International Conference on Progress in Informatics and Computing, PIC 2010},
+doi = {10.1109/PIC.2010.5688009},
+file = {:Users/mgordon/Google Drive/research/references/Qiu, Zhang, Lian/Static analysis for java exception propagation structure/Qiu, Zhang, Lian - 2010 - Static analysis for java exception propagation structure.pdf:pdf},
+isbn = {9781424467860},
+keywords = {Exception handling,Exception propagation,Paths extraction},
+pages = {1040--1046},
+title = {{Static analysis for java exception propagation structure}},
+volume = {2},
+year = {2010}
+}
+@article{Sinha1998,
+abstract = {Analysis techniques, such as control flow, data flow, and control
+dependence, are used for a variety of maintenance tasks, including
+regression testing, dynamic execution profiling, and static and dynamic
+slicing. To be applicable to programs in languages, such as Java and C++
+however, these analysis techniques should, to the extent possible,
+account for the effects of exception occurrences and exception handling
+constructs. The paper presents techniques to construct intraprocedural
+and interprocedural representations on which existing techniques can be
+performed and demonstrates their applicability to several maintenance
+tasks},
+author = {Sinha, S. and Harrold, M.J.},
+doi = {10.1109/ICSM.1998.738526},
+file = {:Users/mgordon/Google Drive/research/references/Sinha, Harrold/Analysis of programs with exception-handling constructs/Sinha, Harrold - 1998 - Analysis of programs with exception-handling constructs.pdf:pdf},
+isbn = {0-8186-8779-7},
+issn = {1063-6773},
+journal = {Proceedings. International Conference on Software Maintenance (Cat. No. 98CB36272)},
+title = {{Analysis of programs with exception-handling constructs}},
+year = {1998}
+}
+@inproceedings{Yi1999,
+abstract = {Current JDK Java compiler relies too much on programmer's specification for checking against uncaught exceptions of the input program. It is not elaborate enough to remove programmer's unnecessary handlers (when programmer's specifications are too many) nor suggest to programmers for specialized handlings (when programmer's specifications are too general). We propose a static analysis of Java programs that estimates their exception flows independently of the programmer's specifications. This analysis is an extension of a class analysis to Java's exception mechanism. Its cost-effectiveness balance is suggested by sparsely analyzing the program at method-level (hence reducing the number of unknowns in the flow equations).},
+author = {Yi, Kwangkeun and Chang, Byeong-Mo},
+booktitle = {Proc. ECOOP Workshop},
+file = {:Users/mgordon/Google Drive/research/references/Yi, Chang/Exception Analysis for Java/Yi, Chang - 1999 - Exception Analysis for Java.pdf:pdf},
+keywords = {N/A},
+pages = {111--112},
+title = {{Exception Analysis for Java}},
+year = {1999}
+}
+@book{Aho2006,
+author = {Aho, Alfred and Lam, Monica and Sethi, Ravi and Ullman, Jeffrey},
+edition = {2},
+publisher = {Addison Wesley},
+title = {{No TitleCompilers: Principles, Techniques, and Tools}},
+year = {2006}
 }
