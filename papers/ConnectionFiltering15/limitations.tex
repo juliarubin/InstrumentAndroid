@@ -1,4 +1,4 @@
-\section{Limitations and Threats to Validity}
+\section{Threats to Validity, Limitations and Future Work}
 \label{sec:limitations}
 In this section we discuss the limitations of our empirical study and our static technique for detecting non-essential connections.
 
@@ -6,16 +6,35 @@ In this section we discuss the limitations of our empirical study and our static
 \noindent 
 {\bf Empirical Study.}
 Our empirical study has a dynamic nature and thus suffers from the well-known limitations of dynamic analysis: it does not provide an exhaustive exploration of an application behavior, thus the findings apply only to the execution paths explored during the analysis. 
-Even though we made an effort to cover all application functionality visible to us, we probably missed some behaviors, e.g., those triggered under system setting different from ours. 
+Even though we made an effort to cover all application functionality visible to us, we probably missed some behaviors, e.g., those triggered under system settings different from ours. 
 We attempted to mitigate this problem by performing all our dynamic experiments on the same device, at the same location and temporally close to each other.  
 We also automated our execution scripts in order to compare behaviors of different application versions under the same scenario and settings. 
 We only report on the results comparing these similar runs.  
 
-During our analysis, we disabled connections individually, one by one. We thus could not determine cases then 
+During our analysis, we disabled connections individually, one by one, iterating over the list of connections arranged in an lexicographic (i.e., semantically random) order. We thus could miss some cases when 
+several connections can be excluded altogether, but not individually. 
+Exploring all connection state combinations is exponential. 
+We thus have chosen a conservative linear approach which is less expensive while still guarantees correct, 
+albeit possibly over-approximate results. 
 
-uted passes. This is how we compared. 
-Several operations in the same connection statement.
-Cannot handle cases when two blocked points depend on each other.
+By focusing on individual connection statements, we cannot distinguish between multiple application behaviors
+that communicate via the same statement in code. We thus conservatively deem a connection as essential if it is essential for at least one of such behaviors. Exploring more sophisticated techniques for distinguishing between such different behaviors could be a subject of a possible future work.
+ 
+Finally, our study only includes a limited number of subjects, so the results might not generalize to other applications.
+We tried to mitigate this problem by not biasing our application selection but rather selecting top-popular applications from the Google Play store, and by ensuring that we observe similar communication patterns in all analyzed applications.
 
-Limited number of subjects.
+\vspace{0.1in}
+\noindent 
+{\bf A Static Technique For Detecting Non-Essential Connections.}
+Our technique deems \emph{optional} behaviors -- those when failing connections are ignored by the application, but successful connections result in presenting additional information to the user -- as non essential. 
+As an application can proceed when optional behaviors are excluded, it is debatable whether they are really essential for the application functionality or not. In fact, we believe that it is up to the users to decide whether an optional behavior is indeed essential for their needs. Towards this end, we plan to investigate approaches for differentiating between optional and ``truly non-essential'' behaviors as part of a future work. 
 
+Our technique also deems \emph{statefull} communication that toggles the state of connection target but does not perform any operations in fault-processing code as non-essential. In many cases, detecting such communication statically is impossible because the code executed on the target is unknown and unavailable. 
+More sophisticated techniques could detect such communication when it is performed via RPC and its target is withing the same application. As such cases are rare, developing these approaches, orthogonal to our current analysis, is also left to future work. 
+ 
+Some of the non-essential connections that we identified statically might never be triggered dynamically. In fact, our empirical study shows that only less than 5\% of the connection statements in the analyzed applications were indeed triggered.
+Some of such connections belong to execution paths that were not explored during our dynamic application traversal.
+Yet, a large percentage of these connections originate in  
+third-party libraries that are included in the application but only partially used. 
+Analyzing them is still beneficial as this code might be used in other applications.
+Nevertheless, our approach could be combined with techniques for detecting dead code, to provide better results.
