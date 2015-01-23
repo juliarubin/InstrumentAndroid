@@ -183,13 +183,19 @@ the possible dynamic calling relationship between methods of the
 application.  Each node represents a method, and each edge, $(f,g)$
 indicates that $f$ may call $g$ at run time.  
 
-Something~\cite{Fu2007}.
 
+
+\subsection{Failure Handler Static Analysis}
+* def / use chains
 * unchecked exceptions
 
 \subsection{Reconstructing {\ttfamily{catch}} Blocks}
 
+%resize line numbers
+\algrenewcommand\alglinenumber[1]{\scriptsize #1:}
+
 \begin{algorithm}
+\scriptsize
 \caption{Find \lstinline!catch! blocks for exception thrown at statement.}\label{alg:findcatches}
 \begin{algorithmic}[1]
 \algblockdefx[HEADER]{inputdef}{outputdef}[1]%
@@ -209,9 +215,10 @@ Something~\cite{Fu2007}.
 \State essential $\gets$ essential $\cup$ (stmt, ex)
 \State \textbf{return}
 \EndIf
-\For { (predStmt, predMeth) $\in$ \textsc{GetPreds}(cg, meth)}
 
-\If {stack $\neq \emptyset$ \textbf{and} (predStmt, predMeth) $\neq$ \textsc{Peek}(stack)}
+\For { (predStmt, predMeth) $\in$ \textsc{GetPreds}(cg, meth)}
+\If {stack $\neq \emptyset$ \textbf{and} (predStmt, predMeth) $\neq$ \textsc{Peek}(stack)} 
+\label{alg:stack-check-line}
 \State \textbf{continue}
 \EndIf 
 
@@ -220,11 +227,14 @@ Something~\cite{Fu2007}.
 
 \State \textsc{FindCatches}(predMeth, predStmt, ex, 
 \State         \hspace{2cm}visiting, newStack, cg)
+
 \If {(predStmt, ex) $\in$ essential}
 \State essential $\gets$ essential $\cup$ (stmt, ex)
 \State \textbf{return}
 \EndIf
+
 \EndFor
+
 \Else 
 \State catchStmts $\gets$ \textsc{GetCatchStmts}(catchBlockStart)
 \State \textsc{AnalyzeHandling}(meth, stmt, catchStmts,
@@ -236,6 +246,7 @@ Something~\cite{Fu2007}.
 \end{algorithm}
 
 \begin{algorithm}
+\scriptsize
 \caption{Analyze reachable statements during handling for UI
   interaction or rethrown exceptions.}\label{alg:analyzehandler}
 \begin{algorithmic}[1]
@@ -251,21 +262,86 @@ Something~\cite{Fu2007}.
 \For {each stmt $\in$ stmts}
 \If {\textsc{HasInvoke}(stmt)}
 \For {(succStmt, succMeth) $\in$ \textsc{GetSuccs}(cg, stmt)}
+
 \If {\textsc{IsUIMethod}(succMeth)}
 \State essential $\gets$ essential $\cup$ exceptStmt
 \State \textbf{return}
-\Else 
+
+\ElsIf {\textsc{IsNativeMethod}(succMeth)}
+\label{alg:native-method-line}
+\For {nativeEx $\in$ \textsc{GetThrowsException}(succMethd)}
+\State \textsc{FindCatches}(meth, stmt, nativeEx, visiting, stack, cg)
+\EndFor
+
+\Else
+\label{alg:normal-method-call-line}
 \State newStack $\gets$ stack
 \State \textsc{Push}(newStack, (succStmt, succMeth))
+\State succStmts $\gets$ \textsc{GetBodyStmts}(succMeth)
+\State \textsc{AnalyzeHandler}(succMeth, exceptStmt, succStmts,
+\State \hspace{2cm}visiting, handledStmts, newStack, cg)
 \EndIf 
 
 \EndFor
+
 \ElsIf {\textsc{IsThrowStmt}(stmt)}
-\State s
+\State rethrownTypes = $\emptyset$
+
+\For {defStmt $\in$ \textsc{GetLocalDefs}(\textsc{GetOp}(stmt))}
+
+\If {\textsc{IsAlloc}(defStmt)}
+\State rethrownTypes $\gets$ rethrownTypes $\cup$ 
+\State \hspace{2.5cm} \textsc{GetAllocType}(defStmt)
+\ElsIf {\textsc{IsCaughtExceptionStmt}(defStmt)}
+\label{alg:rethrown-caught-exception}
+\State rethrownTypes $\gets$ rethrownTypes $\cup$ 
+\State \hspace{0.5cm} \textsc{GetPossibleThrownTypes}(meth, defStmt)
+\Else
+\label{alg:unknown-last-def-throw}
+\State essential $\gets$ essential $\cup$ exceptStmt
+\State \textbf{return}
 \EndIf
+
+\EndFor
+
+\For {rethrownType $\in$ rethrownTypes}
+\label{alg:findcatches-rethrown-line}
+\State \textsc{FindCatches}(meth, stmt, rethrownType, visiting, stack,
+cg)
+
+\If {stmt $\in$ essential}
+\State essential $\gets$ essential $\cup$ exceptStmt
+\State \textbf{return}
+\EndIf
+
+\EndFor
+
+\EndIf
+
 \EndFor
 
 \EndProcedure
 \end{algorithmic}
 \end{algorithm}
 
+\textsc{FindCatches} \ref{alg:stack-check-line}.  Searches all possible stacks
+if the stack is null, otherwise, we are in the middle of a forward
+search, so we can prune the stack unwinding with the forward path we
+took in ...
+
+
+\ref{alg:native-method-line}
+
+\ref{alg:normal-method-call-line}
+
+\ref{alg:rethrown-caught-exception}
+
+\ref{alg:unknown-last-def-throw}
+
+\ref{alg:findcatches-rethrown-line}
+
+\textsc{FindCompatCatch}
+\textsc{IsEventHandler}
+\textsc{GetPreds}
+\textsc{GetCatchStmt}
+\textsc{GetPossibleThrownTypes} finds try block ...
