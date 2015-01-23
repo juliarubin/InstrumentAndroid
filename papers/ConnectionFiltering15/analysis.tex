@@ -26,7 +26,92 @@
 %}%resizebox
 \end{table}
 
+In this section we describe the static analysis algorithm we employ to
+automatically classify connections.  Given an Android application, the
+static analysis classifies each statement that may invoke a
+connection call as either {\it essential} or {\it non-essential}.
+Intuitively, we define an essential connection statement, $s$, as
+meeting either of the following criteria:
+
+\begin{enumerate}
+\item{\bf User-Interface Cue}: When $s$ triggers an error, the user
+may be notified of the error via a user interface cue during error
+handling.
+\item {\bf Program Exit}: When $s$ triggers an error, the program 
+   may stop executing.  
+\end{enumerate}
+
+\noindent Conversely, a non-essential connection call does not meet
+either of the two criteria.  
+
+Android applications are developed in Java, and program execution
+follows the semantics of Java. In an Android application, each
+connection call may generate an exception that reaches a subset of the
+program's \lstinline!catch! blocks.  
+
+The static analysis considers each connection call and analyzes the
+exception handling path f
+
+
+
+
+\subsection{Static Analysis of Android Applications}
+
+Android applications are developed in Java and compiled to Dalvik byte
+code.  Android applications are distributed as packages that do not
+include the Java source; packages include only the Dalvik byte code
+and application resources such as images, sounds, and GUI
+declarations.  Static analysis of Android applications is notoriously
+difficult because of issues including~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}: 
+
+\begin{itemize}
+
+\item Android applications execute in the context of the Android API
+  and runtime.  The application thus represents an incomplete program.
+  
+\item The Android API and runtime comprises multiple millions of lines of
+  code implemented in multiple programming languages.  Furthermore,
+  much of the implementation is left for device manufactures to
+  implement, and is thus proprietary and closed-source. 
+
+\item Applications are event-driven and dynamic by nature.
+  Applications define event handlers for possible runtime events that
+  are triggered in the Android runtime, and passed to the application
+  for handling. 
+
+\item Applications interact heavily with the Android API.  The Android
+  API includes most of the Java standard library, plus additional
+  utility and resource access classes.
+
+\item Android application packages typically ship with third-party
+  libraries for performing operations such as advertising, analytics,
+  and interaction with remote services.  These libraries are commonly
+  large, obfuscated, and include heavy use of reflection.
+
+\end{itemize}
+
+It is not feasible for a static analysis to include analysis of the
+source code of the Android runtime and API because of the size and
+multi-language nature of this code base.  Thus static analysis must
+either model the Android application execution environment, or account
+for possible dynamic program behaviors with conservative analysis
+choices.  We choose the later strategy in our analysis to account f
+
+\subsection{Call Graph Construction}
+
+Our algorithm computes a static call graph as the program
+representation of the Android application.  A call graph represents
+the possible dynamic calling relationship between methods of the
+application.  Each node represents a method, and each edge, $(f,g)$
+indicates that $f$ may call $g$ at run time.  
+
 Something~\cite{Fu2007}.
+
+* unchecked exceptions
+
+
+
+
 
 \begin{algorithmic}[1]
 \If {$i\geq maxval$}
@@ -37,3 +122,4 @@ Something~\cite{Fu2007}.
     \EndIf
 \EndIf
 \end{algorithmic}
+

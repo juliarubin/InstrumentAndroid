@@ -12,6 +12,7 @@
 \usepackage{boxedminipage}
 %\usepackage{algorithmic}
 \usepackage{algpseudocode} 
+\usepackage{listings}
 \usepackage{algorithm}
 \usepackage{times}
 \usepackage{url}
@@ -29,6 +30,12 @@
 \usepackage{relsize}
 \usepackage{array}
 %\usepackage[ulem=normalem]{changes}
+
+\definecolor{DarkGreen}{RGB}{3, 128, 0}
+\definecolor{DarkPurple}{RGB}{108,77,145}
+
+
+\lstset{language=Java,basicstyle=\ttfamily\small,breaklines=true,keywordstyle=\color{DarkPurple}\bfseries}
 
 \newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
