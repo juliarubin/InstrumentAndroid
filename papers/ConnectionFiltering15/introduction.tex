@@ -30,46 +30,59 @@ research questions drive this investigation:
 
 \vspace{0.1in}
 \noindent 
-{\bf RQ1: How frequently does non-essential communication
-  occur in widely used mobile applications?}
-To estimate the significance of the problem, we conduct an empirical study 
-that focuses on identifying and investigating the nature of non-essential communication in ten top-popular applications in Google Play. 
-We focus on the three most common connection types: HTTP, socket and RPC.
-The former two are used to communicate with various backend servers -- the application's own and third parties'; 
-the latter one is used to communicate with other applications and services running on the same device.
+{\bf RQ1: How frequently does non-essential communication occur in
+  widely used mobile applications?}  To estimate the significance of
+the problem, we conduct an empirical study that focuses on identifying
+and investigating the nature of non-essential communication in ten
+top-popular applications in Google Play.  We focus on the three most
+common connection types: HTTP, socket and RPC.  The former two are
+used to communicate with various backend servers -- the application's
+own and third parties'; the latter one is used to communicate with
+other applications and services running on the same device.
 
-Our study is dynamic in nature and is performed in three phases. 
-In the first phase, we establish a baseline application behavior. 
-Similarly to the approach in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, we record a script triggering the application functionality via a series of interactions with the application's user interface. 
-After each interaction, we capture a screenshot of the device to record the application state. 
+\noindent{\bf Baseline Behavior:} We first establish baseline
+application behavior.  Similarly to the approach
+in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, we record a
+script triggering the application functionality via a series of
+interactions with the application's user interface.  After each
+interaction, we capture a screenshot of the device to record the
+application state.
 
-In the second phase, we instrument the application to log information about 
-triggered connection statements. The instrumented apk is then installed and executed on a mobile device using the recorded script. 
+\noindent{\bf Instrumentation:} We next instrument the application to log information
+about triggered connection statements. The instrumented apk is then
+installed and executed on a mobile device using the recorded script.
 
-In the third phase, we investigate the impact of each triggered connection on the overall behavior of the application.
-Specifically, we iterate over all triggered connections, producing a new version of the application with each corresponding connection being disabled. Connection disabling is achieved by replacing the connection statement with a
-statement that indicates connection failure, e.g., that throws an exception that occurs when the connection fails due to the device being put in airplane mode. 
-We then install the modified application and run it using the previously recorded script. The screenshots documenting 
-the execution of the modified application are compared to those of the original one. We consider executions as equivalent if they result in screenshots that differ only in the content of advertisement information, messages in social network applications such as twitter, and the device's status bar. 
-We also separately note connections that contribute to presenting advertisement content, if the analyzed application has any. 
+\noindent{\bf Disable Connections:} We disable each triggered connection
+in turn by replacing the statement that establishes the connections 
+with a statement that throws an exception that indicates that the
+connection failed because the device was in airplane mode. 
 
-Our study reveals that around 65\% of the connection statements exercised by the applications do not lead to any noticeable effect on the observable application functionality.
-Slightly more than 25\% of these correspond to HTTP and socket communication. The rest correspond to RPC calls to internal services installed on the device: notably, but not exclusively, Google advertising and analytics, which further communicate with external services. 
-Moreover, in applications that present advertisement material, about 60\% of the connections that do affect the observable application behavior are used for advertising purposes only.
+\noindent{\bf Run Modified Application:} We install the modified
+application and run it using the previously recorded script. The
+screenshots documenting the execution of the modified application are
+compared to those of the original one. We consider executions as
+equivalent if they result in screenshots that differ only in the
+content of advertisement information, messages in social network
+applications such as twitter, and the device's status bar.  We also
+separately note connections that contribute to presenting
+advertisement content, if the analyzed application has any.
+
+\noindent{\bf Result Summary:} Our study reveals that around 65\% of
+the exercised connection statements are not essential --- disabling
+them has no noticeable effect on the observable application
+functionality.  Slightly more than 25\% of these correspond to HTTP
+and socket communication. The rest correspond to RPC calls to internal
+services installed on the device: notably, but not exclusively, Google
+advertising and analytics, which further communicate with external
+services.  Moreover, in applications that present advertisement
+material, about 60\% of the connections that do affect the observable
+application behavior are used for advertising purposes only.
 
 \vspace{0.1in}
 \noindent 
 {\bf RQ2: Can non-essential communication be detected statically?}
-While the technique that we used during the empirical study allowed us to gain deeper insights onto the nature of communication that applications perform, it clearly cannot scale up to thousands of applications available on the market today.
-We thus investigate the possibility to perform such analysis automatically, in a static manner. 
- 
-One of the conclusions from our study is that neither the type nor the target of communication are sufficient for distinguishing between essential and non-essential connections.
-% In a sense, our finding are consistent with~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where authors show that blocking messages to advertising and analytics services made a majority the applications either less functional or completely dysfunctional, so the connection target by itself is not a sufficient distinguishing factor. 
-A manual byte code inspection of the identified non-essential connections shows that failures are often either silently ignored by the application, e.g., with an empty exception \lstinline!catch! block, or written to a log file without being propagated to the user. 
-This behavior is indicative for the connections being \emph{non-essential} for the application behavior and, in some cases, even harmful. 
-
-Inspired by the findings, we devise a static application analysis
-technique for detecting connection failures that are ``silently''
+Inspired by our findings, we develop a novel tatic application
+analysis that can detect connection failures that are ``silently''
 ignored by the application, i.e., when information about a connection
 failure is not propagated back to the end user.  The static analysis
 classifies each connection call by inspecting the execution of the
@@ -77,16 +90,12 @@ application during {\it failure handling} of the connection call.
 Failure handling begins when the exception is propagated to the
 connection call and ends when the execution exits the exception
 handler of the exception or the handlers of all rethrown exceptions
-that are raised during handling.  
-%Intuitively, the failure handling
-%execution corresponds to how an application responds a failure at a
-%connection.  
-If a failure handling execution of a connection call
-could affect the user interface through a call to a predefined set of
-API calls, then we classify the connection call to be essential.
-Also, if there is a failure handing path that could exit the program,
-because a thrown exception propagates back into the Android
-runtime, the analysis classifies the connection call as essential.
+that are raised during handling.  could affect the user interface
+through a call to a predefined set of API calls, then we classify the
+connection call to be {\em essential}.  Also, if there is a failure handing
+path that could exit the program, because a thrown exception
+propagates back into the Android runtime, the analysis classifies the
+connection call as essential.
 
 Our static analysis is designed to scale to large Android applications
 and to conservatively approximate the behavior of dynamic constructs
@@ -156,7 +165,7 @@ This improvement trend reassures and further emphasizes the significance of this
 The paper makes the following contributions:
 
 \noindent 1.
-It set s\emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. 
+It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. 
 %This problem is orthogonal and complementary to that of identifying sensitive information flow, which was the focus of numerous earlier works. 
 Highlighting non-essential information releases in existing mobile applications is expected to improve transparency and contribute to the overall quality of the field. 
 %Put together, the two allow establishing practically useful, \emph{differential}  privacy: the applications can be restricted to using private information only ``when needed'', without leaking it to unauthorized parties.
