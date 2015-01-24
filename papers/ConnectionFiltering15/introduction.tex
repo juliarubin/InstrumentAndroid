@@ -148,31 +148,25 @@ provides encouraging evidence that such an improvement is feasible.
 {\bf Contributions.}
 The paper makes the following contributions:
 
-1.
-It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. The goal is to improve the
+\begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.01in}
+
+\item It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. The goal is to improve the
 transparency and trustworthiness of mobile applications.
 
-\vspace{0.05in}
-2.
-It proposes \emph{a semi-automated dynamic approach} for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
+\item It proposes \emph{a semi-automated dynamic approach} for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
 The approach relies on interactive injection of connection failures and identification of cases in which the injected failures do not affect the observable application functionality. 
 
-\vspace{0.05in}
-3.
-It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 65\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
+\item It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 65\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
 
-\vspace{0.05in}
-4.
-It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The precision and recall of the technique is 83\% and 63\%, respectively, when evaluated against the empirically established truth set. 
+\item It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The precision and recall of the technique is 83\% and 63\%, respectively, when evaluated against the empirically established truth set. 
 The precision and recall increases to 90\% and 64\%, receptively, when considering the advertisement content as non-essential.
 
-\vspace{0.05in}
-5.
-It provides \emph{quantitative evidence} for the prevalence of non-essential connections in the 500 top-popular free applications on Google Play, showing that 84\% of connections encoded in these applications can be deemed as non-essential.
+\item It provides \emph{quantitative evidence} for the prevalence of non-essential connections in the 500 top-popular free applications on Google Play, showing that 84\% of connections encoded in these applications can be deemed as non-essential.
 
-\vspace{0.05in}
-The remainder of the paper is structured as follows. Section~\ref{sec:study} describes the empirical study we conducted for gaining insight into the nature of information releases in mobile applications. Section~\ref{sec:analysis} presents the static analysis technique designed for identifying non-essential information releases. 
-Section~\ref{sec:evaluation} discusses results of its evaluation on real-live examples. Section~\ref{sec:limitations} discusses the limitations and threats to validity of our work. Section~\ref{sec:related} presents the related work, while Section~\ref{sec:conclusions} concludes. 
+\end{enumerate}
+
+%% The remainder of the paper is structured as follows. Section~\ref{sec:study} describes the empirical study we conducted for gaining insight into the nature of information releases in mobile applications. Section~\ref{sec:analysis} presents the static analysis technique designed for identifying non-essential information releases. 
+%% Section~\ref{sec:evaluation} discusses results of its evaluation on real-live examples. Section~\ref{sec:limitations} discusses the limitations and threats to validity of our work. Section~\ref{sec:related} presents the related work, while Section~\ref{sec:conclusions} concludes. 
 
 
 
