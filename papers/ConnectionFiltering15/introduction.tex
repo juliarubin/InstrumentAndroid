@@ -5,7 +5,7 @@ Mobile applications enjoy almost permanent connectivity and the
 ability to exchange information with their own back-end, third-party
 servers and other applications installed on the same device.  This
 paper shows that much of this communication delivers no value to the
-user of the application --- disabling such communication leaves the
+user of the application~-- disabling such communication leaves the
 delivered application experience completely intact.  But this
 communication comes with costs such as bandwidth charges, power
 consumption on the device, potential privacy and analytic data
@@ -40,7 +40,8 @@ used to communicate with various backend servers -- the application's
 own and third parties'; the latter one is used to communicate with
 other applications and services running on the same device.
 
-\noindent{\bf Baseline Behavior:} We first establish baseline
+\vspace{0.05in}
+\noindent\emph{Baseline Behavior:} We first establish baseline
 application behavior.  Similarly to the approach
 in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, we record a
 script triggering the application functionality via a series of
@@ -48,16 +49,19 @@ interactions with the application's user interface.  After each
 interaction, we capture a screenshot of the device to record the
 application state.
 
-\noindent{\bf Instrumentation:} We next instrument the application to log information
+\vspace{0.05in}
+\noindent\emph{Instrumentation:} We next instrument the application to log information
 about triggered connection statements. The instrumented apk is then
 installed and executed on a mobile device using the recorded script.
 
-\noindent{\bf Disable Connections:} We disable each triggered connection
+\vspace{0.05in}
+\noindent\emph{Disable Connections:} We disable each triggered connection
 in turn by replacing the statement that establishes the connections 
 with a statement that throws an exception that indicates that the
 connection failed because the device was in airplane mode. 
 
-\noindent{\bf Run Modified Application:} We install the modified
+\vspace{0.05in}
+\noindent\emph{Run Modified Application:} We install the modified
 application and run it using the previously recorded script. The
 screenshots documenting the execution of the modified application are
 compared to those of the original one. We consider executions as
@@ -67,7 +71,8 @@ applications such as twitter, and the device's status bar.  We also
 separately note connections that contribute to presenting
 advertisement content, if the analyzed application has any.
 
-\noindent{\bf Result Summary:} Our study reveals that around 65\% of
+\vspace{0.05in}
+\noindent\emph{Result Summary:} Our study reveals that around 65\% of
 the exercised connection statements are not essential --- disabling
 them has no noticeable effect on the observable application
 functionality.  Slightly more than 25\% of these correspond to HTTP
@@ -143,24 +148,29 @@ provides encouraging evidence that such an improvement is feasible.
 {\bf Contributions.}
 The paper makes the following contributions:
 
-\noindent 1.
+1.
 It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. The goal is to improve the
 transparency and trustworthyness of mobile applications.
 
-\noindent 2.
+\vspace{0.05in}
+2.
 It proposes \emph{a semi-automated dynamic approach} for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
 The approach relies on interactive injection of connection failures and identification of cases in which the injected failures do not affect the observable application functionality. 
 
-\noindent 3.
+\vspace{0.05in}
+3.
 It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 65\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
 
-\noindent 4.
+\vspace{0.05in}
+4.
 It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The precision and recall of the technique is 83\% and 63\%, respectively, when evaluated against the empirically established truth set. 
 The precision and recall increases to 90\% and 64\%, receptively, when considering the advertisement content as non-essential.
 
-\noindent 5.
+\vspace{0.05in}
+5.
 It provides \emph{quantitative evidence} for the prevalence of non-essential connections in the 500 top-popular free applications on Google Play, showing that 84\% of connections encoded in these applications can be deemed as non-essential.
 
+\vspace{0.05in}
 The remainder of the paper is structured as follows. Section~\ref{sec:study} describes the empirical study we conducted for gaining insight into the nature of information releases in mobile applications. Section~\ref{sec:analysis} presents the static analysis technique designed for identifying non-essential information releases. 
 Section~\ref{sec:evaluation} discusses results of its evaluation on real-live examples. Section~\ref{sec:limitations} discusses the limitations and threats to validity of our work. Section~\ref{sec:related} presents the related work, while Section~\ref{sec:conclusions} concludes. 
 

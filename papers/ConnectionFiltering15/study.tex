@@ -84,7 +84,7 @@ This approach was chosen as it leverages the applications' native mechanism for 
 As input to our study, we assume an Android application given as an apk file. 
 We use the dex2jar tool suite~\cite{dex2jar} to extract the jar file from the apk.
 We then use the asm framework~\cite{asm} to implement two types of transformations: 
-\begin{enumerate}
+\begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
 \item \emph{A monitoring transformation} which produces a version of the original application that logs all executions of the connection statements in Table~\ref{tbl:connections}. 
 \item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions of the corresponding type, as specified in Table~\ref{tbl:connections}.
 \end{enumerate}
