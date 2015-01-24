@@ -64,9 +64,9 @@ three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\te
   
 As can be seen in the second and the third columns of Table~\ref{tbl:eval}, the overall averaged precision of our analysis is 83.3\%. 
 The analysis correctly identified 64 non-essential connections out of the total 82 reported. 
-18 connections were miss-classified, out of which 16 correspond to \emph{optional} application behaviors, i.e.,
+18 connections were mis-classified, out of which 16 correspond to \emph{optional} application behaviors, i.e.,
 when connection failures are indeed ignored and the applications proceed without the missing information. The 
-remaining two cases correspond to a \emph{statefull} communication within the application. 
+remaining two cases correspond to a \emph{stateful} communication within the application. 
 The details of each of these cases are given below: 
 
 \begin{itemize}\setlength{\itemsep}{-0.05in}
@@ -75,7 +75,7 @@ The details of each of these cases are given below:
 5 in \emph{com.crimsonpine.stayinline} and \emph{com.grillgames.guitarrockhero} each.
 \item 3 connections correspond to 
 \emph{optional} application behaviors: 2 in the \emph{com.walmart.android} application, responsible for providing location-aware search, and 1 in the \emph{com.spotify.music} application, responsible for enhancing the presented album with images.
-\item 2 connections, both in \emph{com.spotify.music}, correspond to \emph{statefull} communication within the application. 
+\item 2 connections, both in \emph{com.spotify.music}, correspond to \emph{stateful} communication within the application. 
 Blocking each of these connections, individually, harms the application's search capabilities.
 \end{itemize}
 
@@ -179,11 +179,12 @@ Avg. per app        &   566.3           &  672.4         \\ %   2min 52s
 
 \subsection{Non-Essential Communication In the Wild}
 As we established that our technique provides highly precise results for identifying non-essential connections,
-we apply it on 500 top-popular Android application downloaded from the Google Play store in January 2015. 
+we apply it the 500 most popular Android application from the Google Play store in January 2015. 
 Our goal is to investigate how often non-essential communication occurs in real-life applications and what are its most common destinations. 
 
 In Table~\ref{tbl:googlePlayApps}, we report on the number of non-essential connections found in these applications in total and for an application on average. 
-These results confirm the observation of our empirical study, showing that a large percent of connections made by applications can be considered non-essential. 
+These results confirm the observation of our empirical study, showing
+that a large percent of connections encoded in an applications can be considered non-essential. 
 In fact, even with our conservative analysis, 84\% of connections fall into that category. 
 
 Table~\ref{tbl:callers} presents the top 10 packages in which non-essential connections occur.
