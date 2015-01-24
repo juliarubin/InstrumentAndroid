@@ -62,6 +62,23 @@ multithreaded GUI applications. They instantiate it for four popular Java GUI fr
 
 \vspace{0.1in}
 \noindent 
-{\bf Exception Analysis for Java.}
-We consider inter-procedurally reachable statements as part of the
-handler...we find exceptions that could force application exit.
+{\bf Exception Analysis for Java.}  A rich body of static analysis
+techniques has been developed to analyze and account for exceptional
+control and data
+flow~\cite{Byeong-MoChang2002,Chang2001,Fu2005,Fu2007,Jo2004,Qiu2010,Kastrinis2013}.
+Most of these techniques define a variant of a reverse data-flow
+analysis and use some program heap abstraction (e.g., points-to
+analysis or class hierarchy analysis) to resolve references to
+exception objects and to construct a call graph. Our technique follows
+a similar strategy, using class hierarchy analysis with
+intra-procedural analysis refinement.  Though some of the prior
+analysis techniques will provide higher precision than our technique
+(namely~\cite{Fu2005,Fu2007,Qiu2010}), we designed our technique to
+conservatively, though aggressively, consider difficult to analyze
+Android application development idioms such as reflection, RPC, native
+methods, and missing program semantics of the Android API defined in
+non-Java languages.  We initially experimented with high-precision
+abstraction techniques such a deep object-sensitive points-to
+analysis~\cite{Smaragdakis2011}; however, the abstraction choices
+either did not scale or the precision and recall of the full analysis
+was unacceptable.
