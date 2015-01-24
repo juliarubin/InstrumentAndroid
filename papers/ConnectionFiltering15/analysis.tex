@@ -10,7 +10,7 @@ connection call as either {\it essential} or {\it non-essential}.
 Intuitively, we define an essential connection statement, $s$, as
 meeting either of the following criteria:
 \vspace{-0.05in}
-\begin{enumerate}\setlength{\itemsep}{-0.05in}
+\begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
 \item{\bf User-Interface Cue}: When $s$ triggers an error, the user
 may be notified of the error via a user interface cue during error
 handling.
@@ -233,7 +233,7 @@ then we limit the edges to only targets that have the same number and
 types of arguments.  This strategy works well for us in
 practice and aggressively accounts for reflection semantics.
 
-\vspace{-0.05in}
+%\vspace{-0.05in}
 \subsection{Failure Handler Analysis}
 We organize the static failure-handling analysis as a recursive
 traversal on the call graph for ease of understanding.  An iterator
@@ -433,32 +433,7 @@ considered non-essential.
 
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
 
-\begin{table}[t]
-\vspace{-0.05in}
-\small
-\renewcommand*{\arraystretch}{1.3}
-\caption{Considered UI Elements.}
-\label{tbl:ui}
-\centering
-\tabcolsep=1.5pt
-%\resizebox{\columnwidth}{!}{%
-\begin{tabular}{|l|P{3.7cm}|P{4cm}|}
-\hline
-& \textbf{Class or Interface} & \textbf{Methods} \\
-\hline
-1. & +android.app.Dialog+                                 & +setContentView+ \\
-2. & +android.support.v7.app.ActionBarActivityDelegate+  & +setContentView+ \\
-3. & +android.view.View+                                  & +onLayout+, +layout+, +onDraw+, +onAttachedToWindow+ \\
-4. & +android.view.ViewGroup+                             & +addView+, +addFocusables+, +addTouchables+, +addChildrenForAccessibility+ \\
-5. & +android.view.ViewManager+                           & +addView+, +updateViewLayout+ \\
-6. & +android.view.WindowManagerImpl.CompatModeWrapper+  & +addView+ \\
-7. & +android.webkit.WebView+                             & +loadData+, +loadDataWithBaseURL+, +loadUrl+ \\
-8. & +android.widget.TextView+       & +append+, +setText+ \\
-9. & +android.widget.Toast+        & +makeText+ \\
-\hline
-\end{tabular}
-%}%resizebox
-\end{table}
+
 
 \lstDeleteShortInline+
 
@@ -567,6 +542,32 @@ line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
   \vspace{-0.1in}
 \end{figure}
 
+\begin{table}[t]
+\small
+\renewcommand*{\arraystretch}{1.3}
+\caption{Considered UI Elements.}
+\label{tbl:ui}
+\centering
+\tabcolsep=1.5pt
+%\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|l|P{3.7cm}|P{4cm}|}
+\hline
+& \textbf{Class or Interface} & \textbf{Methods} \\
+\hline
+1. & +android.app.Dialog+                                 & +setContentView+ \\
+2. & +android.support.v7.app.ActionBarActivityDelegate+  & +setContentView+ \\
+3. & +android.view.View+                                  & +onLayout+, +layout+, +onDraw+, +onAttachedToWindow+ \\
+4. & +android.view.ViewGroup+                             & +addView+, +addFocusables+, +addTouchables+, +addChildrenForAccessibility+ \\
+5. & +android.view.ViewManager+                           & +addView+, +updateViewLayout+ \\
+6. & +android.view.WindowManagerImpl.CompatModeWrapper+  & +addView+ \\
+7. & +android.webkit.WebView+                             & +loadData+, +loadDataWithBaseURL+, +loadUrl+ \\
+8. & +android.widget.TextView+       & +append+, +setText+ \\
+9. & +android.widget.Toast+        & +makeText+ \\
+\hline
+\end{tabular}
+%}%resizebox
+\end{table}
+
 Figure~\ref{alg:GetPossibleThrownTypes} gives the algorithm for
 \textsc{GetPossibleThrownTypes}.  First, the method calculates the
 \lstinline!try! block that associates with the \lstinline!catch! block
@@ -609,7 +610,7 @@ The analysis employs the following helper procedures:
   return all statements that were defined in the source code for the
   \lstinline!catch! block of $stmt$.  Since the dex bytecode does not
   provide the ending statement of traps, we need to calculate the
-  extend of the catch block.  \textsc{GetCatchStmts} takes advantage
+  extent of the catch block.  \textsc{GetCatchStmts} takes advantage
   of the property that Java compilers do not produce code that jumps
   from outside of the catch block into the middle of a catch block.
   So to calculate the \lstinline!catch! block's extent,

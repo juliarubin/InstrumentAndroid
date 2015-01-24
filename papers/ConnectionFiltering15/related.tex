@@ -1,11 +1,11 @@
 \section{Related Work}
 \label{sec:related}
-Work related to this paper falls into three main categories: (1)
+Work related to this paper falls into three categories: (1)
 user-centric analysis to identify spurious application behaviors (2)
 information propagation in mobile applications, and (3) static
 exception analysis for Java. 
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf User-Centric Analysis for Identifying Spurious Behaviors in Mobile Applications.}
 Huang et al.~\cite{Huang:Zhang:Tan:Wang:Liang:ICSE14} propose a technique, AsDroid, for identifying contradictions between a user interaction function and the behavior that it performs. 
@@ -19,7 +19,7 @@ CHABADA~\cite{Gorla:Tavecchia:Gross:Zeller:ICSE14} compares natural language des
 
 Elish et al.~\cite{Elish:Yao:Ryder:MOST12} propose an approach for identifying malware by tracking dependencies between the definition and the use of user-generated data. They deem sensitive function calls that are not triggered by a user gesture as malicious. However, in our experience, the absence of a data dependency between a user gesture and a sensitive call is not always indicative for suspicious behavior: applications such as twitter and Walmart can initiate HTTP calls to show the most up-to-date information to their user, without any explicit user request. Moreover, malicious behaviors can be performed as a side-effect of any user-triggered operation. We thus take an inverse approach, focusing on identifying operations that do not affect the user experience.
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf Information Propagation in Mobile Applications.}
 The most prominent technique for dynamic information propagation tracking in Android is TaintDroid~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10}, which detects flows of information from a selected set of sensitive sources to a set of sensitive sinks.
@@ -29,13 +29,11 @@ The most prominent technique for dynamic information propagation tracking in And
 Several static information flow analysis techniques for tracking propagation of information from sensitive sources to sinks have also been recently developed~\cite{
 %Yang:Yang:WCSE12, Gibler:Crussell:Erickson:Chen:TRUST12, 
 Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15,Klieber:Flynn:Bhosale:Jia:Bauer:SOAP14,Li:Bartel:Klein:Traon:Arzt:Rasthofer:Bodden:Octeau:McDaniel:CoRR14}.
-The first two ensure accurate detection of information flows within a single application, while the last two -- across multiple applications. 
-
-McCamant and Ernst~\cite{McCamant:Ernst:PLDI08} take a quantitative approach to information flow: they cast information-flow security to a network-flow-capacity problem and describe a dynamic technique for measuring the amount of secret data that leaks to public observers. 
-Tripp and Rubin~\cite{Tripp:Rubin:SEC14} propose to extend the information flow analysis with a Bayesian notion of statistical classification, which conditions the judgment whether a release point is
-legitimate on the evidence arising at that point, e.g., the similarity between the data
-values about to be released and the data obtained via the source APIs. 
-
+%The first two ensure accurate detection of information flows within a single application, while the last two -- across multiple applications. 
+%McCamant and Ernst~\cite{McCamant:Ernst:PLDI08} take a quantitative approach to information flow: they cast information-flow security to a network-flow-capacity problem and describe a dynamic technique for measuring the amount of secret data that leaks to public observers. 
+%Tripp and Rubin~\cite{Tripp:Rubin:SEC14} propose to extend the information flow analysis with a Bayesian notion of statistical classification, which conditions the judgment whether a release point is
+%legitimate on the evidence arising at that point, e.g., the similarity between the data
+%values about to be released and the data obtained via the source APIs. 
 Our work is orthogonal and complimentary to all the above: while they focus on providing precise information flow tracking capabilities and detecting cases when sensitive information flows outside of the application and/or mobile device, 
 our focus is on distinguishing between essential and non-essential flows. 
 
@@ -61,7 +59,7 @@ While our approaches have a similar ultimate goal -- to provide visibility into 
 %multithreaded GUI applications. They instantiate it for four popular Java GUI frameworks, including Android. 
 %{\bf TBD.}
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf Exception Analysis for Java.}  A rich body of static analysis
 techniques has been developed to analyze and account for exceptional

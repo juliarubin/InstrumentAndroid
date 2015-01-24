@@ -31,6 +31,7 @@ Totals (average)                & 64/82 (83.3\%)   & 64/106 (63.8\%)  & 77/82 (9
 }% resizebox
 \end{table*}
 
+\vspace{0.05in}
 \section{Experiments}
 \label{sec:evaluation}
 To establish the quality of our static analysis algorithm, we evaluate it on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). We then use it to gather information and report on non-essential communication in the 500 top-popular Android applications from Google Play.
@@ -46,7 +47,7 @@ We assess the results, for each application individually and averaged for all ap
 \item
 \emph{Reported}: the number of connections deemed as non-essential by the static analysis. 
 \item
- \emph{Correct}: the number of non-essential connections correctly identified by the static analysis, i.e., that were deemed as non-essential in the dynamic study as well.
+ \emph{Correct}: the number of non-essential connections correctly identified by the static analysis, i.e., those that were deemed as non-essential in the dynamic study as well.
 % reported by the technique.\\
 \item
 \emph{Precision}: the fraction of relevant results among those reported,
@@ -60,7 +61,7 @@ We assess the results, for each application individually and averaged for all ap
 %value is high if both precision and recall are high, calculated as \emph{$\frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$}. This measure is usually used to evaluate the accuracy of a technique as
 %it does not allow trading-off precision for recall and vise versa.
 \item \emph{Execution time}: the execution time of the analysis, measured by averaging results of
-three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} CPU E5-2690 v2 @ 3.00GHz machine running Ubuntu 12.04.5. The machine was configured to use at most 16GB of heap and performs no parallelization for a single application, i.e., each application uses one core only.
+three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} CPU E5-2690 v2 @ 3.00GHz machine running Ubuntu 12.04.5. The machine was configured to use at most 16GB of heap and to perform no parallelization for a single application, i.e., each application uses one core only.
 \end{enumerate}
   
 As can be seen in the second and the third columns of Table~\ref{tbl:eval}, the overall averaged precision of our analysis is 83.3\%. 
@@ -85,7 +86,7 @@ Considering the advertisement information as non-essential gives an overall aver
 That is, depending on the user's perspective, 
 between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
 
-While designed to be conservative, our analysis is able to correctly identify 64 out of 106 connection statements deemed non-essential in the empirical study, resulting in the overall recall of 63.8\% (column 3 in Table~\ref{tbl:eval}). Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 4 in Table~\ref{tbl:eval}).
+While designed to be conservative, our analysis is able to correctly identify 64 out of 106 connection statements deemed non-essential in the empirical study, resulting in the overall recall of 63.8\% (column 3 in Table~\ref{tbl:eval}). Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
 The technique correctly identifies the majority of non-essential connections.
 
 Finally, the last column of table Table~\ref{tbl:eval} shows that our analysis is highly efficient -- it runs in a matter of minutes even on large applications. 
@@ -233,6 +234,6 @@ merely on connectivity for that purpose.
 
 \conclusion{To answer RQ4, we conclude that non-essential communication is very common in real-life applications. 
 Most such communication is performed with various mobile services that are designed to be ``best-effort only'', i.e., communication failures do not prevent 
-successful application execution. Designing mobile services to allow the user to select the preferred level of support instead of relying merely on connectivity would be a more desirable approach.}
+successful application execution. Designing mobile services that allow the user to select the preferred level of support instead of relying merely on connectivity would be beneficial.}
 
 
