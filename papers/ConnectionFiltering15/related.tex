@@ -1,8 +1,10 @@
 \section{Related Work}
 \label{sec:related}
-Most close to our are works that employ user-centric analysis to identify spurious application behaviors and that investigate information propagation in mobile applications.   
-From a technical point of view, our work relies on static application analysis for Android and on exception analysis for  Java. 
-We thus discuss the related work along these four dimensions. 
+Our approach is related to works that employ user-centric analysis to identify spurious application behaviors and that investigate information propagation in mobile applications. 
+It also relies on  
+%From a technical point of view, our work relies on %static application analysis for Android and on 
+exception analysis for  Java. 
+We thus discuss the related work along these three dimensions. 
 
 \vspace{0.1in}
 \noindent 
@@ -22,9 +24,9 @@ Elish et al.~\cite{Elish:Yao:Ryder:MOST12} propose an approach for identifying m
 \noindent 
 {\bf Information Propagation in Mobile Applications.}
 The most prominent technique for dynamic information propagation tracking in Android is TaintDroid~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10}, which detects flows of information from a selected set of sensitive sources to a set of sensitive sinks.
-TaintDroid is used, extended and customized by several follow-up research projects.
-For example, the Kynoid system~\cite{Schreckling:Posegga:Koestler:Schaff:WISTP12} extends it with user-defined security policies, which include temporal constraints on data processing as well as restrictions on
-destinations to which data is released.
+%TaintDroid is used, extended and customized by several follow-up research projects.
+%For example, the Kynoid system~\cite{Schreckling:Posegga:Koestler:Schaff:WISTP12} extends it with user-defined security policies, which include temporal constraints on data processing as well as restrictions on
+%destinations to which data is released.
 Several static information flow analysis techniques for tracking propagation of information from sensitive sources to sinks have also been recently developed~\cite{
 %Yang:Yang:WCSE12, Gibler:Crussell:Erickson:Chen:TRUST12, 
 Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15,Klieber:Flynn:Bhosale:Jia:Bauer:SOAP14,Li:Bartel:Klein:Traon:Arzt:Rasthofer:Bodden:Octeau:McDaniel:CoRR14}.
@@ -53,12 +55,12 @@ an approach that extends the Android permission model with a mechanism for allow
 the phone number and send it over the network or to another application already installed on the device. 
 While our approaches have a similar ultimate goal -- to provide visibility into the holistic behavior of the applications installed on a user's phone -- our techniques are entirely orthogonal. 
 
-\vspace{0.1in}
-\noindent 
-{\bf Static Application Analysis for Android.}
-Zhang et al.~\cite{Zhang:Lue:Ernst:ISSTA12} contribute a reflection-aware call graph construction algorithm for 
-multithreaded GUI applications. They instantiate it for four popular Java GUI frameworks, including Android. 
-{\bf TBD.}
+%\vspace{0.1in}
+%\noindent 
+%{\bf Static Application Analysis for Android.}
+%Zhang et al.~\cite{Zhang:Lue:Ernst:ISSTA12} contribute a reflection-aware call graph construction algorithm for 
+%multithreaded GUI applications. They instantiate it for four popular Java GUI frameworks, including Android. 
+%{\bf TBD.}
 
 \vspace{0.1in}
 \noindent 

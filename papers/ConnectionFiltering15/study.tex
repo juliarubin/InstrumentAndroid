@@ -43,11 +43,10 @@ RPC communication with other applications and services installed on the same mob
 \centering
 \tabcolsep=1.5pt
 \resizebox{\textwidth}{!}{%
-\begin{tabular}{|l|C{1.0cm}|C{2.2cm}|C{2cm}|C{2cm}|C{2.5cm}|C{2.5cm}|C{2.5cm}|}
+\begin{tabular}{|l|C{1.0cm}|C{2cm}|C{2cm}|C{2.5cm}|C{2.5cm}|C{2.5cm}|}
 \hline
 \textbf{Applications} &
 \textbf{jar size (MB)} &
-\textbf{Instrumentation time (ms)} &
 \textbf{Total \# of connection statements} &
 \textbf{\# of triggered connection statements} &
 \textbf{\# of non-essentials\newline(\% of trig.)} &
@@ -55,19 +54,19 @@ RPC communication with other applications and services installed on the same mob
 \textbf{\# of ads\newline(\% of essentials)} \\
 \hline
 %--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp         & 2.7 &  4,321 & 639 &   7  &   3  (42.9\%) &  4   (57.1\%) & -    \\
-com.crimsonpine.stayinline       & 3.2 & 24,184 & 842 &  18  &  13  (72.2\%) &  5   (27.8\%) & 5  (100.0\%) \\
-com.facebook.katana              & 0.6 &  1,192 &   3 &   0  &   -     &  -    & -    \\
-com.grillgames.guitarrockhero    & 6.2 & 44,381 & 882 &  35  &  30  (85.7\%) &  5   (14.3\%) & 5  (100.0\%) \\
-com.king.candycrushsaga          & 2.6 & 19,573 & 638 &   4  &   3  (75.0\%) &  1   (25.0\%) & -    \\
-com.pandora.android              & 5.7 & 38,479 & 532 &  13  &   9  (69.2\%) &  4   (30.8\%) & 1  (25.0\%)  \\
-com.spotify.music                & 5.4 & 39,067 & 181 &  28  &  21  (75.0\%) &  7   (25.0\%) & -    \\
-com.twitter.android              & 5.9 &  8,043 & 314 &  13  &   6  (46.2\%) &  7   (53.8\%) & -    \\
-com.walmart.android              & 5.8 & 72,351 & 446 &  10  &   5  (50.0\%) &  5   (50.0\%) & -    \\
-net.zedge.android                & 6.5 & 42,889 & 871 &  21  &  16  (76.2\%) &  5   (23.8\%) & 3  (60.0\%)  \\
+air.com.sgn.cookiejam.gp         & 2.7 & 639 &   7  &   3  (42.9\%) &  4   (57.1\%) & -    \\
+com.crimsonpine.stayinline       & 3.2 & 842 &  18  &  13  (72.2\%) &  5   (27.8\%) & 5  (100.0\%) \\
+com.facebook.katana              & 0.6 &   3 &   0  &   -     &  -    & -    \\
+com.grillgames.guitarrockhero    & 6.2 & 882 &  35  &  30  (85.7\%) &  5   (14.3\%) & 5  (100.0\%) \\
+com.king.candycrushsaga          & 2.6 & 638 &   4  &   3  (75.0\%) &  1   (25.0\%) & -    \\
+com.pandora.android              & 5.7 & 532 &  13  &   9  (69.2\%) &  4   (30.8\%) & 1  (25.0\%)  \\
+com.spotify.music                & 5.4 & 181 &  28  &  21  (75.0\%) &  7   (25.0\%) & -    \\
+com.twitter.android              & 5.9 & 314 &  13  &   6  (46.2\%) &  7   (53.8\%) & -    \\
+com.walmart.android              & 5.8 & 446 &  10  &   5  (50.0\%) &  5   (50.0\%) & -    \\
+net.zedge.android                & 6.5 & 871 &  21  &  16  (76.2\%) &  5   (23.8\%) & 3  (60.0\%)  \\
 \hline
 %--------------------------------------------------------------------
-Totals (average)                  & 4.5 & 29,448 & 535 & 14.9 & 11.8 (65.8\%) &  4.8 (34.2\%) & 3.5 (71.3\%) \\
+Totals (average)                 & 4.5 & 535 & 14.9 & 11.8 (65.8\%) &  4.8 (34.2\%) & 3.5 (71.3\%) \\
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
@@ -186,14 +185,12 @@ As the subjects of our study, we downloaded 15 top-popular applications availabl
 We excluded from this list three chat applications, as our evaluation methodology does not allow assessing the usability of a chat application without a predictably available chat partner. 
 We also excluded two applications whose asm-based instrumentation failed, most probably become they use language constructs that are not supported by that framework.
 
-The remaining ten applications are listed in the first column of Table~\ref{tbl:applications}.
-The second and the third columns list the size of each application and its corresponding the instrumentation time, averaged for multiple performed runs. These measures were taken on a computer running Mac OS X Version 10.9.5, with 16GB of memory and a 3 GHz Intel Core i7 processor.  
-
-We did not extend our dynamic analysis beyond these ten applications because the inspection of our findings indicated that we reached saturation: while it is clearly unfeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. As such, inclusion of additional ones was not expected to provide substantially new insights. 
+The remaining ten applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding sizes are given in the second column of the table. 
+We did not extend our dynamic analysis beyond these ten applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. As such, inclusion of additional ones was not expected to provide substantially new insights. 
 
 \subsection{Results}
-The quantitative results of the study are presented in columns~4--8 of Table~\ref{tbl:applications}. 
-The forth and the fifth columns of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
+The quantitative results of the study are presented in columns~3--7 of Table~\ref{tbl:applications}. 
+Column 3 and 4 of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
 While some of the non-triggered statements can correspond to execution paths that were not explored during our dynamic application traversal, the vast majority of the statements originate in  
 third-party libraries included in the application but only partially used, e.g., various Google services for mobile developers, advertising and analytics libraries and more.
 In fact, we identified nine different advertising and analytics libraries used by the ten applications that we analyzed, 
@@ -231,21 +228,21 @@ Our analysis was unable to traverse this dynamically loaded code, and we thus ex
 \vspace{0.1in}
 \noindent 
 {\bf Classification of the Triggered Statements.}
-Column 6 of Table~\ref{tbl:applications} shows the number of connection statements that we determined as non-essential during our study. 
-Averaged for all applications, around 65\% of the connections fall in that category. 
+Column 5 of Table~\ref{tbl:applications} shows the number of connection statements that we determined as non-essential during our study. 
+Averaged for all applications, 65\% of the connections fall in that category. 
 This means that only 35\% of the connection statements triggered by an application affect its observable behavior, 
-when executed for the exact same scenario with the connection being either enabled or disabled. 
+when executed for the exact same scenario with the connection being either enabled or disabled (see column 6 of Table~\ref{tbl:applications}). 
 
 Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  essential were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
 
-\conclusion{To answer RQ1, we conclude that non-essential communication often occur in real-life applications: 
-around 65\% of the triggered connection statements can be deemed non-essential.}
+\conclusion{To answer RQ1, we conclude that non-essential communication often occur in real-world applications: 
+65\% of the triggered connection statements can be deemed non-essential.}
 
 
 Table~\ref{tbl:statementTypes} shows the distribution of the triggered connection statements 
 into external communication performed via HTTP and sockets, and internal RPC communication. 
 Overall, 30\% of all triggered connection statements correspond to external communication while 70\% -- to
-internal one, as shown in the second row of the table.
+internal ones, as shown in the second row of the table.
 The breakdown is similar for the connection statements that we deemed non-essential: slightly more than 25\%
 correspond to external communication and the remainder -- to the internal communication with services installed on the same device, as shown in the third row of Table~\ref{tbl:statementTypes}.
 
@@ -264,13 +261,13 @@ can be made just by considering connection types and their destinations.
 That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where authors 
 show that blocking all messages to advertising and analytics services made more than 60\% of the applications either less functional or completely dysfunctional. 
 We conclude that a more sophisticated 
-techniques for identifying the non-essential communication performed by the applications is required. 
+technique for identifying the non-essential communication performed by the applications is required. 
 
 We manually investigated binaries of several analyzed applications, to gain more insights into the way applications treat non-necessary connections of each of the identified type and communication target. 
 We noticed that, in a large number of cases, connection failures are silently ignored by the applications without producing any visual indication to the user. 
 That is, the exception triggered by the connection failure of a non-essential connection is either caught and ignored locally in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. 
 
-In several cases, an error or warring message is written to the Android log file. However, this file is mostly used by  application developers and is rarely accessed by the end-user.
+In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by  application developers and is rarely accessed by the end-user.
 
 \conclusion{To answer RQ2, we conjecture that non-essential connections can be detected by inspecting connection failure paths. The lack of updates to GUI elements on the failure path is indicative for a connection being silently ignored by the application, thus being non-essential for the application execution.}
 
