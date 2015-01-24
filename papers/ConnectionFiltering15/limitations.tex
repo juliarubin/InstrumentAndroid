@@ -30,8 +30,16 @@ Our technique deems \emph{optional} behaviors -- those when failing connections 
 As an application can proceed when optional behaviors are excluded, it is debatable whether they are really essential for the application functionality or not. 
 In fact, we believe that it is up to users to decide whether an optional behavior is indeed essential for their needs. Towards this end, we plan to investigate approaches for differentiating between optional and ``truly non-essential'' behaviors as part of a future work. 
 
-Our technique also deems \emph{stateful} communication that toggles the state of connection target but does not perform any operations in fault-processing code as non-essential. In many cases, detecting such communication statically is impossible because the code executed on the target is unknown and unavailable. 
-More sophisticated techniques could detect such communication when it is performed via RPC and its target is withing the same application. As such cases are rare, developing these approaches, orthogonal to our current analysis, is also left to future work. 
+Our technique also deems \emph{stateful} communication that toggles
+the state of connection target but does not perform any operations in
+fault-processing code as non-essential. In many cases, detecting such
+communication statically is impossible because the code executed on
+the target is unknown and unavailable.  Even when communication is
+performed via RPC within the same application, it is exceedingly
+difficult for an analysis to determine, with precision, whether a
+connection (or set of connections) is stateful. As such cases are
+rare, developing these approaches, orthogonal to our current analysis,
+is also left to future work.
  
 Some of the non-essential connections that we identified statically might never be triggered dynamically. In fact, our empirical study shows that only less than 5\% of the connection statements in the analyzed applications were indeed triggered.
 Some of such connections belong to execution paths that were not explored during our dynamic application traversal.
