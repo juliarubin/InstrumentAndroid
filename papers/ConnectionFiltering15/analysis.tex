@@ -206,7 +206,7 @@ Android API methods.  However, we found it necessary to account for
 API calls that immediately jump back into the application.  For
 example, if an application method, $m$ calls
 \lstinline!Thread.start()! on a receiver that is an application class,
-$t$, we found it necessary to add the edge to the callgraph ($m$,
+$t$, we found it necessary to add the edge to the call graph ($m$,
 $t$.\lstinline!run()!).  This includes the started thread $t$ in
 failure handler if $m$ is encountered.
 
