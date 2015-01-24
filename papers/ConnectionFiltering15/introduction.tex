@@ -17,15 +17,21 @@ active, with the user completely unaware that the spawned services are
 still running in the background.
 
 This paper takes the first steps towards automatically identifying and
-disabling these kinds of non-essential communications. Working with
+disabling these kinds of non-essential communications. We start by
+identifying and disabling non-essential communication in 
 widely used mobile applications such as ten of the top fifteen most
 popular applications in the Google Play App Store (twitter, WalMart,
-Spotify, Pandora, CandyCrush, etc.), our investigation is driven by
-the following research questions:
+Spotify, Pandora, CandyCrush, etc.). Motivated by the significant
+amount of non-essential communication we found in these applications, 
+we next developed a static analysis that can automatically identify 
+non-essential communication and used this analysis in our
+further investigation of this unfortunate phenomenon. The following
+research questions drive this investigation:
+
 
 \begin{quote}
-\noindent{\bf RQ1: How frequently does non-essential communication
-  occur in widely used mobile applications?}
+\noindent{\bf RQ1:} How frequently does non-essential communication
+  occur in widely used mobile applications?
 \end{quote}
 
 \vspace{0.1in}
