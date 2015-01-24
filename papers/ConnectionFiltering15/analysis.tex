@@ -7,15 +7,15 @@ static analysis classifies each statement that may invoke a
 connection call as either {\it essential} or {\it non-essential}.
 Intuitively, we define an essential connection statement, $s$, as
 meeting either of the following criteria:
-
-\begin{enumerate}
+\vspace{-0.05in}
+\begin{enumerate}\setlength{\itemsep}{-0.05in}
 \item{\bf User-Interface Cue}: When $s$ triggers an error, the user
 may be notified of the error via a user interface cue during error
 handling.
 \item {\bf Program Exit}: When $s$ triggers an error, the program 
    may stop executing.  
 \end{enumerate}
-
+\vspace{-0.05in}
 \noindent Conversely, a non-essential connection call does not meet
 either of the two criteria.  
 
