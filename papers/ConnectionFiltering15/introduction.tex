@@ -1,14 +1,37 @@
 \section{Introduction}
 \label{sec:intro} 
-Mobile applications enjoy almost permanent connectivity and the ability to exchange information with their own back-end, third-party servers and other applications installed on the same device. 
-During such information exchange, applications often release sensitive information about their users, e.g., location, phone number or unique device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}. 
-With privacy being an increased concern, multiple works propose approaches for tracking the release of 
-sensitive information~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,Egele:Kruegel:Kirda:Vign:NDSS11,Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14, Tripp:Rubin:SEC14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. Follow-up works investigate the
-feasibility of obfuscating or blocking it completely~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}.
 
-Yet, users often deliberately trade their privacy for receiving a desired service from an application, 
-e.g., getting navigation instructions starting at their current location. 
-In such cases, preventing the release of the location information would render an application privacy-preserving but effectively useless.
+Mobile applications enjoy almost permanent connectivity and the
+ability to exchange information with their own back-end, third-party
+servers and other applications installed on the same device.
+This paper presents results that show that much of this communication
+delivers no value to the user of the application --- disabling such
+communication leaves the delivered application experience completely
+intact. But this communication comes with costs such as bandwidth
+charges, power consumption on the device, potential privacy and
+analytic data release, and the unsuspected presence of continued
+communication between the device and remote organizations. 
+
+
+
+
+During
+such information exchange, applications often release sensitive
+information about their users, e.g., location, phone number or unique
+device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,
+  Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}.  With privacy
+being an increased concern, multiple works propose approaches for
+tracking the release of sensitive
+information~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,Egele:Kruegel:Kirda:Vign:NDSS11,Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14,
+  Tripp:Rubin:SEC14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. Follow-up
+works investigate the feasibility of obfuscating or blocking it
+completely~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}.
+
+Yet, users often deliberately trade their privacy for receiving a
+desired service from an application, e.g., getting navigation
+instructions starting at their current location.  In such cases,
+preventing the release of the location information would render an
+application privacy-preserving but effectively useless.
 %Permission systems of contemporary mobile platforms cannot prevent an application that obtains a user consent to access sensitive data from release it to unauthorized third parties
 % Once an application gains access to the user's sensitive information, it can, in addition to utilizing the information for the purpose assumed by the user, also .
 %Permission systems of contemporary mobile platforms cannot distinguish between these different usages as they only require applications to declare the \emph{type} of information they want to access, not the \emph{purpose} of the access. and have no means to capture the ``semantics'' of its use. 
