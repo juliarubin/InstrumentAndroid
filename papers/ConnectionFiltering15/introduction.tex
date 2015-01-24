@@ -12,7 +12,7 @@ In such cases, preventing the release of the location information would render a
 %Permission systems of contemporary mobile platforms cannot prevent an application that obtains a user consent to access sensitive data from release it to unauthorized third parties
 % Once an application gains access to the user's sensitive information, it can, in addition to utilizing the information for the purpose assumed by the user, also .
 %Permission systems of contemporary mobile platforms cannot distinguish between these different usages as they only require applications to declare the \emph{type} of information they want to access, not the \emph{purpose} of the access. and have no means to capture the ``semantics'' of its use. 
-Existing approaches cannot distinguish between information releases that are essential for the desired application functionality and those that are not: 
+Existing approaches cannot distinguish between information releases that are \emph{essential} for the desired application functionality and those that are not: 
 they flag each release of sensitive information as a potential privacy breach, regardless of its designated use.
 The non-trivial task of classifying the \emph{purpose} of each information release is then left to the user. 
 
@@ -31,17 +31,20 @@ by looking at the impact of the communication established by an application on t
 We rely on the assumption that for most mobile applications available in popular application stores, such as Google Play, 
 preserving user-observable behavior can be seen as the main factor determining the necessity of information release. 
 
-Our in-depth investigation of ten top-popular Android applications from Google Play shows that non-essential communication which does not affect user-observable behavior is surprisingly common.
+Our in-depth investigation of ten top-popular Android applications from Google Play shows that non-essential communication 
+%which does not affect user-observable behavior 
+is surprisingly common.
 In fact, we noticed that some applications spawn services that communicate with third-party servers even when the application itself is no longer active and the user has no clue that some of its services are still running in the background. 
-Identifying such communication helps improving transparency; disabling it helps to eliminate potential privacy breaches, and to save, often expensive, communication bandwidth. 
-In our analysis, the only application out of ten that leaked the unique device id to the internet did that via such a hidden connection, while disabling the connection eliminated the information leakage without affecting the application behavior and other information exchange operations that the application performed.
+Identifying such communication helps improving transparency; disabling it helps to save, often expensive, communication bandwidth and to eliminate potential privacy breaches. 
+In our analysis, the only application out of ten that leaked the unique device id to the internet did that via such a hidden connection.
+Disabling the connection eliminated the information leakage without affecting the application behavior and other communication operations that the application performed.
 
 %Towards this end,  
 %%TWe empirically investigate the impact of connection denials on the overall behavior of ten top-popular Android applications from the Google Play store.
 %we devise a static application analysis technique for identifying statements that can be deemed \emph{non-essential}: their failure are silently ignored by the applications
 %without interfering the applications' behavior. 
 
-In this work, we aim at answering the following research question. 
+The work presented in this paper aims at answering the following research questions.
 
 \vspace{0.1in}
 \noindent 
