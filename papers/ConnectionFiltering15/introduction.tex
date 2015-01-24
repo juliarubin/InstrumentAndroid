@@ -110,7 +110,7 @@ API~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
 %that could cause program exit.
 
 There are two special cases that our technique is not designed to handle: (1) \emph{optional} behaviors, for which failing connections are silently ignored, but successful connections result in presenting additional information to the user; 
-advertisement content usually falls into that category. (2) \emph{Statefull} communication, for which failures leave the 
+advertisement content usually falls into that category. (2) \emph{statefull} communication, for which failures leave the 
 connection target in a state different from the one it has after a successful communication, and further communication is influenced by the server's state. Our experiments show that such cases are rare. 
 
 %
@@ -129,7 +129,7 @@ connection target in a state different from the one it has after a successful co
 {\bf RQ3: How well does static detection perform?}
 To assess the quality of our technique, we evaluate it on the ``truth set'' established during our empirical analysis of applications from Google Play.
 The results show that it features a high precision -- 83\% of the identified connection (64 out of 82) are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify  64\% of all non-essential connection (64 out of 106).
-There are 18 connections in total that are miss-classified as non-essential. Out of these, 16 correspond to optional application behaviors and the remaining 2 -- to statefull communication. Counting advertisement content as non-essential
+There are 18 connections in total that are miss-classified as non-essential. Out of these, 16 correspond to optional application behaviors and the remaining 2 -- to stateful communication. Counting advertisement content as non-essential
 gives the overall precision and recall of 90\% and 65\%, respectively.  
 
 \vspace{0.1in}
@@ -142,22 +142,17 @@ Additional common targets are advertisement, analytics and gaming services.
 
 \vspace{0.1in}
 \noindent 
-{\bf Significance of the Work.}
-Our work focuses on benign mobile applications that can be downloaded from popular application stores and that are installed by millions of users.
-By identifying and highlighting application functionality hidden from the user, it aims at improving transparency and, ultimately, quality of these applications. 
- 
-We are largely inspired by the positive trend of improvement that we recently observed in the application development community.
-One of its manifestations is the increased awareness of privacy considerations. It is likely that such awareness was affected by multiple studies that highlighted
-potential privacy violation in applications from popular application stores~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14}.
-Indeed, we observed that newer versions of the analyzed applications in many cases no longer exhibit the previously identified privacy breaches.  
-This improvement trend reassures and further emphasizes the significance of this work as an additional step towards achieving better application quality and increasing trust between users and application developers. 
-
-%Giving mobile application users control over the different types of communication  believe that user should have control on the levels of application developers  
-%Our ultimate goal is gradual functionality disabling
-
-
-%Furthermore, applying our classification and blocking technique to 12 app that were identified as leaking sensitive information in a previous study~\cite{Tripp:Rubin:SEC14} classified all information transfers as non-essential and produced a version of each application that is equivalent to the original one, but does not leak any sensitive information.
-
+{\bf Significance of the Work.}  Our work focuses on benign mobile
+applications that can be downloaded from popular application stores
+and that are installed by millions of users.  By identifying and
+highlighting application functionality hidden from the user, the goal
+is to encourage application developers to produce more transparent and
+trustworthy applications. The identification of potential privacy
+violations in previous versions of popular Android
+applications~\cite{Enck:Gilbert:Chun\ :Cox:Jung:McDaniel:Sheth:OSDI10,
+  Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14} followed by the
+elimination of these violations in current Android applications
+provides encouraging evidence that such an improvement is feasible.
 
 \vspace{0.1in}
 \noindent 
@@ -165,10 +160,8 @@ This improvement trend reassures and further emphasizes the significance of this
 The paper makes the following contributions:
 
 \noindent 1.
-It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. 
-%This problem is orthogonal and complementary to that of identifying sensitive information flow, which was the focus of numerous earlier works. 
-Highlighting non-essential information releases in existing mobile applications is expected to improve transparency and contribute to the overall quality of the field. 
-%Put together, the two allow establishing practically useful, \emph{differential}  privacy: the applications can be restricted to using private information only ``when needed'', without leaking it to unauthorized parties.
+It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. The goal is to improve the
+transparency and trustworthyness of mobile applications.
 
 \noindent 2.
 It proposes \emph{a semi-automated dynamic approach} for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
