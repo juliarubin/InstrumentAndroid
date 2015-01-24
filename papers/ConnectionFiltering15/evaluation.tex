@@ -32,12 +32,12 @@ Totals (average)                & 64/82 (83.3\%)   & 64/106 (63.8\%)  & 77/82 (9
 
 \section{Experiments}
 \label{sec:evaluation}
-To establish the quality of our static analysis algorithm, we first evaluate it on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). We then use it to gather information and report on non-essential communication in the 500 top-popular Android applications from Google Play.
+To establish the quality of our static analysis algorithm, we evaluate it on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). We then use it to gather information and report on non-essential communication in the 500 top-popular Android applications from Google Play.
 
 \subsection{Evaluation of the Static Analysis}
-For our evaluation, we first limit the set of results reported by the static analysis to those that were, in fact,
+For our evaluation, we limit the set of results reported by the static analysis to those that were, in fact,
  triggered during our dynamic study (see Table~\ref{tbl:applications} in Section~\ref{sec:study}): these are the connection statements for which we have reliable information to compare against. 
-We then assess the results, for each application individually and averaged for all applications, using the metrics below and report on our findings in Table~\ref{tbl:eval}.
+We assess the results, for each application individually and averaged for all applications, using the metrics below. The results are summarized in Table~\ref{tbl:eval}.
 
 \begin{enumerate}\setlength{\itemsep}{-0.05in}
 \item
@@ -69,18 +69,19 @@ when connection failures are indeed ignored and the applications proceed without
 remaining two cases correspond to a \emph{statefull} communication within the application. 
 The details of each of these cases are given below: 
 
-\begin{itemize}
+\begin{itemize}\setlength{\itemsep}{-0.05in}
 \item 13 connections are used for presenting \emph{optional} advertisement content: 
 3 in the \emph{net.zedge.android} application, and 
 5 in \emph{com.crimsonpine.stayinline} and \emph{com.grillgames.guitarrockhero} each.
 \item 3 connections correspond to 
 \emph{optional} application behaviors: 2 in the \emph{com.walmart.android} application, responsible for providing location-aware search, and 1 in the \emph{com.spotify.music} application, responsible for enhancing the presented album with images.
-\item 2 connections, both in \emph{com.spotify.music} correspond to \emph{statefull} communication within the application. 
+\item 2 connections, both in \emph{com.spotify.music}, correspond to \emph{statefull} communication within the application. 
 Blocking each of these connections, individually, harms the application's search capabilities.
 \end{itemize}
 
-Considering advertisement information as non-essential for the end-user gives an overall average precision of 90.8\%, as shown in the fourth column of Table~\ref{tbl:eval}. This result means that, depending on the user's perspective, 
-between 83\% and 90\% of the cases identified as non-essential by the static analysis can indeed be considered non-essential. 
+Considering the advertisement information as non-essential gives an overall average precision of 90.8\%, as shown in column 4 of Table~\ref{tbl:eval}. 
+This result means that, depending on the user's perspective, 
+between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
 
 Being conservative, our static analysis classifies as essential a connection with at least one possible handler on the failing path. Yet, it is able to correctly identify 64 out of 106 connection statements deemed non-essential during the dynamic analysis, resulting in the overall recall of 63.8\% (see the third column of Table~\ref{tbl:eval}). Considering advertisement non-essential results in only a slight increase in recall, to 64.6\% (see the fifth column of Table~\ref{tbl:eval}). This result means that even though the technique is designed to be conservative, it is still effective in identifying non-essential connections.
 

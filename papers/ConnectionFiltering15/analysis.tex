@@ -43,7 +43,6 @@ public class Example {
         }
         (*@{\it stmtC};@*)
     }
-
     void g() throws MyException {
         try {
             (*@{\it stmtD};@*)
@@ -86,8 +85,9 @@ that handles $e$ and any failure triggered by the handling of $e$
 exceptions triggered by $e$ are handled and flow returns to normal
 execution.  
 
-Figure~\ref{fig:failure-handling} lists a small Java example to
-illustrate failure handling.  Method \lstinline!f! invokes method
+Figure~\ref{fig:failure-handling} give a simplified representation of 
+failure handling pattern that we observed in the twitter application. 
+Method \lstinline!f! invokes method
 \lstinline!g!.  In \lstinline!g!, a connection call is encountered on
 line~\ref{connect-fig-line}; assume during execution this connection call
 throws a \lstinline!RemoteException!.  The failure handling for this
