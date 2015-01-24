@@ -80,14 +80,15 @@ Blocking each of these connections, individually, harms the application's search
 \end{itemize}
 
 Considering the advertisement information as non-essential gives an overall average precision of 90.8\%, as shown in column 4 of Table~\ref{tbl:eval}. 
-This result means that, depending on the user's perspective, 
+That is, depending on the user's perspective, 
 between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
 
-Being conservative, our static analysis classifies as essential a connection with at least one possible handler on the failing path. Yet, it is able to correctly identify 64 out of 106 connection statements deemed non-essential during the dynamic analysis, resulting in the overall recall of 63.8\% (see the third column of Table~\ref{tbl:eval}). Considering advertisement non-essential results in only a slight increase in recall, to 64.6\% (see the fifth column of Table~\ref{tbl:eval}). This result means that even though the technique is designed to be conservative, it is still effective in identifying non-essential connections.
+While designed to be conservative, our analysis is able to correctly identify 64 out of 106 connection statements deemed non-essential in the empirical study, resulting in the overall recall of 63.8\% (column 3 in Table~\ref{tbl:eval}). Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 4 in Table~\ref{tbl:eval}).
+The technique correctly identifies the majority of non-essential connections.
 
-Moreover, the last column of table Table~\ref{tbl:eval} shows that our analysis is highly efficient -- it runs in a matter of minutes even on large applications. 
+Finally, the last column of table Table~\ref{tbl:eval} shows that our analysis is highly efficient -- it runs in a matter of minutes even on large applications. 
 
-\conclusion{To answer RQ3, we conclude that our static analysis technique is highly efficient and accurate for detecting non-essential connections,. It completes in a couple of minutes and features up to 90\% precision and 64\% recall, respectively.}
+\conclusion{To answer RQ3, we conclude that a static analysis can be applied for an accurate detection of non-essential connections. Our highly scalable technique features up to 90\% precision and 64\% recall, respectively.}
 
 \begin{table}[t]
 \caption{Analysis of the 500 Top-Popular Applications from Google Play.}
@@ -178,16 +179,21 @@ Avg. per app        &   566.3           &  672.4         \\ %   2min 52s
 \end{table}
 
 \subsection{Non-Essential Communication In the Wild}
-As we established that our technique provides highly precise results for identifying non-essential connections,
-we apply it on 500 top-popular Android application downloaded from the Google Play store in January 2015. 
+We apply our technique on 500 top-popular Android application downloaded from the Google Play store in January 2015. 
 Our goal is to investigate how often non-essential communication occurs in real-life applications and what are its most common destinations. 
 
-In Table~\ref{tbl:googlePlayApps}, we report on the number of non-essential connections found in these applications in total and for an application on average. 
+In Table~\ref{tbl:googlePlayApps}, we report on the number of non-essential connections found in these applications in total, and for an application on average. 
 These results confirm the observation of our empirical study, showing that a large percent of connections made by applications can be considered non-essential. 
 In fact, even with our conservative analysis, 84\% of connections fall into that category. 
 
 Table~\ref{tbl:callers} presents the top 10 packages in which non-essential connections occur.
-As the results are aggregated for 500 applications, it is not a surprise that Google Services, as well as gaming, advertisement and analytics services, are on the top of the list -- numerous applications use these services, as shown in the last column of Table~\ref{tbl:callers}. 
+As the numbers are aggregated for 500 applications, it is not a surprise that Google Services, as well as gaming, advertisement and analytics services, are on the top of the list -- numerous applications use these services, as shown in the last column of Table~\ref{tbl:callers}. 
+By manually investigating some of the most-popular connections in reverse-engineered versions of the applications, we observed that
+those connections are designed to be ``best-effort'' only. For example, an application might attempt to obtain a user-specific advertisement information, but continues 
+with generic advertisement if that attempt fails. 
+The prevalence of mobile services and their ``best-effort'' behavior make us believe that it would be beneficial if these services were designed to allow the users to select the level of support they wish to obtain, instead of relying merely on connectivity for that purpose.  
+
+ 
 %The last column of the table shows the ratio of non-essential calls 
 %made from a package out of the total number of non-essential calls, averaged for all applications that use the corresponding package, e.g., 403 in the case of Google Services. 
 %Interestingly, the highest fraction of non-essential calls made by applications falls within this package. 
@@ -200,6 +206,7 @@ As the results are aggregated for 500 applications, it is not a surprise that Go
 
 
 \conclusion{To answer RQ4, we conclude that non-essential communication is very common in real-life applications. 
-Most such  and what are its most common destinations?}
+Most such communication is performed with various mobile services that are designed to be ``best-effort only'', i.e., communication failures do not prevent 
+successful application execution. Designing mobile services to allow the user to select the preferred level of support instead of relying merely on connectivity would be a more desirable approach. }
 
 
