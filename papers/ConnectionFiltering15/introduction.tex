@@ -82,10 +82,35 @@ One of the conclusions from our study is that neither the type nor the target of
 A manual byte code inspection of the identified non-essential connections shows that failures are often either silently ignored by the application, e.g., with an empty exception \emph{catch} block, or written to a log file without being propagated to the user. 
 This behavior is indicative for the connections being \emph{non-essential} for the application behavior and, in some cases, even harmful. 
 
-Inspired by the findings, we devise a static application analysis technique for detecting connection failures that are
-``silently''  ignored by the application, i.e., when information about a connection failure is not propagated back to the end user.
-%Our technique searches for cases when exceptions resulting from connection attempts are caught by an application without giving any visual message to the user. 
-{\bf TDB: expand a bit on what the technique does and that its is very efficient, i.e., analyses an application in a matter of minutes.}
+Inspired by the findings, we devise a static application analysis
+technique for detecting connection failures that are ``silently''
+ignored by the application, i.e., when information about a connection
+failure is not propagated back to the end user.  The static analysis
+classifies each connection call by inspecting the execution of the
+application during {\it failure handling} of the connection call.
+Failure handling begins when the exception is propagated to the
+connection call and ends when the execution exits the exception
+handler of the exception or the handlers or all rethrown exceptions
+that are raised during handling.  Intuitively, the failure handling
+execution corresponds to how an application responds a failure at a
+connection.  If a failure handling execution of a connection call
+could affect the user interface through a call to a predefined set of
+API calls, then we classify the connection call to be essential.
+Also, if there is a failure handing path that could exit the program,
+because a thrown exception propagates back into the Android
+runtime, the analysis classifies the connection call as essential.
+
+Our static analysis is designed to scale to large Android applications
+and to conservatively approximate the behavior of dynamic constructs
+such as reflection and missing semantics such as native methods.  The
+analysis also reasons about application code reachable through Android
+API calls and callbacks by analyzing each application in the context
+of a rich model of the Android
+API~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.  Finally,
+the analysis conservatively calculates the set of application methods
+could be invoked by the Android runtime for determining exceptions
+that could cause program exit.
+
 
 There are two special cases that our technique is not designed to handle: (1) \emph{optional} behaviors, for which failing connections are silently ignored, but successful connections result in presenting additional information to the user; 
 advertisement content usually falls into that category. (2) \emph{Statefull} communication, for which failures leave the 
