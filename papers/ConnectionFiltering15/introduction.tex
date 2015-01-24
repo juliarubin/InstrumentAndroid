@@ -12,8 +12,8 @@ consumption on the device, potential privacy and analytic data
 release, and the unsuspected presence of continued communication
 between the device and remote organizations. We have even observed
 applications that silently spawn services that communicate with
-third-party servers even when the application itself is no longer
-active, with the user completely unaware that the spawned services are
+third-party servers {\em even when the application itself is no longer
+active}, with the user completely unaware that the spawned services are
 still running in the background.
 
 This paper takes the first steps towards automatically identifying and
@@ -28,16 +28,11 @@ non-essential communication and used this analysis in our
 further investigation of this unfortunate phenomenon. The following
 research questions drive this investigation:
 
-
-\begin{quote}
-\noindent{\bf RQ1:} How frequently does non-essential communication
-  occur in widely used mobile applications?
-\end{quote}
-
 \vspace{0.1in}
 \noindent 
-{\bf RQ1: How frequently does non-essential communication occur in real-life applications?}
-To get an  estimate on the significance of the problem, we conduct an empirical study 
+{\bf RQ1: How frequently does non-essential communication
+  occur in widely used mobile applications?}
+To estimate the significance of the problem, we conduct an empirical study 
 that focuses on identifying and investigating the nature of non-essential communication in ten top-popular applications in Google Play. 
 We focus on the three most common connection types: HTTP, socket and RPC.
 The former two are used to communicate with various backend servers -- the application's own and third parties'; 
