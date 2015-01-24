@@ -104,25 +104,10 @@ analysis also reasons about application code reachable through Android
 API calls and callbacks by analyzing each application in the context
 of a rich model of the Android
 API~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. 
-% Finally,
-%the analysis conservatively calculates the set of application methods
-%could be invoked by the Android runtime for determining exceptions
-%that could cause program exit.
 
 There are two special cases that our technique is not designed to handle: (1) \emph{optional} behaviors, for which failing connections are silently ignored, but successful connections result in presenting additional information to the user; 
-advertisement content usually falls into that category. (2) \emph{statefull} communication, for which failures leave the 
+advertisement content usually falls into that category. (2) \emph{stateful} communication, for which failures leave the 
 connection target in a state different from the one it has after a successful communication, and further communication is influenced by the server's state. Our experiments show that such cases are rare. 
-
-%
-%We claim that these connections, hidden from the user, are indicative for potential unexpected operations performed by an application.
- 
-%Targets are not indicative, AppFence case. We show that most malware writers basically
-%copy/paste code from fellow developer code and from
-%public tutorials/samples from the Web~\cite{Allix:Jerome:Bissyande:Klein:State:Traon:COMPSAC14}
-
-%We empirically analyze xx android applications from the list of yy most popular free applications on GooglePlay, focusing on the impact of successes / failures to establish connection on the overall behavior of the analyzed application. 
-%The analysis reveals that applications ``silently'' handle the majority of connection failures by discarding connection error without producing any visible effect on the user-observable application functionality.  In fact, only zz\% of the triggered connection sites propagate information about a failure (or, dually, a success) of that operation to the user.
-
 
 \vspace{0.1in}
 \noindent 
@@ -149,8 +134,7 @@ highlighting application functionality hidden from the user, the goal
 is to encourage application developers to produce more transparent and
 trustworthy applications. The identification of potential privacy
 violations in previous versions of popular Android
-applications~\cite{Enck:Gilbert:Chun\ :Cox:Jung:McDaniel:Sheth:OSDI10,
-  Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14} followed by the
+applications~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14} followed by the
 elimination of these violations in current Android applications
 provides encouraging evidence that such an improvement is feasible.
 
