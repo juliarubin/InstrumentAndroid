@@ -69,10 +69,11 @@ when connection failures are indeed ignored and the applications proceed without
 remaining two cases correspond to a \emph{stateful} communication within the application. 
 The details of each of these cases are given below: 
 
-\begin{itemize}\setlength{\itemsep}{-0.05in}
+\begin{itemize}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
 \item 13 connections are used for presenting \emph{optional} advertisement content: 
 3 in the \emph{net.zedge.android} application, and 
-5 in \emph{com.crimsonpine.stayinline} and \emph{com.grillgames.guitarrockhero} each.
+5 in \\
+\emph{com.crimsonpine.stayinline} and \emph{com.grillgames.guitarrockhero} each.
 \item 3 connections correspond to 
 \emph{optional} application behaviors: 2 in the \emph{com.walmart.android} application, responsible for providing location-aware search, and 1 in the \emph{com.spotify.music} application, responsible for enhancing the presented album with images.
 \item 2 connections, both in \emph{com.spotify.music}, correspond to \emph{stateful} communication within the application. 
@@ -90,25 +91,7 @@ Finally, the last column of table Table~\ref{tbl:eval} shows that our analysis i
 
 \conclusion{To answer RQ3, we conclude that a static analysis can be applied for an accurate detection of non-essential connections. Our highly scalable technique features up to 90\% precision and 64\% recall, respectively.}
 
-\begin{table}[t]
-\caption{Analysis of the 500 Top-Popular Applications from Google Play.}
-\label{tbl:googlePlayApps}
-\centering
-\tabcolsep=1.5pt
-%\resizebox{\columnwidth}{!}{%
-\begin{tabular}{|l|C{2.8cm}|C{1.9cm}|}
-\hline
-%--------------------------------------------------------------------
-                    & Non-Essential     & Total          \\ % Exec. time
-\hline
-%--------------------------------------------------------------------
-Total (500 apps)    & 283,159 (84.2\%)  &  336,203       \\ % 23h 54min 1s
-Avg. per app        &   566.3           &  672.4         \\ %   2min 52s
-\hline
-%--------------------------------------------------------------------
-\end{tabular}
-%}% resizebox
-\end{table}
+
 
 %\begin{table}[t]
 %\renewcommand*{\arraystretch}{1.3}
@@ -185,14 +168,39 @@ downloaded from the Google Play store in January 2015.  Our goal is to
 investigate how often non-essential communication occurs in real-life
 applications and what are its most common destinations.
 
-In Table~\ref{tbl:googlePlayApps}, we report on the number of
-non-essential connections found in these applications in total, and
-for an application on average.  These results confirm the observation
-of our empirical study, showing that a large percent of connections
-made by applications can be considered non-essential.  In fact, even
-with our conservative analysis, 84\% of connections fall into that
-category.
+%\begin{table}[t]
+%\caption{Analysis of the 500 Top-Popular Applications from Google Play.}
+%\label{tbl:googlePlayApps}
+%\centering
+%\tabcolsep=1.5pt
+%%\resizebox{\columnwidth}{!}{%
+%\begin{tabular}{|l|C{2.8cm}|C{1.9cm}|}
+%\hline
+%%--------------------------------------------------------------------
+%                    & Non-Essential     & Total          \\ % Exec. time
+%\hline
+%%--------------------------------------------------------------------
+%Total (500 apps)    & 283,159 (84.2\%)  &  336,203       \\ % 23h 54min 1s
+%Avg. per app        &   566.3           &  672.4         \\ %   2min 52s
+%\hline
+%%--------------------------------------------------------------------
+%\end{tabular}
+%%}% resizebox
+%\end{table}
 
+Our analysis reveals that 84.2\% of all connections encoded in these application can be considered non-essential (283,159 connection out of 336,203 in total).
+These results are consistent with the observation of our empirical study described in Section~\ref{sec:study}.
+%, showing that a large percent of connections
+%made by applications can be considered non-essential.  In fact, even
+%with our conservative analysis, 84\% of connections fall into that
+%category.
+%In Table~\ref{tbl:googlePlayApps}, we report on the number of
+%non-essential connections found in these applications in total, and
+%for an application on average.  These results confirm the observation
+%of our empirical study, showing that a large percent of connections
+%made by applications can be considered non-essential.  In fact, even
+%with our conservative analysis, 84\% of connections fall into that
+%category.
 Table~\ref{tbl:callers} presents the top 10 packages in which
 non-essential connections occur.  As the numbers are aggregated for
 500 applications, it is not a surprise that Google Services, as well
