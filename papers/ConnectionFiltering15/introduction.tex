@@ -78,11 +78,11 @@ Moreover, in applications that present advertisement material, about 60\% of the
 \noindent 
 {\bf RQ2: Can non-essential communication be detected statically?}
 While the technique that we used during the empirical study allowed us to gain deeper insights onto the nature of communication that applications perform, it clearly cannot scale up to thousands of applications available on the market today.
-We thus investigate the possibility to perform such analysis in a static manner. 
+We thus investigate the possibility to perform such analysis automatically, in a static manner. 
  
 One of the conclusions from our study is that neither the type nor the target of communication are sufficient for distinguishing between essential and non-essential connections.
 % In a sense, our finding are consistent with~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where authors show that blocking messages to advertising and analytics services made a majority the applications either less functional or completely dysfunctional, so the connection target by itself is not a sufficient distinguishing factor. 
-A manual byte code inspection of the identified non-essential connections shows that failures are often either silently ignored by the application, e.g., with an empty exception \emph{catch} block, or written to a log file without being propagated to the user. 
+A manual byte code inspection of the identified non-essential connections shows that failures are often either silently ignored by the application, e.g., with an empty exception \lstinline!catch! block, or written to a log file without being propagated to the user. 
 This behavior is indicative for the connections being \emph{non-essential} for the application behavior and, in some cases, even harmful. 
 
 Inspired by the findings, we devise a static application analysis
@@ -93,7 +93,7 @@ classifies each connection call by inspecting the execution of the
 application during {\it failure handling} of the connection call.
 Failure handling begins when the exception is propagated to the
 connection call and ends when the execution exits the exception
-handler of the exception or the handlers or all rethrown exceptions
+handler of the exception or the handlers of all rethrown exceptions
 that are raised during handling.  
 %Intuitively, the failure handling
 %execution corresponds to how an application responds a failure at a
@@ -136,14 +136,14 @@ connection target in a state different from the one it has after a successful co
 \noindent 
 {\bf RQ3: How well does static detection perform?}
 To assess the quality of our technique, we evaluate it on the ``truth set'' established during our empirical analysis of applications from Google Play.
-The results show that it features a high precision -- 83\% of the identified connection (64 out of 82) are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identifying  64\% of all non-essential connection (64 out of 106).
+The results show that it features a high precision -- 83\% of the identified connection (64 out of 82) are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify  64\% of all non-essential connection (64 out of 106).
 There are 18 connections in total that are miss-classified as non-essential. Out of these, 16 correspond to optional application behaviors and the remaining 2 -- to statefull communication. Counting advertisement content as non-essential
 gives the overall precision and recall of 90\% and 65\%, respectively.  
 
 \vspace{0.1in}
 \noindent 
 {\bf RQ4: How often does non-essential communication occur in real-life applications and what are its most common destinations?}
-Applying the analysis on additional 500 top-popular applications from Google Play reveals that 84\% of connection sites established by these applications can be deemed non-essential.
+Applying the analysis on the top 500 popular applications from Google Play reveals that 84\% of connection sites encoded in these applications can be deemed non-essential.
 Most common target of non-essential communication are various Google services for mobile developers. We conjecture 
 that applications commonly register for various such services without eventually using them. 
 Additional common targets are advertisement, analytics and gaming services. 
@@ -151,7 +151,7 @@ Additional common targets are advertisement, analytics and gaming services.
 \vspace{0.1in}
 \noindent 
 {\bf Significance of the Work.}
-Our work focuses on benign  mobile applications that can be downloaded from popular application stores and that are installed by thousands, if not millions, of users.
+Our work focuses on benign mobile applications that can be downloaded from popular application stores and that are installed by millions of users.
 By identifying and highlighting application functionality hidden from the user, it aims at improving transparency and, ultimately, quality of these applications. 
  
 We are largely inspired by the positive trend of improvement that we recently observed in the application development community.
@@ -171,18 +171,26 @@ This improvement trend reassures and further emphasizes the significance of this
 \noindent 
 {\bf Contributions.}
 The paper makes the following contributions:
-\begin{enumerate}
-\item It sets a new problem of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. This problem is orthogonal and complementary to that of identifying sensitive information flow, which was the focus of numerous earlier works. 
+
+\noindent 1.
+It set s\emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. 
+%This problem is orthogonal and complementary to that of identifying sensitive information flow, which was the focus of numerous earlier works. 
 Highlighting non-essential information releases in existing mobile applications is expected to improve transparency and contribute to the overall quality of the field. 
 %Put together, the two allow establishing practically useful, \emph{differential}  privacy: the applications can be restricted to using private information only ``when needed'', without leaking it to unauthorized parties.
-\item It proposes a dynamic approach for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
+
+\noindent 2.
+It proposes \emph{a semi-automated dynamic approach} for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
 The approach relies on interactive injection of connection failures and identification of cases in which the injected failures do not affect the observable application functionality. 
-\item It provides empirical evidence for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 65\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
-\item It proposes a static technique that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The precision and recall of the technique is 83\% and 63\%, respectively, when evaluated against the empirically established truth set. 
+
+\noindent 3.
+It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 65\% of the connections attempted by ten top-popular free applications on Google Play fall into that category.    
+
+\noindent 4.
+It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The precision and recall of the technique is 83\% and 63\%, respectively, when evaluated against the empirically established truth set. 
 The precision and recall increases to 90\% and 64\%, receptively, when considering the advertisement content as non-essential.
-\item It investigate the amount of non-essential information in the 500 top-popular free applications on Google Play, showing that 84\% of connections made by these applications can be 
-deemed as non-essential.
-\end{enumerate}
+
+\noindent 5.
+It provides \emph{quantitative evidence} for the prevalence of non-essential connections in the 500 top-popular free applications on Google Play, showing that 84\% of connections encoded in these applications can be deemed as non-essential.
 
 The remainder of the paper is structured as follows. Section~\ref{sec:study} describes the empirical study we conducted for gaining insight into the nature of information releases in mobile applications. Section~\ref{sec:analysis} presents the static analysis technique designed for identifying non-essential information releases. 
 Section~\ref{sec:evaluation} discusses results of its evaluation on real-live examples. Section~\ref{sec:limitations} discusses the limitations and threats to validity of our work. Section~\ref{sec:related} presents the related work, while Section~\ref{sec:conclusions} concludes. 

@@ -21,7 +21,7 @@
 
 
 
-\section{Communication in Android Applications}
+\section{Communication in Android}
 \label{sec:study} 
 
 In this section, we first describe the design of the study that we conducted to gain more insights into the nature of communication performed by Android applications. We then discuss the study results. 
@@ -31,7 +31,7 @@ In this section, we first describe the design of the study that we conducted to 
 \vspace{0.1in}
 \noindent 
 {\bf Connection Statements.}
-The list of the connection statements that we considered in our study is given in Table~\ref{tbl:connections}.
+The list of the connection statements that we consider in our study is given in Table~\ref{tbl:connections}.
 The first three are responsible for establishing HTTP connections with backend servers, the forth one provides socket-based communication and the last one allows 
 RPC communication with other applications and services installed on the same mobile device. 
 
@@ -49,7 +49,7 @@ RPC communication with other applications and services installed on the same mob
 \textbf{jar size (MB)} &
 \textbf{Instrumentation time (ms)} &
 \textbf{Total \# of connection statements} &
-\textbf{\# of triggered statements} &
+\textbf{\# of triggered connection statements} &
 \textbf{\# of non-essentials\newline(\% of trig.)} &
 \textbf{\# of essentials\newline(\% of trig.)} &
 \textbf{\# of ads\newline(\% of essentials)} \\
@@ -83,8 +83,8 @@ This approach was chosen as it leverages the applications' native mechanism for 
 \noindent 
 {\bf Application Instrumentation.}
 As input to our study, we assume an Android application given as an apk file. 
-We use the dex2jar tool suite\footnote{https://code.google.com/p/dex2jar/} to extract the jar file from the apk.
-We then use the asm framework\footnote{http://asm.ow2.org/} to implement two types of transformations: 
+We use the dex2jar tool suite~\cite{dex2jar} to extract the jar file from the apk.
+We then use the asm framework~\cite{asm} to implement two types of transformations: 
 \begin{enumerate}
 \item \emph{A monitoring transformation} which produces a version of the original application that logs all executions of the connection statements in Table~\ref{tbl:connections}. 
 \item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions of the corresponding type, as specified in Table~\ref{tbl:connections}.
@@ -98,11 +98,11 @@ The jar file of the transformed application is then converted back to apk using 
 Comparison of user-observable behavior requires dynamic execution of the analyzed applications. 
 The main obstacle in performing such comparison is the ability to reproduce program executions in a repeatable manner. 
 To overcome this obstacle, we produce a script that automates the execution of each application.
-As the first step, we use the Android getevent tool\footnote{https://source.android.com/devices/input/getevent.html} that runs on the device and captures all user and kernel input events to capture a sequence of events that exercise an application behavior. We make sure to pause between user gestures that assume application response. 
+As the first step, we use the Android getevent tool~\cite{getevent} that runs on the device and captures all user and kernel input events to capture a sequence of events that exercise an application behavior. We make sure to pause between user gestures that assume application response. 
 We then enhance the script produced by getevent to insert a screen capturing command after each pause and also between events of any prolonged sequences. 
 We upload the produced script onto the device and run it for each version of the application. 
 
-We deliberately opt not to use Android's UI/Application Exerciser Monkey\footnote{http://developer.android.com/tools/help/monkey.html} tool. While this tool is able to  
+We deliberately opt not to use Android's UI/Application Exerciser Monkey~\cite{monkey} tool. While this tool is able to  
 generates a repeatable sequence of pseudo-random streams of events such as clicks, touches and gestures, in our case, 
 it was unable to provide a reasonably exhaustive
 coverage of application functionality. Even for applications that do not require entering any login credentials, it quickly locked itself out of the application by generating gestures that the analyzed application cannot handle. 
@@ -142,7 +142,7 @@ We thus have chosen to manually record the desired application execution scenari
 For the comparison of application executions, we started by following the approach in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where screenshots from two different runs are placed side-by-side, 
 along with a visual diff of each two corresponding images, as shown in Figure~\ref{fig:screenshots}, for 
 the walmart and twitter applications. 
-We used the ImageMagick compare tool\footnote{http://www.imagemagick.org/script/compare.php}
+We used the ImageMagick compare tool~\cite{imagemagick}
 to produce the visual diff images automatically. 
 We then manually scanned the produced output while ignoring differences in content of advertisement messages and the status of the device, deeming screenshots in Figures~\ref{fig:screenshots}(a) and (b) similar. 
 We also ignored the exact content of widgets that are populated by applications in a dynamic manner and are designed to 
@@ -158,7 +158,7 @@ thus the automated application execution was unable to provide reliable results.
 {\bf Execution Methodology.}
 We performed our study in three phases. In the first phase, we installed the original version of each analyzed 
 application on a Nexus 4 mobile device running Android version 4.4.4.
-We manually exercised the application, recording the execution script that captured all triggered actions, as described above. 
+We manually exercised the application, exploring all its functionality visible to us, and recorded the execution script that captured all triggered actions, as described above. 
 We then re-installed the application to recreate a ``clean'' initial state and ran the produced execution script.  
 We used screenshots collected during this run as the baseline for further comparisons. 
 
@@ -171,9 +171,9 @@ We ran the produced version of the application using the recorded execution scri
 Otherwise, we marked the exercised connection as \emph{essential} and kept it enabled in the subsequent iterations.
 We continued with this process until all connections in the list were explored.
 
-In all iterations, we also disabled all connections that were classified as non-triggered during the second phase. 
-That was done to improve the accuracy 
-of our analysis by proactively preventing applications from taking a new, previously unexplored, path when they detect connection failures. 
+%In all iterations, we also disabled all connections that were classified as non-triggered during the second phase. 
+%That was done to improve the accuracy 
+%of our analysis by proactively preventing applications from taking a new, previously unexplored, path when they detect connection failures. 
 As the final quality measure, we manually introspected the execution of the version in which all non-essential connections
 were blocked, to detect any  possible issues missed by the automated analysis.
 
@@ -182,7 +182,7 @@ were blocked, to detect any  possible issues missed by the automated analysis.
 \vspace{0.1in}
 \noindent 
 {\bf Subjects.} 
-As the subjects of our study, we downloaded 15 top-popular applications available on the Google Play store on November 2014. 
+As the subjects of our study, we downloaded 15 top-popular applications available on the Google Play store in November 2014. 
 We excluded from this list three chat applications, as our evaluation methodology does not allow assessing the usability of a chat application without a predictably available chat partner. 
 We also excluded two applications whose asm-based instrumentation failed, most probably become they use language constructs that are not supported by that framework.
 
