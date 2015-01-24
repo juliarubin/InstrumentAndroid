@@ -186,20 +186,16 @@
 
 \maketitle
 \begin{abstract}
-This paper studies communication patterns in mobile applications.
-Our experience shows that 65\% of communication performed via HTTP, socket and RPC connection statements encoded in
-top-popular Android applications from Google Play can be seen as non-essential: these connections do not have any effect on the user-observable application functionality. 
-We explore properties of such ``hidden'' connections, concluding that neither the type nor the communication destination are indicative for the connection being non-essential. 
-Studying syntactic patterns of these connections led us to devising a static analysis technique that 
-is able to detect those with 84\% -90\% precision and 63\%-64\% recall, depending on whether the advertisement content is interpreted as  essential or not. 
-We use our technique to analyze the 500 top-popular Android applications from Google Play, determining that more than 80\% of 
-connection statements in these applications can be deemed non-essential.
-%More specifically, failures to establish connection at these sites are either silently ignored by the application or written to the log file, without being propagated to the user.
-%
-%Inspired by the study, we devise a static application analysis technique for identifying case when connection failures are
-%``silently''  treated, i.e., when information about a connection failure is not propagated back to the application user.
-%We evaluate the technique on the ``truth set'' produced manually during the above empirical analysis and show that it is able to identify xx\% of the ``silent'' information releases, introducing only yy false-positive results. 
-%Applying the analysis on additional zz top-popular applications from Google Play reveals that ww\% of connection sites established by these applications are effectively 
+This paper studies communication patterns in mobile applications.  Our
+analysis shows that 65\% of the HTTP, socket, and RPC communication in
+top-popular Android applications from Google Play have no effect on
+the user-observable application functionality.  We present a static
+analysis that is able to detect non-essential communication with 84\%
+-90\% precision and 63\%-64\% recall, depending on whether
+advertisement content is interpreted as essential or not.  We use our
+technique to analyze the 500 top-popular Android applications from
+Google Play and determine that more than 80\% of the connection statements
+in these applications are non-essential.
 \end{abstract}
 
 % A category with the (minimum) three required fields
