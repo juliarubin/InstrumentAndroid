@@ -114,7 +114,7 @@ There are two special cases that our technique is not designed to handle: (1) \e
 advertisement content usually falls into that category. (2) \emph{stateful} communication, for which failures leave the 
 connection target in a state different from the one it has after a successful communication, and further communication is influenced by the server's state. Our experiments show that such cases are rare. 
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf RQ3: How well does static detection perform?}
 To assess the quality of our technique, we evaluate it on the ``truth set'' established during our empirical analysis of applications from Google Play.
@@ -122,7 +122,7 @@ The results show that it features a high precision -- 83\% of the identified con
 There are 18 connections in total that are miss-classified as non-essential. Out of these, 16 correspond to optional application behaviors and the remaining 2 -- to stateful communication. Counting advertisement content as non-essential
 gives the overall precision and recall of 90\% and 65\%, respectively.  
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf RQ4: How often does non-essential communication occur in real-life applications and what are its most common destinations?}
 Applying the analysis on the top 500 popular applications from Google Play reveals that 84\% of connection sites encoded in these applications can be deemed non-essential.
@@ -130,7 +130,7 @@ Most common target of non-essential communication are various Google services fo
 that applications commonly register for various such services without eventually using them. 
 Additional common targets are advertisement, analytics and gaming services. 
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf Significance of the Work.}  Our work focuses on benign mobile
 applications that can be downloaded from popular application stores
@@ -143,11 +143,12 @@ applications~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10,Egele:Kruege
 elimination of these violations in current Android applications
 provides encouraging evidence that such an improvement is feasible.
 
-\vspace{0.1in}
+\vspace{0.05in}
 \noindent 
 {\bf Contributions.}
 The paper makes the following contributions:
 
+\vspace{-0.1in}
 \begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.01in}
 
 \item It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. The goal is to improve the
