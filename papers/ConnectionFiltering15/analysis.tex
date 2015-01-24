@@ -159,20 +159,29 @@ Precise, whole-program analysis runs the high-risk of missing dynamic
 program behavior and not scaling to real-world Android
 application~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
 
-After much experimentation with analysis choices, we choose to
-implement a best-effort, conservative and scalable whole-program
-analysis coupled with local data-flow analysis. Our analysis builds a
-call graph using class hierarchy analysis (CHA)
-analysis~\cite{Dean1995} and augments the call graph to account for
-reflected method calls.  Our failure-handling analysis
-over-approximates the runtime behaviors of the applications, and
-under-approximates the connection calls that could be non-essential.
+Our analysis employs a class hierarchy analysis (CHA)~\cite{Dean1995}
+to build a call graph with refinement achieved by intra-procedural
+data-flow analysis.  After much experimentation with higher-precision,
+though brittle, points-to analysis techniques, this analysis
+combination gave us the best performance for the classification task.
+We augment the call graph to account for reflected method calls, and
+conservatively account for exceptions that can be thrown by native
+code.  Our failure-handling analysis over-approximates the runtime
+behaviors of the applications, and under-approximates the connection
+calls that could be non-essential.
 
 The presented analysis has the following limitations. Dynamically
-loaded code will not be considered.  The analysis considers only checked
+loaded code is not be considered.  The analysis considers only checked
 exceptions.  A best-effort, though very aggressively policy is used to
 account for reflection semantics; this policy could miss possible
 runtime semantics.
+
+Our analysis is implemented in the Soot Java Analysis
+Framework~\cite{Vallee-Rai2000} and utilizes libraries and the Android
+API model provided by
+DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
+presentation of the analysis below assumes the application is
+represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 
 \subsection{Call Graph Construction}
 
