@@ -24,7 +24,7 @@
 \section{Communication in Android}
 \label{sec:study} 
 
-In this section, we first describe the design of the study that we conducted to gain more insights into the nature of communication performed by Android applications. We then discuss the study results. 
+In this section, we describe the design of the study that we conducted to gain more insights into the nature of communication performed by Android applications. We then discuss the study results. 
 
 \subsection{Design of the Study}
 
@@ -34,7 +34,6 @@ In this section, we first describe the design of the study that we conducted to 
 The list of the connection statements that we consider in our study is given in Table~\ref{tbl:connections}.
 The first three are responsible for establishing HTTP connections with backend servers, the forth one provides socket-based communication and the last one allows 
 RPC communication with other applications and services installed on the same mobile device. 
-
 
 
 \begin{table*}[t]
@@ -136,6 +135,7 @@ We thus have chosen to manually record the desired application execution scenari
     }
     \caption{Visual differences.}
     \label{fig:screenshots}
+    \vspace{-0.1in}
 \end{figure}
 
 For the comparison of application executions, we started by following the approach in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where screenshots from two different runs are placed side-by-side, 
@@ -188,6 +188,7 @@ We also excluded two applications whose asm-based instrumentation failed, most p
 The remaining ten applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding sizes are given in the second column of the table. 
 We did not extend our dynamic analysis beyond these ten applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. As such, inclusion of additional ones was not expected to provide substantially new insights. 
 
+\vspace{-0.05in}
 \subsection{Results}
 The quantitative results of the study are presented in columns~3--7 of Table~\ref{tbl:applications}. 
 Column 3 and 4 of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 

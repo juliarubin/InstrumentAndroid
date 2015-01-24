@@ -60,11 +60,14 @@ public class AdvertisingAPIClass {
     }
 }
 \end{lstlisting}
-\caption{\label{fig:failure-handling}An example of failure handling of
-  of a connection call at line ~\ref{connect-fig-line}.  Statements
-  {\it stmtF}, \lstinline!throw new! \lstinline!AdvertisingException()!, and {\it stmtB}
-  are in the failure handling of this statement for exception \lstinline!RemoteException!.
+\vspace{-0.2in}
+\caption{\label{fig:failure-handling}An example of failure handling.
+% of
+%  of a connection call at line ~\ref{connect-fig-line}.  Statements
+%  {\it stmtF}, \lstinline!throw new! \lstinline!AdvertisingException()!, and {\it stmtB}
+%  are in the failure handling of this statement for exception \lstinline!RemoteException!.
 }
+\vspace{-0.1in}
 \end{figure}
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
@@ -188,6 +191,7 @@ DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
 presentation of the analysis below assumes the application is
 represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 
+\vspace{-0.05in}
 \subsection{Call Graph Construction}
 
 %%  A call graph represents the possible dynamic calling
@@ -229,9 +233,8 @@ then we limit the edges to only targets that have the same number and
 types of arguments.  This strategy works well for us in
 practice and aggressively accounts for reflection semantics.
 
-
+\vspace{-0.05in}
 \subsection{Failure Handler Analysis}
-
 We organize the static failure-handling analysis as a recursive
 traversal on the call graph for ease of understanding.  An iterator
 over all application statements calls the analysis separately for the
@@ -294,7 +297,9 @@ connection calls and each method's associated failure exception.
 
 \EndProcedure
 \end{algorithmic}
+\vspace{-0.05in}
 \caption{Find \lstinline!catch! blocks for exception thrown at statement.}\label{alg:findcatches}
+\vspace{-0.2in}
 \end{figure}
 
 The analysis starts with the \textsc{FindCatches} procedure listed in
@@ -389,6 +394,7 @@ cg)
 \end{algorithmic}
 \caption{Analyze reachable statements during handling for UI
   interaction or rethrown exceptions.}\label{alg:analyzehandler}
+\vspace{-0.05in}
 \end{figure}
 
 For each \lstinline!catch! that is found during the
@@ -559,6 +565,7 @@ line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
 \caption{For an exception statement $stmt$ and $stmt$'s containing
   method, return the possible exception types that flow to
   $stmt$}\label{alg:GetPossibleThrownTypes}
+  \vspace{-0.1in}
 \end{figure}
 
 Figure~\ref{alg:GetPossibleThrownTypes} gives the algorithm for
@@ -581,7 +588,6 @@ situation causes the examined connection call or rethrown statement in
 \textsc{AnalyzeHandler} to be labeled essential (we have not included
 the code in the algorithms to propagate this situation to the
 essential set, though it is in our implementation).
-
 
 
 \subsection{Helper Procedures}
