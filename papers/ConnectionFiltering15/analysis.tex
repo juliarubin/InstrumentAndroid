@@ -1,6 +1,8 @@
 \section{Failure-Handling Analysis}
 \label{sec:analysis}
 
+\lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=false]+
+
 In this section we describe the static analysis algorithm we employ to
 automatically classify connections.  Given an Android application, the
 static analysis classifies each statement that may invoke a
@@ -60,7 +62,7 @@ public class AdvertisingAPIClass {
 \end{lstlisting}
 \caption{\label{fig:failure-handling}An example of failure handling of
   of a connection call at line ~\ref{connect-fig-line}.  Statements
-  {\it stmtF}, \lstinline!throw new AdvertisingException()!, and {\it stmtB}
+  {\it stmtF}, \lstinline!throw new! \lstinline!AdvertisingException()!, and {\it stmtB}
   are in the failure handling of this statement for exception \lstinline!RemoteException!.
 }
 \end{figure}
@@ -87,17 +89,17 @@ that handles $e$ and any failure triggered by the handling of $e$
 exceptions triggered by $e$ are handled and flow returns to normal
 execution.  
 
-Figure~\ref{fig:failure-handling} give a simplified representation of 
-failure handling pattern that we observed in the twitter application. 
-Method \lstinline!f! invokes method
-\lstinline!g!.  In \lstinline!g!, a connection call is encountered on
-line~\ref{connect-fig-line}; assume during execution this connection call
-throws a \lstinline!RemoteException!.  The failure handling for this
-combination of connection call and exception is the set of statements:
-{\it stmtF}, \lstinline!throw new AdvertisingException()!, and {\it stmtB}.
-These statements are executed from the start of the handling of thrown
-\lstinline!RemoteException! to the end of the handling of the rethrown
-\lstinline!AdvertisingException!.
+Figure~\ref{fig:failure-handling} give a simplified representation of
+failure handling pattern that we observed in the twitter application.
+Method \lstinline!f! invokes method \lstinline!g!.  In \lstinline!g!,
+a connection call is encountered on line~\ref{connect-fig-line};
+assume during execution this connection call throws a
++RemoteException+.  The failure handling for this
+connection call and exception is the set of statements:
+{\it stmtF}, \lstinline!throw new! +AdvertisingException()+,
+and {\it stmtB}.  These statements are executed from the start of the
+handling of thrown \lstinline!RemoteException! to the end of the
+handling of the rethrown \lstinline!AdvertisingException!.
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 \item \textsc{\bfseries{Problem}}: Analyze each connection call,
@@ -421,6 +423,8 @@ calculated as essential.  After all connection call statement and
 exception pairs are analyzed, pairs not in the essential set are
 considered non-essential.
 
+\lstDeleteShortInline+
+
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
 
 \begin{table}[t]
@@ -450,6 +454,7 @@ considered non-essential.
 \end{table}
 
 \lstDeleteShortInline+
+
 
 
 The set of target methods that are considered as affecting the user
