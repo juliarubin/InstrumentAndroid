@@ -1,10 +1,11 @@
 \section{Conclusions}
 \label{sec:conclusions}
-%An empirical analysis of multiple top-popular Android application from the Google Play store,
-%reveals that a large number of information release sites exercised by the applications do not lead to any noticeable affect on the observable application functionality. 
-%More specifically, failures to establish connection at these sites are either silently ignored by the application or written to the log file, without being propagated to the user.
-%
-%Inspired by the study, we devise a static application analysis technique for identifying case when connection failures are
-%``silently''  treated, i.e., when information about a connection failure is not propagated back to the application user.
-%We evaluate the technique on the ``truth set'' produced manually during the above empirical analysis and show that it is able to identify xx\% of the ``silent'' information releases, introducing only yy false-positive results. 
-%Applying the analysis on additional zz top-popular applications from Google Play reveals that ww\% of connection sites established by these applications are effectively
+
+Non-essential communication can impair the transparency of device
+operation, silently consume device resources, and ultimately undermine
+user trust in the mobile application ecosystem. Our analysis shows
+that non-essential communication is quite common in 
+top-popular Android applications in the Google Play store. Fortunately,
+our static analysis can support the identification and removal of
+non-essential communication and promote the development of more
+transparent and trustworthy mobile applications. 
