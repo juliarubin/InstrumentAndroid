@@ -168,6 +168,12 @@ reflected method calls.  Our failure-handling analysis
 over-approximates the runtime behaviors of the applications, and
 under-approximates the connection calls that could be non-essential.
 
+The presented analysis has the following limitations. Dynamically
+loaded code will not be considered.  The analysis considers only checked
+exceptions.  A best-effort, though very aggressively policy is used to
+account for reflection semantics; this policy could miss possible
+runtime semantics.
+
 \subsection{Call Graph Construction}
 
 Our algorithm first computes a static call graph based on CHA
