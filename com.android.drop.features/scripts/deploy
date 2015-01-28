@@ -3,8 +3,8 @@
 set apkDir = /Volumes/D/data/minst/apks/
 set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
 #set device = emulator-5554
-#set device = ZX1D322N92
-set device = 04c49ef15a48183f
+set device = ZX1D322N92
+#set device = 04c49ef15a48183f
 
 #/Users/mjulia/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/tools/emulator -avd android_4.4.2 -partition-size 2048 &
 

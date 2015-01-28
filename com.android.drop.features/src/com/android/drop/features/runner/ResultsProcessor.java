@@ -26,7 +26,7 @@ public class ResultsProcessor {
 	public static String[] apps = {
 	"air.com.sgn.cookiejam.gp",
 	"com.crimsonpine.stayinline",
-	"com.facebook.katana",
+//	"com.facebook.katana",
 	"com.grillgames.guitarrockhero",
 	"com.king.candycrushsaga",
 	"com.pandora.android",
@@ -37,7 +37,7 @@ public class ResultsProcessor {
 	};
 	
 //	public static String[] apps = {
-//		"cair.com.sgn.cookiejam.gp"
+//		"com.pandora.android"
 //	};
 	
 	public static String RES_DIR = "/Volumes/D/data/minst/conf/";
@@ -50,7 +50,10 @@ public class ResultsProcessor {
 	public static HashSet<String> staticUnhandled;
 	public static HashSet<String> staticUnknown;
 	
+	static float totalPrecision = 0, totalRecall =0, withAdsPrecision = 0, withAdsRecall=0;
+	
 	public static void main(String[] args) {
+		 
 	
 		for (String app : apps) {
 			System.out.println("\n**** " + app + " ****");
@@ -64,18 +67,22 @@ public class ResultsProcessor {
 			staticUnknown = new HashSet<String>();
 			
 			readDynamicResults(RES_DIR + app + "_toBlock1_final.txt");
-			readStaticResults(RES_DIR + "connection-exception-analysis.20150120_0000/" + app + "/droidsafe-gen/connection-error-analysis.txt");
+			readStaticResults(RES_DIR + "connection-exception-analysis.20150122_1400/" + app + "/droidsafe-gen/connection-error-analysis.txt");
 			//compare();
-//			compare1();
+//		compare1();
 			stat1();
 		}
+		
+		System.out.println("=====");
+		System.out.println("Precision =  " + (totalPrecision / apps.length) + "  Recall = " + (totalRecall / apps.length) +
+				" with ads as non-essential " + "Precision =  " + (withAdsPrecision / apps.length) + "  Recall = " + (withAdsRecall / apps.length));
 	}
 
 	private static void stat1() {
-		float ads = 0;
+		float expectedAds = 0;
 		for (String s : dynamicNeeded) {
-			if (s.contains("needed") && s.contains("ad")) {
-				ads++;
+			if (s.contains("needed") && s.contains("ads")) {
+				expectedAds++;
 			}
 		}
 		
@@ -84,52 +91,66 @@ public class ResultsProcessor {
 				" (" + (1.0*(dynamicNeeded.size() + dynamicUnneeded.size())/(dynamicNeeded.size() + dynamicNotCalled.size() + dynamicUnneeded.size())) + ")" +
 				" non-essential " + dynamicUnneeded.size() + 
 				" (" + (1.0*dynamicUnneeded.size()/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")" +
-				" ads = " + ads + 
-				" (" + (ads/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")" +
-				" essential excluding ads " + (dynamicNeeded.size() - ads) + 
-				" (" + (1.0*(dynamicNeeded.size() -ads)/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")"
+				" ads = " + expectedAds + 
+				" (" + (expectedAds/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")" +
+				" essential excluding ads " + (dynamicNeeded.size() - expectedAds) + 
+				" (" + (1.0*(dynamicNeeded.size() -expectedAds)/(dynamicNeeded.size() + dynamicUnneeded.size())) + ")"
 				);
 		
 		
-		float correctNonEssential = 0, mistakesAds = 0, mistakes = 0;
+		float correctNonEssential = 0, neededForAds = 0;
 		
 		for (String s : staticUnhandled) {
 			if (dynamicUnneeded.contains(s)) {
 				correctNonEssential++;
 			}
 			else {
-				mistakes++;			
-				String needed = getDynamicNeeded(s);
-				if (needed.contains("needed") && needed.contains("ad")) {
-					 mistakesAds++;
-				 }
+				String n = getDynamicNeeded(s);
+				if (isAd(getDynamicNeeded(s))) {
+					 neededForAds++;
+				}
 				else {
-					System.out.println(s);
+					System.out.println("Static unhandled/dynamic needed (exc. ads): " + s);
 				}
 			}
 		}
+			
 		
-//		System.out.println("Correctly detected non-essential " + correctNonEssential + "/" + dynamicUnneeded.size() +
+//		System.out.println("Correctly detected non-essential (precision) " + correctNonEssential + "/" + staticUnhandled.size() +
+//				" (" + (correctNonEssential*1.0/staticUnhandled.size()) + ")" +
+//				" recall " + correctNonEssential + "/" + dynamicUnneeded.size() +
 //				" (" + (correctNonEssential*1.0/dynamicUnneeded.size()) + ")" +
-//				" ads " + correctAds + "/" + ads + 
-//				" (" + (correctAds*1.0/ads) + ")" +
+//				" missclasified non-essentials (FP) " +
 //				" FP " + mistakes + "/" + staticUnhandled.size() +
-//				" (" + (mistakes/staticUnhandled.size()) + ")" 
+//				" (" + (mistakes/staticUnhandled.size()) + ")" + 
+//				" out of those ads " + mistakesAds
 //				); 
-				
-		System.out.println("Correctly detected non-essential (precision) " + correctNonEssential + "/" + staticUnhandled.size() +
-				" (" + (correctNonEssential*1.0/staticUnhandled.size()) + ")" +
+		
+		double p = correctNonEssential*1.0/staticUnhandled.size();
+		double r = correctNonEssential*1.0/dynamicUnneeded.size();
+		double p1 = (correctNonEssential+neededForAds)*1.0/(staticUnhandled.size());
+		double r1  = (correctNonEssential+neededForAds)*1.0/(dynamicUnneeded.size()+neededForAds);
+		
+		System.out.println("Correctly detected non-essentials: precision " + correctNonEssential + "/" + staticUnhandled.size() +
+				" (" + p + ")" +
 				" recall " + correctNonEssential + "/" + dynamicUnneeded.size() +
-				" (" + (correctNonEssential*1.0/dynamicUnneeded.size()) + ")" +
-				" missclasified non-essentials (FP) " +
-				" FP " + mistakes + "/" + staticUnhandled.size() +
-				" (" + (mistakes/staticUnhandled.size()) + ")" + 
-				" out of those ads " + mistakesAds
-				
-//				" recall including ads" + (correctNonEssential + mistakesAds) + "/" + (dynamicUnneeded.size() + ads) +
-//				" (" + ((correctNonEssential + mistakesAds)/(dynamicUnneeded.size() + ads)) + ")"
+				" (" + r + ")" +
+				" including ads as non-essential: " +
+				" precision " + (correctNonEssential+neededForAds) + "/" + (staticUnhandled.size()) +
+				" (" + p1 + ")" +
+				" recall " + (correctNonEssential+neededForAds) + "/" + (dynamicUnneeded.size()+neededForAds) +
+				" (" + r1 + ")" 
 				); 
 		
+		totalPrecision += p;
+		totalRecall += r;
+		withAdsPrecision += p1;
+		withAdsRecall += r1;
+		
+	}
+
+	private static boolean isAd(String s) {
+		return (s.contains("needed") && s.contains("ads"));
 	}
 
 	private static void compare1() {
@@ -144,16 +165,16 @@ public class ResultsProcessor {
 			}
 		}
 		
-//		for (String s : dynamicUnneeded) {
-//			if (!staticUnhandled.contains(s)) {
-//				if (staticHandled.contains(s)) {
-//					System.out.println("Dynamic unneeded/Static handled: " + s);
-//				}
-//				if (staticUnknown.contains(s)) {
-//					System.out.println("Dynamic unneeded/Static unknown: " + s);
-//				}
-//			}
-//		}
+		for (String s : dynamicUnneeded) {
+			if (!staticUnhandled.contains(s)) {
+				if (staticHandled.contains(s)) {
+					//System.out.println("Dynamic unneeded/Static handled: " + s);
+				}
+				if (staticUnknown.contains(s)) {
+					System.out.println("Dynamic unneeded/Static unknown: " + s);
+				}
+			}
+		}
 		
 		System.out.println("Static unhandled = " + staticUnhandled.size() + "; dynamic unneeded = " + dynamicUnneeded.size() + 
 		"; overlap = " + correct + "; static unhandled but dymanic needed = " + incorrect);

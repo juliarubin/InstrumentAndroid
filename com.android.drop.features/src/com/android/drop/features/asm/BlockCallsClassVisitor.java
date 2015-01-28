@@ -28,15 +28,15 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 				
 		MethodVisitor mv = classWriterVisitor.visitMethod(access, name, desc, signature, exceptions);
 		
-//		//julia debug
-//				if (
-//						(this.name.startsWith("com/google/android/gms/internal/v") && name.startsWith("af")) 
-//					) {
-//					AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
-//							"HERE " + this.name + "." + name + desc + " from " + signature, 2);
-//					AsmUtils.addPrintStackTrace(mv);
-//					
-//				}
+		//julia debug
+				if (
+						(ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/mobile/android/cosmos/ParsingCallbackReceiver") && name.startsWith("onError")) 
+					) {
+					AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
+							"HERE1 " + this.name + "." + name + desc + " from " + signature, 2);
+					AsmUtils.addPrintStackTrace(mv);
+					
+				}
 		
 		BlockMethodAdapter methodAdapter = new BlockMethodAdapter(Opcodes.ASM5, mv, this.name, access, name, desc);
 
@@ -73,15 +73,35 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 			if (!statementsToBlock.containsKey(methodSigniture)) {
 				super.visitMethodInsn(opcode, owner, name, desc, itf);
 				
-//				//julia debug
-//				if (
-//						(owner.startsWith("com/google/android/gms/internal/v") && name.startsWith("af")) 
-//					) {
-//					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-//							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
-//					AsmUtils.addPrintStackTrace(mv);
-//					
-//				}
+				//julia debug
+				if (
+						(owner.startsWith("com/spotify/cosmos/android/router/internal/ResolveCallbackReceiver") && name.startsWith("sendOnError")) 
+					) {
+					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
+					AsmUtils.addPrintStackTrace(mv);
+					
+				}
+				
+				//julia debug
+				if (
+						(ClassHierarchy.getInstance().isAncestors(owner, "com/spotify/cosmos/android/Resolver$CallbackReceiver") && name.startsWith("onError")) 
+					) {
+					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
+					AsmUtils.addPrintStackTrace(mv);
+					
+				}
+				
+				if (
+						(ClassHierarchy.getInstance().isAncestors(owner, "com/spotify/mobile/android/cosmos/ParsingCallbackReceiver") && name.startsWith("onError")) 
+					) {
+					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
+					AsmUtils.addPrintStackTrace(mv);
+					
+				}
+				
 				
 				return;
 			}
@@ -96,7 +116,7 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 				}
 			}
 			
-			boolean toBlock = false;
+			boolean toBlock = true;
 
 			if (!found || !toBlock) {
 				super.visitMethodInsn(opcode, owner, name, desc, itf);
