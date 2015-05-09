@@ -30,10 +30,22 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 		
 		//julia debug
 				if (
-						(ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/mobile/android/cosmos/ParsingCallbackReceiver") && name.startsWith("onError")) 
+				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ap$a$a") && name.contains("init") ||
+				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/aq$a$a") && name.contains("init") ||
+					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/aq$a$a") && name.contains("a") ||
+					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ap$a$a") && name.contains("a") ||
+					ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/cosmos/android/router/internal/IResolveCallbackReceiver$Stub$Proxy") && name.contains("init") ||
+					ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/mobile/android/service/p") && name.contains("init") ||
+					name.contains("onTransact") 
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/ads/AdView") && name.startsWith("onLayout")
+					//this.name.startsWith("com/mopub/mobileads/AdFetchTask") && name.startsWith("fetch") ||
+					//ClassHierarchy.getInstance().isAncestors(this.name, "com/mopub/mobileads/AdLoadTask") && name.startsWith("execute") ||
+//						
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/mopub/mobileads/AdViewController") && name.startsWith("setAdContentView") ||
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/mopub/mobileads/CustomEventBanner") && name.startsWith("loadBanner")
 					) {
 					AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
-							"HERE1 " + this.name + "." + name + desc + " from " + signature, 2);
+							"HERE " + this.name + "." + name + desc + " from " + signature, 2);
 					AsmUtils.addPrintStackTrace(mv);
 					
 				}
@@ -73,36 +85,16 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 			if (!statementsToBlock.containsKey(methodSigniture)) {
 				super.visitMethodInsn(opcode, owner, name, desc, itf);
 				
-				//julia debug
-				if (
-						(owner.startsWith("com/spotify/cosmos/android/router/internal/ResolveCallbackReceiver") && name.startsWith("sendOnError")) 
-					) {
-					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
-					AsmUtils.addPrintStackTrace(mv);
-					
-				}
-				
-				//julia debug
-				if (
-						(ClassHierarchy.getInstance().isAncestors(owner, "com/spotify/cosmos/android/Resolver$CallbackReceiver") && name.startsWith("onError")) 
-					) {
-					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
-					AsmUtils.addPrintStackTrace(mv);
-					
-				}
-				
-				if (
-						(ClassHierarchy.getInstance().isAncestors(owner, "com/spotify/mobile/android/cosmos/ParsingCallbackReceiver") && name.startsWith("onError")) 
-					) {
-					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-							"HERE " + owner + "." + name + desc + " from " + methodSigniture, 2);
-					AsmUtils.addPrintStackTrace(mv);
-					
-				}
-				
-				
+//				//julia debug
+//				if (
+//						methodSigniture.startsWith("com/google/android/gms/internal/ap$a$a.show") && name.contains("transact")
+//					) {
+//					AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
+//							"HERE1 " + owner + "." + name + desc + " from " + methodSigniture, 2);
+//					AsmUtils.addPrintStackTrace(mv);
+//					
+//				}
+								
 				return;
 			}
 
@@ -133,9 +125,11 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 			//if the call knows to throw an exception --> do that
 			//if the call is within a try block --> throw any catched exception
 			//if method knows to throw exceptions --> throw any of these exceptions
-			//otherwise, just exit the method
+			//otherwise, just exit the method	
 			
-			if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
+			if (
+/*					
+				(owner.equals("java/net/URL") && name.equals("openConnection")) ||
 				(owner.equals("java/net/URL") && name.equals("openStream")) ||
 			   (ClassHierarchy.getInstance().isAncestors(owner, "java/net/URLConnection") && name.equals("connect")) ||
 		       (ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpURLConnection") && name.equals("connect")) ||
@@ -146,15 +140,34 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 			    (owner.equals("org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
 			    (owner.equals("java/net/Socket") && name.equals("getOutputStream")) ||
 				(owner.equals("javax/net/ssl/SSLSocket") && name.equals("getOutputStream")) ||
-				(owner.equals("org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream")))
-				{
-					super.visitMethodInsn(opcode, owner, name, desc, itf);
-					mv.visitTypeInsn(NEW, "java/io/IOException");
-					mv.visitInsn(DUP);
-					mv.visitLdcInsn("BLOCKED CONNECT");
-					mv.visitMethodInsn(INVOKESPECIAL, "java/io/IOException", "<init>", "(Ljava/lang/String;)V", false);
-					mv.visitInsn(ATHROW);
-					return;
+				(owner.equals("org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream"))
+*/				
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/client/HttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/impl/CloseableHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "android/net/http/AndroidHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "javax/net/ssl/HttpsURLConnection") && name.equals("connect")) ||
+					
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URL") && name.equals("openConnection")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URL") && name.equals("openStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URLConnection") && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpURLConnection") && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpsURLConnection") && name.equals("connect")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/JarURLConnection") && name.equals("connect")) ||
+					
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/Socket") && name.equals("getOutputStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "javax/net/ssl/SSLSocket") && name.equals("getOutputStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream"))
+				)
+			{
+				//super.visitMethodInsn(opcode, owner, name, desc, itf);
+				mv.visitTypeInsn(NEW, "java/io/IOException");
+				mv.visitInsn(DUP);
+				mv.visitLdcInsn("BLOCKED CONNECT");
+				mv.visitMethodInsn(INVOKESPECIAL, "java/io/IOException", "<init>", "(Ljava/lang/String;)V", false);
+				mv.visitInsn(ATHROW);
+				return;
 			}
 //			if (owner.equals("android/os/Parcel") && name.equals("obtain")) {
 //				mv.visitVarInsn(ASTORE, 1);
@@ -181,6 +194,8 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 //				mv.visitInsn(ATHROW);
 //				return;
 //			}
+			
+			//(ClassHierarchy.getInstance().isAncestors(owner, "libcore/io/Posix") && name.equals("<init>"))
 			
 //			if (owner.equals("android/webkit/WebView") && name.equals("loadUrl")) {
 //				

@@ -1,11 +1,14 @@
 % This is "sig-alternate.tex" V2.0 May 2012
 % This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
-\documentclass[preprint]{sig-alternate}
-
+%\documentclass[preprint]{sig-alternate}
+\documentclass[conference]{IEEEtran}
 
 % http://hughanchor.blogspot.com/2006/01/pdflatex-and-letter-paper.html
 %\setlength{\pdfpagewidth}{8.5in}
 %\setlength{\pdfpageheight}{11in}
+
+\pagestyle{plain}
+\pagenumbering{arabic}
 
 
 %\documentclass[10pt, letterpaper, conference, compsocconf, nofonttune]{IEEEtran}
@@ -172,42 +175,44 @@
 
 \title{Non-Essential Communication in Mobile Applications}
 
-\numberofauthors{1}
-\author{
-\alignauthor
-Julia Rubin\textsuperscript{1}, Michael I. Gordon\textsuperscript{1}, Nguyen Nguyen\textsuperscript{2}, and Martin Rinard\textsuperscript{1} \\
-      \affaddr{\textsuperscript{1}Massachusetts Institute of Technology}\\
-      \affaddr{\textsuperscript{2}Global InfoTek, Inc}\\
-}
-
-
-%\numberofauthors{3}
+%%\numberofauthors{1}
 %\author{
 %\alignauthor
-%Julia Rubin \\
-%       \affaddr{University of Toronto, Canada}\\
-%       \affaddr{and}\\
-%       \affaddr{IBM Research at Haifa, Israel}\\
-%       \email{mjulia@il.ibm.com}
-%\alignauthor
-%Andrei Kirshin \\
-%       \affaddr{IBM Research at Haifa, Israel}\\
-%       \email{kirshin@il.ibm.com}
+%Julia Rubin\textsuperscript{1}, Michael I. Gordon\textsuperscript{1}, Nguyen Nguyen\textsuperscript{2}, and Martin Rinard\textsuperscript{1} \\
+%      \affaddr{\textsuperscript{1}Massachusetts Institute of Technology}\\
+%      \affaddr{\textsuperscript{2}Global InfoTek, Inc}\\
 %}
+
+\author{\IEEEauthorblockN{Julia Rubin\IEEEauthorrefmark{1},
+Michael I. Gordon\IEEEauthorrefmark{1},
+Nguyen Nguyen\IEEEauthorrefmark{4}
+and Martin Rinard\IEEEauthorrefmark{1}}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Massachusetts Institute of Technology, USA}
+\IEEEauthorblockA{\IEEEauthorrefmark{4}Global InfoTek, Inc, USA}
+\IEEEauthorblockN{mjulia@mit.edu, mgordon@mit.edu, nguyen@uwinsoftware.com, rinard@mit.edu}
+}
+
 
 
 \maketitle
 \begin{abstract}
-This paper studies communication patterns in mobile applications.  Our
-analysis shows that 65\% of the HTTP, socket, and RPC communication in
-top-popular Android applications from Google Play have no effect on
-the user-observable application functionality.  We present a static
-analysis that is able to detect non-essential communication with 84\%
--90\% precision and 63\%-64\% recall, depending on whether
-advertisement content is interpreted as essential or not.  We use our
-technique to analyze the 500 top-popular Android applications from
-Google Play and determine that more than 80\% of the connection statements
-in these applications are non-essential.
+%This paper studies communication patterns in mobile applications.  Our
+%analysis shows that 65\% of the HTTP, socket, and RPC communication in
+%top-popular Android applications from Google Play have no effect on
+%the user-observable application functionality.  We present a static
+%analysis that is able to detect non-essential communication with 84\%
+%-90\% precision and 63\%-64\% recall, depending on whether
+%advertisement content is interpreted as essential or not.  We use our
+%technique to analyze the 500 top-popular Android applications from
+%Google Play and determine that more than 80\% of the connection statements
+%in these applications are non-essential.
+This paper studies communication patterns in mobile applications. Our analysis
+shows that more than 50\% of the external communication made by top-popular
+Android applications from Google Play has no effect on the user-observable
+application functionality. To detect such communication in an efficient
+manner, we propose a highly precise and scalable static-analysis technique. We
+use our technique to analyze the 500 top-popular applications and present a
+detailed summary of our findings.
 \end{abstract}
 
 % A category with the (minimum) three required fields

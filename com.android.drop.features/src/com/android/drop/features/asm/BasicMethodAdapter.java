@@ -24,19 +24,22 @@ public class BasicMethodAdapter extends AdviceAdapter {
         this.instrumentationType = instrumentationType;
 	}
 
-	/*
+	
 	protected boolean isConnection(String owner, String name) {
 		if ((owner.equals("java/net/URL") && name.equals("openConnection")) ||
 			(owner.equals("java/net/URL") && name.equals("openStream")) ||
 			//(owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
 			(owner.equals("org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
 			(owner.equals("org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
+//			               org/apache/http/impl/client/DefaultHttpClient
+//			               org/apache/http/impl/client/AbstractHttpClient
+			(owner.equals("android/net.http/AndroidHttpClient") && name.equals("execute")) ||
 			(owner.equals("java/net/URL") && name.equals("openStream")) ||
 			(owner.equals("android/webkit/WebView") && name.equals("loadUrl")) ||
 			(owner.equals("android/webkit/WebView") && name.equals("loadData")) ||
 			(owner.equals("java/net/DatagramSocket") && name.equals("send")) ||
 			(owner.equals("OpenSSLSocketImpl$SSLOutputStream") && name.equals("write")) ||
-			(owner.equals("java.net.Socket") && name.equals("connect")) ||
+			(owner.equals("java/net/Socket") && name.equals("connect")) ||
 			(owner.equals("libcore/io/Posix") && name.equals("sendto")) ||
 			(owner.equals("libcore/io/Posix") && name.equals("sendtoBytes")) ||
 			(owner.equals("libcore/net/http/HttpsURLConnectionImpl") && name.equals("getInputStream")) ||
@@ -51,5 +54,5 @@ public class BasicMethodAdapter extends AdviceAdapter {
 			return false;
 		}
 	}
-	*/
+	
 }

@@ -5,7 +5,7 @@ public class Constants {
 	
 //top 20
 //	public static String APP_NAME = "com.facebook.orca";  //INSTRUMENTATION FAILS. TOO LARGE?
-	public static String APP_NAME = "com.facebook.katana"; //DONE. dynamically loads classes from resources that do teh connection
+//	public static String APP_NAME = "com.facebook.katana"; //DONE. dynamically loads classes from resources that do teh connection
 //	public static String APP_NAME = "com.pandora.android"; //DONE 
 //	public static String APP_NAME = "com.instagram.android"; //INSTRUMENTED VERSION DOES NOT WORK. Something with annotations.
 //	public static String APP_NAME = "com.snapchat.android"; //CHAT excluded
@@ -18,7 +18,7 @@ public class Constants {
 //	public static String APP_NAME = "com.twitter.android"; //DONE
 //	public static String APP_NAME = "kik.android"; //CHAT - excluded
 //	public static String APP_NAME = "com.whatsapp";   //CHAT - excluded
-//	public static String APP_NAME = "com.spotify.music"; //DONE
+	public static String APP_NAME = "com.spotify.music"; //DONE
 //	public static String APP_NAME = "net.zedge.android"; //DONE
 //	public static String APP_NAME = "com.crimsonpine.stayinline"; //DONE
 //	public static String APP_NAME = "air.com.sgn.cookiejam.gp"; //DONE
@@ -36,6 +36,8 @@ public class Constants {
 	//public static String APP_NAME = "com.cleanmaster.mguard";
 	//public static String APP_NAME = "com.facebook.katana";
 	//public static String APP_NAME = "com.appershopper.ios7lockscreen";
+	
+	//public static String APP_NAME = "com.netthreads.android.noiz2";
 	
 	public static String BASE_DIR = "/Volumes/D/data/minst/";
 	

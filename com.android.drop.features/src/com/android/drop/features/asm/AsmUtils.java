@@ -107,5 +107,13 @@ public class AsmUtils {
 			mv.visitInsn(Opcodes.ARETURN);
 		}
 	}
+	
+	public static void addThrow(MethodVisitor mv, final String exception, final String msg) {
+		mv.visitTypeInsn(Opcodes.NEW, exception);
+		mv.visitInsn(Opcodes.DUP);
+		mv.visitLdcInsn(msg);
+		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, exception, "<init>", "(Ljava/lang/String;)V", false);
+		mv.visitInsn(Opcodes.ATHROW);
+	}
 
 }

@@ -1,10 +1,8 @@
-package com.android.drop.features.runner;
+package com.android.detect.unhandled;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.Date;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
@@ -20,8 +18,9 @@ import com.android.drop.features.asm.PreprocessClassVisitor;
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.DataManager;
+import com.android.drop.features.runner.Utils;
 
-public class Instrumenter {
+public class InstrumenterSensitive {
 	
 	private static final String CLASS_FILE_REGEX = "[^\\s]+\\.class$";
 	private static final String INSTRUMENT = "instrument";
@@ -67,7 +66,7 @@ public class Instrumenter {
 		loopOverFiles(instrumentationType);
 		
 		
-		if (instrumentationType.equals(INSTRUMENT) || instrumentationType.equals(FILTER)) {
+		if (instrumentationType.equals(INSTRUMENT)) {
 			dm.dumpMethodsToFile(Constants.METHOD_DATA_FILE); 
 			dm.dumpStatementsToFile(Constants.STATEMENT_DATA_FILE);
 		}
@@ -99,7 +98,7 @@ public class Instrumenter {
 	            ClassVisitor cv = null;
 	            
 	            if (INSTRUMENT.equals(instrumentationType)) {
-	            	cv = new InstrumentCallsClassVisitor(classWriter, instrumentationType);	            	
+	            	cv = new InstrumentSensitiveCallsClassVisitor(classWriter, instrumentationType);	            	
 	            }
 	            else if (FILTER.equals(instrumentationType)) {
 	            	cv = new FilterCallsClassVisitor(classWriter, instrumentationType);

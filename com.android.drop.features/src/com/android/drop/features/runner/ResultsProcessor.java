@@ -149,7 +149,7 @@ public class ResultsProcessor {
 		
 	}
 
-	private static boolean isAd(String s) {
+	public static boolean isAd(String s) {
 		return (s.contains("needed") && s.contains("ads"));
 	}
 
@@ -257,14 +257,14 @@ public class ResultsProcessor {
 		System.out.println("Unknown: " + staticUnknown.size());
 	}
 	
-	private static boolean containsDynamicNeeded(String s) {
+	public static boolean containsDynamicNeeded(String s) {
 		if (getDynamicNeeded(s) != null) {
 			return true;
 		}
 		return false;
 	}
 	
-	private static String getDynamicNeeded(String s) {
+	public static String getDynamicNeeded(String s) {
 		for (String s1 : dynamicNeeded) {
 			if (s1.contains(s)) {
 				return s1;
@@ -273,7 +273,7 @@ public class ResultsProcessor {
 		return null;
 	}
 
-	private static void readDynamicResults(String filename) {
+	public static void readDynamicResults(String filename) {
 		try {
 	    	BufferedReader br = new BufferedReader(new FileReader(filename));	       
 	        String line = br.readLine();

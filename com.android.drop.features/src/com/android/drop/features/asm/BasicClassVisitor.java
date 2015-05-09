@@ -13,7 +13,7 @@ public class BasicClassVisitor extends ClassNode {
 	protected DataManager dm = Instrumenter.dm;
 	protected String instrumentationType;
 
-	BasicClassVisitor(ClassVisitor classvisitor, String instrumentationType) {
+	public BasicClassVisitor(ClassVisitor classvisitor, String instrumentationType) {
 		super(Opcodes.ASM5);
 		classWriterVisitor = classvisitor;
 		this.instrumentationType = instrumentationType;

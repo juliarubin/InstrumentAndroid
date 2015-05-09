@@ -4,8 +4,6 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import soot.TrapManager;
-
 import com.android.drop.features.data.ClassHierarchy;
 import com.android.drop.features.data.Constants;
 import com.android.drop.features.data.Method;
@@ -48,7 +46,7 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 		  dm.addMethod(m);
 		  //System.out.println("Entering " + methodSigniture);
 		  //julia - enable here to perform filtering
-		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 1);
+		  AsmUtils.addPrintoutStatement(mv, Constants.INST_DEV_LOG_FILE, instrumentationType, Constants.LOG_MARKER + methodSigniture, 2);
 		}
 
 		@Override
@@ -61,10 +59,10 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 //						"CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
 //				AsmUtils.addPrintStackTrace(mv);
 //			}
-			
+//			
 //			if ((owner.equals("android/net/NetworkInfo") && name.equals("isConnected"))) {
 //				AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
-//						"BLOCK CHECK CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
+//						"CHECK CONNECT from " + methodSigniture + " via " + owner + "." + name, 2);
 //				AsmUtils.addPrintStackTrace(mv);
 //				//mv.visitInsn(ICONST_0);
 //			}
@@ -72,21 +70,25 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 			
 			//sources
 			if (
-					(owner.equals("org/apache/http/client/HttpClient") && name.equals("execute")) ||
-					(owner.equals("org/apache/http/impl/CloseableHttpClient") && name.equals("execute")) ||
-					(owner.equals("org/apache/http/client/AbstractHttpClient") && name.equals("execute")) ||
-					(owner.equals("org/apache/http/client/DefaultHttpClient") && name.equals("execute")) ||
-					(owner.equals("java/net/URL") && name.equals("openConnection")) ||
-					(owner.equals("java/net/URL") && name.equals("openStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/client/HttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/impl/CloseableHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/impl/client/AbstractHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/http/impl/client/DefaultHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "android/net/http/AndroidHttpClient") && name.equals("execute")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "javax/net/ssl/HttpsURLConnection") && name.equals("connect")) ||
+					
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URL") && name.equals("openConnection")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URL") && name.equals("openStream")) ||
 					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/URLConnection") && name.equals("connect")) ||
 					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpURLConnection") && name.equals("connect")) ||
 					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/HttpsURLConnection") && name.equals("connect")) ||
 					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/JarURLConnection") && name.equals("connect")) ||
 					
-					(owner.equals("java/net/Socket") && name.equals("getOutputStream")) ||
-					(owner.equals("javax/net/ssl/SSLSocket") && name.equals("getOutputStream")) ||
-					(owner.equals("org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream")) ||
-					(owner.equals("libcore/io/Posix") && name.equals("<init>")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "java/net/Socket") && name.equals("getOutputStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "javax/net/ssl/SSLSocket") && name.equals("getOutputStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "org/apache/harmony/xnet/provider/jsse/OpenSSLSocketImpl") && name.equals("getOutputStream")) ||
+					(ClassHierarchy.getInstance().isAncestors(owner, "libcore/io/Posix") && name.equals("<init>")) ||
+					
 					
 					//(ClassHierarchy.getInstance().isAncestors(owner, "android/content/Context") && name.equals("startService")) ||
 //					(ClassHierarchy.getInstance().isAncestors(owner, "android/content/Context") && name.equals("bindService")) ||
@@ -160,7 +162,6 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 						Statement statement = new Statement(methodSigniture, owner + "." + name + desc, 1);
 						dm.addStatement(statement);
 			}
-			
 		}
     };
 	

@@ -1,6 +1,6 @@
 #!/bin/tcsh -fx
 
-set apkDir = /Volumes/D/data/minst/apks/
+set apkDir = /Volumes/D/data/minst/apks/user_experiment
 
 /Volumes/D/data/android_tools/dex2jar-0.0.9.15/d2j-dex2jar.sh $apkDir/orig/$1.apk -o $apkDir/decompiled/orig/$1_dex2jar.jar --force
 

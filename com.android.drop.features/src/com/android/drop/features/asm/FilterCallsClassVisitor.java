@@ -59,44 +59,46 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 		FilterMethodAdapter methodAdapter = new FilterMethodAdapter(Opcodes.ASM5, mv, this.name, access, name, desc);
 		
 //		//julia debug
-		if (this.name.startsWith("android/webkit/WebView")) {
-			//name.equals("<init>")) {	
-			AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
-					"exec " + this.name + "." + name + desc, 2);
-			AsmUtils.addPrintStackTrace(mv);
-		}
+//		if (this.name.startsWith("com/google/android/gms/ads/AdActivity")
+//				&& name.equals("onDestroy")
+//				) {
+//			//) {	
+//			AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, 
+//					"exec " + this.name + "." + name + desc, 2);
+//			AsmUtils.addPrintStackTrace(mv);
+//		}
 		
 		if (leaveFullBody) {
 			//return the full method after instrumentation
 			return methodAdapter;
 		}
 
-		//now empty the method body
-		String CHANGE_TYPE = Constants.FILTERED_MARKER;
-		mv.visitCode();
-	
-		if (uiClick) {
-			AsmUtils.addExcludedPopupForView(mv);
-			CHANGE_TYPE = "MODIFIED CALL ";
-		}
-			
-	//FIXME walmart search menu
-//		else if (("onMenuItemSelected".equals(name) && "(ILandroid/view/MenuItem;)Z".equals(desc))) {
-//			 addExcludedPopupForMenu(mv);
+//		//now empty the method body
+//		String CHANGE_TYPE = Constants.FILTERED_MARKER;
+//		mv.visitCode();
+//	
+//		if (uiClick) {
+//			AsmUtils.addExcludedPopupForView(mv);
+//			CHANGE_TYPE = "MODIFIED CALL ";
 //		}
-		else if (systemCallback) {		    		    	
-			AsmUtils.addCallToSuper(mv, name, desc, this.superName);
-			CHANGE_TYPE = "MODIFIED CALL ";
-		}
-		    	
-		//AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, CHANGE_TYPE + methodSigniture, 0);
-		    
-		String returnType = desc.substring(desc.lastIndexOf(')')+1, desc.length());
-		AsmUtils.addReturnStatement(mv, returnType);			
-		
+//			
+//	//FIXME walmart search menu
+////		else if (("onMenuItemSelected".equals(name) && "(ILandroid/view/MenuItem;)Z".equals(desc))) {
+////			 addExcludedPopupForMenu(mv);
+////		}
+//		else if (systemCallback) {		    		    	
+//			AsmUtils.addCallToSuper(mv, name, desc, this.superName);
+//			CHANGE_TYPE = "MODIFIED CALL ";
+//		}
+//		    	
+//		//AsmUtils.addPrintoutStatement(mv, Constants.FILTER_DEV_LOG_FILE, instrumentationType, CHANGE_TYPE + methodSigniture, 0);
+//		    
+//		String returnType = desc.substring(desc.lastIndexOf(')')+1, desc.length());
+//		AsmUtils.addReturnStatement(mv, returnType);			
+//		
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
-
+//
 		return null;      
     }
 	
@@ -123,7 +125,7 @@ public class FilterCallsClassVisitor extends BasicClassVisitor {
 			
 			//julia debug
 			if (
-					(owner.startsWith("android/view/ViewGroup") && name.startsWith("addView")) ||
+					(owner.startsWith("com/google/android/gms/ads/AdActivity") && name.startsWith("onDestroy")) ||
 					(owner.startsWith("android/os/Parcel") && (name.startsWith("obtain") || name.startsWith("readStrongBinder")))
 				) {
 				AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
