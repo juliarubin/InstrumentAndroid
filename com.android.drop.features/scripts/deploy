@@ -1,6 +1,6 @@
 #!/bin/tcsh -fx
 
-set apkDir = /Volumes/D/data/minst/apks/user_experiment
+set apkDir = /Volumes/D/data/minst/apks/
 set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/adb
 #set device = emulator-5554
 #set device = ZX1D322N92

@@ -34,7 +34,7 @@ public class Instrumenter {
 	public static void main(String[] args) {
 		
 		
-		//Utils.runSystemCommand("/usr/local/bin/asmPrepare " + Constants.APP_NAME);
+		Utils.runSystemCommand(Constants.SCRIPTS_DIR + "asmPrepare " + Constants.APP_NAME);
 		
 		long start = System.currentTimeMillis();
 		
@@ -77,8 +77,8 @@ public class Instrumenter {
 		//System.out.println("Execution time is " + formatter.format(end - start) + " m:ss:SSS");
 		System.out.println(instrumentationType + " execution time is " + (end - start) + " ms");
 		
-		Utils.runSystemCommand("/usr/local/bin/asmPack " + Constants.APP_NAME + " " + instrumentationType);
-	    Utils.runSystemCommand("/usr/local/bin/deploy " + Constants.APP_NAME + " " + instrumentationType);
+		Utils.runSystemCommand(Constants.SCRIPTS_DIR + "asmPack " + Constants.APP_NAME + " " + instrumentationType);
+	    Utils.runSystemCommand(Constants.SCRIPTS_DIR + "deploy " + Constants.APP_NAME + " " + instrumentationType);
 	}
 
 	private static void loopOverFiles(String instrumentationType) {

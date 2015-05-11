@@ -277,8 +277,14 @@ public class DataManager {
 		String signiture;
 		
 		for (Statement s : statements.values()) {
+			//for sources only
 			if (s.getType() == 0) {
-				//for sources only
+				if (s.getStatementSigniture().contains("android/os/IBinder.transact(") //|| 
+						//s.getOwnerMethodSigniture().contains("com/google/android/gms") ||
+						//s.getOwnerMethodSigniture().contains("com/android/vending/billing")
+					) {
+					continue;
+				}
 				signiture = s.getStatementSigniture() + " from " + s.getOwnerMethodSigniture();
 				if (s.getCalled()) {
 					called.add(signiture);

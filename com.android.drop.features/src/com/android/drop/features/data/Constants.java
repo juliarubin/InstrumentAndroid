@@ -13,24 +13,28 @@ public class Constants {
 //	public static String APP_NAME = "com.netflix.mediaclient"; //WANTS money
 //	public static String APP_NAME = "com.skype.raider"; //CHAT excluded
 //	public static String APP_NAME = "com.king.candycrushsaga"; //DONE
-//	public static String APP_NAME = "com.grillgames.guitarrockhero";
+//	public static String APP_NAME = "com.grillgames.guitarrockhero"; //DONE
 	
 //	public static String APP_NAME = "com.twitter.android"; //DONE
 //	public static String APP_NAME = "kik.android"; //CHAT - excluded
 //	public static String APP_NAME = "com.whatsapp";   //CHAT - excluded
-	public static String APP_NAME = "com.spotify.music"; //DONE
+//	public static String APP_NAME = "com.spotify.music"; //DONE
 //	public static String APP_NAME = "net.zedge.android"; //DONE
 //	public static String APP_NAME = "com.crimsonpine.stayinline"; //DONE
 //	public static String APP_NAME = "air.com.sgn.cookiejam.gp"; //DONE
 //	public static String APP_NAME = "com.walmart.android"; //DONE
 //	public static String APP_NAME = "com.sega.cityrush"; //FOR PAYMENT
 //	public static String APP_NAME = "com.ebay.mobile"; //INSTUENTED VERSION CRASHES
+//  public static String APP_NAME = "com.devuni.flashlight";
+//	public static String APP_NAME = "com.duolingo";	 
+//	public static String APP_NAME = "com.jb.emoji.gokeyboard";
+	
+	public static String APP_NAME = "com.emoji.Smart.Keyboard";
 	
 	//tests
 	//public static String APP_NAME = "com.g6677.android.princesshs";
-	//public static String APP_NAME = "com.walmart.android";
 	//public static String APP_NAME = "com.google.android.apps.translate";
-	//public static String APP_NAME = "com.devuni.flashlight";
+
 	//public static String APP_NAME = "com.example.jj";
 	//public static String APP_NAME = "com.example.testreflectionapp";
 	//public static String APP_NAME = "com.cleanmaster.mguard";
@@ -40,6 +44,8 @@ public class Constants {
 	//public static String APP_NAME = "com.netthreads.android.noiz2";
 	
 	public static String BASE_DIR = "/Volumes/D/data/minst/";
+	
+	public static String SCRIPTS_DIR = "/Users/mjulia/Documents/D/GitRepositories/InstrumentAndroid/com.android.drop.features/scripts/";
 	
 	public static String SOOT_ANDROID_PLATFORM = BASE_DIR + "android_platforms";
 	//public static String SOOT_CALL_GRAPH_DIR = BASE_DIR + "callgraphs/";

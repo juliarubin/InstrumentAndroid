@@ -28,24 +28,28 @@ public class ResultsProcessorSuccess {
 	public static String[] apps = {
 	"air.com.sgn.cookiejam.gp",
 	"com.crimsonpine.stayinline",
-	"com.facebook.katana",
+//	"com.devuni.flashlight",
+//	"com.duolingo",
+//	"com.emoji.Smart.Keyboard",
+//	"com.jb.emoji.gokeyboard",
+//	"com.facebook.katana",
 	"com.grillgames.guitarrockhero",
-	"com.king.candycrushsaga",
+//	"com.king.candycrushsaga",
 	"com.pandora.android",
 	"com.spotify.music",
 	"com.twitter.android",
 	"com.walmart.android",
-	"net.zedge.android"
+	"net.zedge.android",
 	};
 	
 	
 //	public static String[] apps = {
-//		"air.com.sgn.cookiejam.gp"
+//		"com.emoji.Smart.Keyboard"
 //	};
 	
 	public static String[] AALibraries = {
-		"com/google/android/gms",
-		"com/android/vending/billing",
+//		"com/google/android/gms",
+//		"com/android/vending/billing",
 //		"com/flurry/sdk", 
 //		"com/millennialmedia/android",
 //		"com/crashlytics/android/",
@@ -81,7 +85,7 @@ public class ResultsProcessorSuccess {
 		System.out.println("----------------------------------");
 		System.out.println("----------- External --------------");
 		System.out.println("----------------------------------");
-		processForType(0);
+		processForType(0, true);
 //		
 //		System.out.println("----------------------------------");
 //		System.out.println("----------- Internal --------------");
@@ -93,13 +97,9 @@ public class ResultsProcessorSuccess {
 //		System.out.println("----------------------------------");
 //		processForType(2);
 		
-//		System.out.println("----------------------------------");
-//		System.out.println("----------- No A&A --------------");
-//		System.out.println("----------------------------------");
-//		processForType(3);
 	}
 	
-	public static void processForType(int type) {
+	public static void processForType(int type, boolean ignoreAnA) {
 		totalStaticFound = 0;
 		totalCorrect = 0;
 		totalDynamic = 0;
@@ -111,20 +111,20 @@ public class ResultsProcessorSuccess {
 			System.out.println("\n**** " + app + " ****");
 			
 			AppRecord appRecord = new AppRecord(app);
-			readDynamicResults(appRecord, new File(RES_DIR + app + "_toBlock1_final.txt"), type);
-			readStaticResults(appRecord, new File(RES_DIR + RES_VERSION + app + "/droidsafe-gen/connection-error-analysis.txt"), type);
+			readDynamicResults(appRecord, new File(RES_DIR + app + "_toBlock1_final.txt"), type, ignoreAnA);
+			readStaticResults(appRecord, new File(RES_DIR + RES_VERSION + app + "/droidsafe-gen/connection-error-analysis.txt"), type, ignoreAnA);
 	
-//			if (PRINTOUTS) {
-//				readSanity(appRecord);
-//			}
-//
-//			initiateStaticList(appRecord);
-//			
-//			compare(appRecord);
-//			
-//			if (PRINTOUTS) {
-//				printStaticButNotDynamic(appRecord.dynamicResults);
-//			}
+			if (PRINTOUTS) {
+				//readSanity(appRecord);
+			}
+
+			initiateStaticList(appRecord);
+			
+			compare(appRecord);
+			
+			if (PRINTOUTS) {
+				printStaticButNotDynamic(appRecord.dynamicResults);
+			}
 			
 			int totalCalled = appRecord.dynamicResults.unneeded.size() + appRecord.dynamicResults.essential.size() + appRecord.dynamicResults.optional.size();
 			
@@ -288,7 +288,7 @@ public class ResultsProcessorSuccess {
 
 
 	
-	public static void readDynamicResults(AppRecord appRecord, File file, int connectionType) {
+	public static void readDynamicResults(AppRecord appRecord, File file, int connectionType, boolean ignoreAnA) {
 		try {
 	    	BufferedReader br = new BufferedReader(new FileReader(file));	       
 	        String line = br.readLine();
@@ -309,6 +309,10 @@ public class ResultsProcessorSuccess {
 	        		line = br.readLine();
 	        		continue;
 	        	}
+	        	if (ignoreAnA && isFromAALibrary(line)) {
+        			line = br.readLine();
+        			continue;
+	        	} 
 	        	if (connectionType == 0 && line.contains("android/os/IBinder.transact(")) {
 	        		line = br.readLine();
 	        		continue;
@@ -317,10 +321,7 @@ public class ResultsProcessorSuccess {
 	        		line = br.readLine();
 	        		continue;
 	        	} 
-	        	if (connectionType == 3 && isFromAALibrary(line)) {
-        			line = br.readLine();
-        			continue;
-	        	} 
+	        	
 	        	
 	            if (!called) {
 	            	appRecord.dynamicResults.notCalled.add(line);
@@ -353,7 +354,7 @@ public class ResultsProcessorSuccess {
 		
 	}
 
-	private static void readStaticResults(AppRecord appRecord, File file, int connectionType) {
+	private static void readStaticResults(AppRecord appRecord, File file, int connectionType, boolean ignoreAnA) {
 		int type = 0;
 		
 		//String[] data = file.getAbsolutePath().split("/");
@@ -407,6 +408,10 @@ public class ResultsProcessorSuccess {
 		        		line = br.readLine();
 		        		continue;
 		        	}
+		        	if (ignoreAnA && isFromAALibrary(line)) {
+	        			line = br.readLine();
+	        			continue;
+		        	} 
 		        	if (connectionType == 0 && line.startsWith("android/os/IBinder.transact(")) {
 		        		line = br.readLine();
 		        		continue;
@@ -414,10 +419,6 @@ public class ResultsProcessorSuccess {
 		        	if (connectionType == 1 && !line.startsWith("android/os/IBinder.transact(")) {
 		        		line = br.readLine();
 		        		continue;
-		        	} 
-		        	if (connectionType == 3 && isFromAALibrary(line)) {
-		        		line = br.readLine();
-			        	continue;
 		        	} 
 		        	
 		        	if (type == 1) { //Call with errors unhandled
@@ -458,7 +459,7 @@ public class ResultsProcessorSuccess {
 	private static boolean isFromAALibrary(String line) {
 		String[] data = line.split(" from ");
 		for (String aal: AALibraries) {
-			if (data[1].contains(aal)) {
+			if (data[1].startsWith(aal)) {
 				return true;
 			}
 		}

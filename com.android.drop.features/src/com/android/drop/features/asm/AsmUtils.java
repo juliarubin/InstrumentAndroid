@@ -15,6 +15,10 @@ public class AsmUtils {
 	 * flas == 2 --> write to both
 	 */
 	public static void addPrintoutStatement(MethodVisitor mv, String fileName, String tag, String msg, int flag) {
+		addPrintoutStatementInternal(mv, fileName, tag, Constants.APP_NAME + " ** " + msg, flag);
+	}
+	
+	public static void addPrintoutStatementInternal(MethodVisitor mv, String fileName, String tag, String msg, int flag) {
 		//mv.visitVarInsn(Opcodes.ALOAD, 0);
 		
 		mv.visitMethodInsn(Opcodes.INVOKESTATIC, "julia/XXX_Utils", "getInstance", "()Ljulia/XXX_Utils;", false);
