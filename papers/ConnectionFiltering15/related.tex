@@ -5,9 +5,9 @@ user-centric analysis to identify spurious application behaviors (2)
 information propagation in mobile applications, and (3) static
 exception analysis for Java. 
 
-\vspace{0.05in}
-\noindent 
-{\bf User-Centric Analysis for Identifying Spurious Behaviors in Mobile Applications.}
+%\vspace{0.05in}
+%\noindent 
+\subsubsection{User-Centric Analysis for Identifying Spurious Behaviors in Mobile Applications.}
 Huang et al.~\cite{Huang:Zhang:Tan:Wang:Liang:ICSE14} propose a technique, AsDroid, for identifying contradictions between a user interaction function and the behavior that it performs. 
 This technique associates intents with certain sensitive APIs, such as HTTP access or SMS send operations, and tracks the propagation
 of these intents through the application call graph, thus establishing correspondence between APIs and the UI elements they affect. 
@@ -19,9 +19,9 @@ CHABADA~\cite{Gorla:Tavecchia:Gross:Zeller:ICSE14} compares natural language des
 
 Elish et al.~\cite{Elish:Yao:Ryder:MOST12} propose an approach for identifying malware by tracking dependencies between the definition and the use of user-generated data. They deem sensitive function calls that are not triggered by a user gesture as malicious. However, in our experience, the absence of a data dependency between a user gesture and a sensitive call is not always indicative for suspicious behavior: applications such as twitter and Walmart can initiate HTTP calls to show the most up-to-date information to their user, without any explicit user request. Moreover, malicious behaviors can be performed as a side-effect of any user-triggered operation. We thus take an inverse approach, focusing on identifying operations that do not affect the user experience.
 
-\vspace{0.05in}
-\noindent 
-{\bf Information Propagation in Mobile Applications.}
+%\vspace{0.05in}
+%\noindent 
+\subsubsection{Information Propagation in Mobile Applications.}
 The most prominent technique for dynamic information propagation tracking in Android is TaintDroid~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10}, which detects flows of information from a selected set of sensitive sources to a set of sensitive sinks.
 %TaintDroid is used, extended and customized by several follow-up research projects.
 %For example, the Kynoid system~\cite{Schreckling:Posegga:Koestler:Schaff:WISTP12} extends it with user-defined security policies, which include temporal constraints on data processing as well as restrictions on
@@ -59,9 +59,9 @@ While our approaches have a similar ultimate goal -- to provide visibility into 
 %multithreaded GUI applications. They instantiate it for four popular Java GUI frameworks, including Android. 
 %{\bf TBD.}
 
-\vspace{0.05in}
-\noindent 
-{\bf Exception Analysis for Java.}  A rich body of static analysis
+%\vspace{0.05in}
+%\noindent 
+\subsubsection{Exception Analysis for Java.}  A rich body of static analysis
 techniques has been developed to analyze and account for exceptional
 control and data
 flow~\cite{Byeong-MoChang2002,Chang2001,Fu2005,Fu2007,Jo2004,Qiu2010,Kastrinis2013}.

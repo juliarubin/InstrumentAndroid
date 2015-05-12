@@ -1,46 +1,50 @@
-\begin{table*}[t]
+\begin{table}[t]
 \vspace{-0.15in}
 \caption{Comparison with the Manually Established Results.}
 \label{tbl:eval}
 \centering
 \tabcolsep=2.0pt
-\resizebox{0.85\textwidth}{!}{%
-\begin{tabular}{|l|C{2.5cm}|C{2.5cm}|C{2.5cm}|C{2.5cm}|C{1.4cm}|}
+\resizebox{1.0\columnwidth}{!}{%
+\begin{tabular}{|l|C{2.5cm}|C{2.5cm}|C{1.4cm}|}
 \hline
-\multirow{3}{*}{\textbf{Applications}} & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}} & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}} & \multirow{3}{1.4cm}{\textbf{Execution time}} \\
-                                       & \multicolumn{2}{c|}{}                                          & \multicolumn{2}{c|}{\textbf{(counting ads as non-essential)}}  &            \\
-\cline{2-5}
-                                & Precision         & Recall            & Precision         & Recall            &       \\
-\hline
-%--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp        & 1/1 (100.0\%)  & 1/3 (33.3\%)   & 1/1 (100.0\%)  & 1/3 (33.3\%)   & 1min 50s \\
-com.crimsonpine.stayinline      & 13/18 (72.2\%)  & 13/13 (100.0\%)  & 18/18 (100.0\%)  & 18/18 (100.0\%) & 1min 52s \\
-com.grillgames.guitarrockhero   & 17/22 (77.3\%)  & 17/30 (56.7\%)  & 22/22 (100.0\%)  & 22/35 (62.9\%) & 2min 54s \\
-com.king.candycrushsaga         & 3/3 (100.0\%)  & 3/3 (100.0\%)  & 3/3 (100.0\%)  & 3/3 (100.0\%)  & 1min 53s \\
-com.pandora.android             & 4/4 (100.0\%)  & 4/9 (44.4\%)   & 4/4 (100.0\%)  & 4/9 (44.4\%)  & 2min 13s \\
-com.spotify.music               & 4/7 (57.1\%)   & 4/21 (19.0\%)  & 4/7 (57.1\%)   & 4/21 (19.0\%)  & 2min 18s \\
-com.twitter.android             & 4/4 (100.0\%)  & 4/6 (66.7\%)   & 4/4 (100.0\%)  & 4/6 (66.7\%)  & 2min 33s \\
-com.walmart.android             & 3/5 (60.0\%)   & 3/5 (60.0\%)   & 3/5 (60.0\%)   & 3/5 (60.0\%)  & 2min 17s \\
-net.zedge.android               & 15/18 (83.3\%)  & 15/16 (93.8\%)  & 18/18 (100.0\%)  & 18/19 (94.7\%) & 2min 31s \\
+\multirow{2}{*}{\textbf{Applications}} & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}} & \multirow{2}{1.4cm}{\textbf{Execution time}} \\
+\cline{2-3}
+                                & Precision         & Recall            &    \\
 \hline
 %--------------------------------------------------------------------
-Totals (average)                & 64/82 (83.3\%)   & 64/106 (63.8\%)  & 77/82 (90.8\%)   & 77/119 (64.6\%) & 2min 15.7s \\
+air.com.sgn.cookiejam.gp     & 1/1  (100.0\%)    & 1/2   (50.0\%)    & 1min 50s \\
+com.crimsonpine.stayinline   & 2/2  (100.0\%)    & 2/2  (100.0\%)    & 1min 52s \\
+com.devuni.flashlight   & 1/2    (50.0\%)  & 1/1  (100.0\%)    &          \\
+com.emoji.Smart.Keyboard     & 2/2  (100.0\%)    & 2/2  (100.0\%)    &    \\
+com.jb.emoji.gokeyboard      & 4/4  (100.0\%)    & 4/7   (57.1\%)    &    \\
+com.pandora.android       & 4/4  (100.0\%)    & 4/9   (44.4\%)    & 2min 13s \\
+com.spotify.music       & 1/1  (100.0\%)    & 1/3   (33.3\%)    & 2min 18s \\
+com.twitter.android       & 1/1  (100.0\%)    & 1/3   (33.3\%)    & 2min 33s \\
+com.walmart.android       & 3/3  (100.0\%)    & 3/5   (60.0\%)    & 2min 17s \\
+net.zedge.android       & 3/4   (75.0\%)    & 3/4   (75.0\%)    & 2min 31s \\
+\hline
+%--------------------------------------------------------------------
+Average       & 22/24  (92.5\%)    & 22/38 (65.0\%)    & 2min 13s \\
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
 }% resizebox
-\end{table*}
+\end{table}
 
 \section{Experiments}
 \label{sec:evaluation}
-To establish the quality of our static analysis algorithm, we evaluate it on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). We then use it to gather information and report on non-essential communication in the 500 top-popular Android applications from Google Play.
+To establish the quality of our static analysis algorithm, we first evaluate it on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). We then  
+We then perform a study with users and finally 
+{\bf JR: update.}
+
+Finally, we use our analysis to gather information and report on non-essential communication in the 500 top-popular Android applications from Google Play.
 
 \subsection{Evaluation of the Static Analysis}
 For our evaluation, we limit the set of results reported by the static analysis to those that were, in fact,
  triggered during our dynamic study (see Table~\ref{tbl:applications} in Section~\ref{sec:study}): these are the connection statements for which we have reliable information to compare against. 
 We assess the results, for each application individually and averaged for all applications, using the metrics below. The results are summarized in Table~\ref{tbl:eval}.
 
-\begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
+\begin{enumerate}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
 \item
 \emph{Expected}: the size of the predetermined expected result, i.e., the number of connections listed as non-essential in Table~\ref{tbl:applications}.
 \item
@@ -70,7 +74,7 @@ when connection failures are indeed ignored and the applications proceed without
 remaining two cases correspond to a \emph{stateful} communication within the application. 
 The details of each of these cases are given below: 
 
-\begin{itemize}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
+\begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
 \item 13 connections are used for presenting \emph{optional} advertisement content: 
 3 in the \emph{net.zedge.android} application, and 
 5 in \\
