@@ -3,9 +3,9 @@
 \label{sec:limitations}
 %In this section we discuss the limitations of our empirical study and our static technique for detecting non-essential connections.
 
-\vspace{0.05in}
-\noindent 
-{\bf Empirical Study.}
+%\vspace{0.05in}
+%\noindent 
+\subsubsection{Empirical Study.}
 Our empirical study has a dynamic nature and thus suffers from the well-known limitations of dynamic analysis: it does not provide an exhaustive exploration of an application's behavior, thus the findings apply only to the execution paths explored during the analysis. 
 Even though we made an effort to cover all application functionality visible to us, we probably missed some behaviors, e.g., those triggered under system settings different from ours. 
 We attempted to mitigate this problem by performing all our dynamic experiments on the same device, at the same location and temporally close to each other.  
@@ -22,9 +22,9 @@ that communicate via the same statement in code. We thus conservatively deem a c
 Finally, our study only includes a limited number of subjects, so the results might not generalize to other applications.
 We tried to mitigate this problem by not biasing our application selection but rather selecting top-popular applications from the Google Play store, and by ensuring that we observe similar communication patterns in all analyzed applications.
 
-\vspace{0.05in}
-\noindent 
-{\bf A Static Technique For Detecting Non-Essential Connections.}
+%\vspace{0.05in}
+%\noindent 
+\subsubsection{A Static Technique For Detecting Non-Essential Connections.}
 Our technique deems \emph{optional} behaviors -- those when failing connections are ignored by the application, but successful connections result in presenting additional information to the user -- as non~essential. 
 As an application can proceed when optional behaviors are excluded, it is debatable whether they are really essential for the application functionality or not. 
 In fact, we believe that it is up to the users to decide whether an optional behavior is indeed essential for their needs. 
