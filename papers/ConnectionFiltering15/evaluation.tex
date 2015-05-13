@@ -5,26 +5,27 @@
 \centering
 \tabcolsep=2.0pt
 \resizebox{1.0\columnwidth}{!}{%
-\begin{tabular}{|l|C{2.5cm}|C{2.5cm}|C{1.4cm}|}
+\begin{tabular}{|l|C{2.7cm}|C{2.7cm}|C{1.9cm}|}
 \hline
 \multirow{2}{*}{\textbf{Applications}} & \multicolumn{2}{c|}{\textbf{Correctly detected non-essential}} & \multirow{2}{1.4cm}{\textbf{Execution time}} \\
 \cline{2-3}
                                 & Precision         & Recall            &    \\
 \hline
 %--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp     & 1/1  (100.0\%)    & 1/2   (50.0\%)    & 1min 50s \\
-com.crimsonpine.stayinline   & 2/2  (100.0\%)    & 2/2  (100.0\%)    & 1min 52s \\
-com.devuni.flashlight   & 1/2    (50.0\%)  & 1/1  (100.0\%)    &          \\
-com.emoji.Smart.Keyboard     & 2/2  (100.0\%)    & 2/2  (100.0\%)    &    \\
-com.jb.emoji.gokeyboard      & 4/4  (100.0\%)    & 4/7   (57.1\%)    &    \\
-com.pandora.android       & 4/4  (100.0\%)    & 4/9   (44.4\%)    & 2min 13s \\
-com.spotify.music       & 1/1  (100.0\%)    & 1/3   (33.3\%)    & 2min 18s \\
-com.twitter.android       & 1/1  (100.0\%)    & 1/3   (33.3\%)    & 2min 33s \\
-com.walmart.android       & 3/3  (100.0\%)    & 3/5   (60.0\%)    & 2min 17s \\
-net.zedge.android       & 3/4   (75.0\%)    & 3/4   (75.0\%)    & 2min 31s \\
+air.com.sgn.cookiejam.gp  & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 1min 50s \\
+com.crimsonpine.stayinline  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 1min 52s \\
+com.devuni.flashlight   & 1/2 (50.0\%)  & 1/1 (100.0\%)  &          \\
+com.emoji.Smart.Keyboard  & 2/2 (100.0\%)  & 2/2 (100.0\%)  &          \\
+com.grillgames.guitarrockhero & 1/1 (100.0\%)  & 1/14 (7.1\%)  & 2min 54s \\
+com.jb.emoji.gokeyboard   & 4/4 (100.0\%)  & 4/7 (57.1\%)  &          \\
+com.pandora.android    & 4/4 (100.0\%)  & 4/9 (44.4\%)  & 2min 13s \\
+com.spotify.music    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 2min 18s \\
+com.twitter.android    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 2min 33s \\
+com.walmart.android    & 3/3 (100.0\%)  & 3/5 (60.0\%)  & 2min 17s \\
+net.zedge.android    & 3/4 (75.0\%)  & 3/4 (75.0\%)  & 2min 31s \\
 \hline
 %--------------------------------------------------------------------
-Average       & 22/24  (92.5\%)    & 22/38 (65.0\%)    & 2min 13s \\
+Average       & 23/25 (93.2\%) & 23/52 (60.0\%) & 2min 18s \\
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
@@ -33,11 +34,13 @@ Average       & 22/24  (92.5\%)    & 22/38 (65.0\%)    & 2min 13s \\
 
 \section{Experiments}
 \label{sec:evaluation}
-To establish the quality of our static analysis algorithm, we first evaluate it on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). We then  
-We then perform a study with users and finally 
-{\bf JR: update.}
+To establish the quality of our static analysis technique, we first evaluate its precision and recall on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). 
+We then apply our analysis on 500 top-popular Android applications from Google Play. 
+We select XX of these application for further investigation: we inject failures in all connection statements identified as non-essential by our static analysis, as described in Section~\ref{sec:study}, 
+and they employ humans to check whether these are any observable differences between the original and the modified application, 
+Finally, we use the 
 
-Finally, we use our analysis to gather information and report on non-essential communication in the 500 top-popular Android applications from Google Play.
+For the remaining ones, we use the gathered information to report on common patterns of non-essential communication in the wild.
 
 \subsection{Evaluation of the Static Analysis}
 For our evaluation, we limit the set of results reported by the static analysis to those that were, in fact,
@@ -94,6 +97,17 @@ The technique correctly identifies the majority of non-essential connections.
 
 Finally, the last column of table Table~\ref{tbl:eval} shows that our analysis is highly efficient -- it runs in a matter of minutes even on large applications. 
 
+\subsubsection{Usability assessment}
+
+We recruted two users and paired each one up with one of the authors of this paper.  Each pair was given two devices - one running. 
+The users simultaneously executed the same app on both devices and noted all differences.
+
+Each app was executed for 5 to 10 mins. Sign in and in app purchases.
+
+Subjects.
+
+Results.
+
 \conclusion{To answer RQ3, we conclude that a static analysis can be applied for an accurate detection of non-essential connections. Our highly scalable technique features up to 90\% precision and 64\% recall, respectively.}
 
 
@@ -135,7 +149,7 @@ Finally, the last column of table Table~\ref{tbl:eval} shows that our analysis i
 \begin{table}[t]
 \renewcommand*{\arraystretch}{1.3}
 \vspace{-0.15in}
-\caption{Top 20 Non-Essential Communication Callers.}
+\caption{Top 10 Non-Essential Communication Callers.}
 \label{tbl:callers}
 \centering
 \tabcolsep=1.5pt

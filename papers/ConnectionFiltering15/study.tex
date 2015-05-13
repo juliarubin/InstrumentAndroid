@@ -35,8 +35,9 @@ In this section, we describe the design of the study that we conducted to gain m
 %{\bf Connection Statements.}
 \subsubsection{Connection Statements}
 The list of the connection statements that we consider in our study is given in Table~\ref{tbl:connections}.
-The first three are responsible for establishing HTTP connections with backend servers, the forth one provides socket-based communication and the last one allows 
-RPC communication with other applications and services installed on the same mobile device. 
+The first three are responsible for establishing HTTP connections with backend servers, with the forth one provides socket-based communication. We also included all classes that derive from those listed in Table~\ref{tbl:connections}.
+% and the last one allows 
+%RPC communication with other applications and services installed on the same mobile device. 
 
 
 \begin{table}[t]
@@ -45,29 +46,32 @@ RPC communication with other applications and services installed on the same mob
 \centering
 \tabcolsep=1.5pt
 \resizebox{1\columnwidth}{!}{%
-\begin{tabular}{|l|C{1.0cm}|C{1.5cm}|C{1.7cm}|C{2.0cm}|}
+\begin{tabular}{|l|C{0.7cm}|C{1.5cm}|C{1.5cm}|C{1.6cm}|C{1.9cm}|}
 \hline
 \textbf{Applications} &
 \textbf{jar size (MB)} &
 \textbf{Total \# of connection statements} &
 \textbf{\# of triggered connection statements} &
-\textbf{\# of non-essentials\newline(\% of trig.)} \\
-%\textbf{\# of essentials\newline(\% of trig.)} &
-%\textbf{\# of ads\newline(\% of essentials)} \\
+\textbf{\# of non-essentials\newline(\% of trig.)} &
+\textbf{\# of non-essentials in known A\&A\newline(\% of total non-essential)} \\
 \hline
 %--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp      & 2.7 &   17 &  3  & 2   (66.7\%) \\ % &  1 (33.3\%) & - \\
-com.crimsonpine.stayinline    & 3.2 &   15 &  2  & 2   (100.0\%)\\ % &  0 (0.0\%)  & - \\
-com.emoji.Smart.Keyboard      &     &    3 &  3  & 2   (66.7\%) \\ % &  1 (33.3\%) & - \\
-com.jb.emoji.gokeyboard      &     &   42 & 10  & 7   (70.0\%) \\ % &  3 (30.0\%) & - \\
-com.pandora.android       & 5.7 &   57 & 12  & 9   (75.0\%) \\ % &  3 (25.0\%) & - \\
-com.spotify.music       & 5.4 &   20 &  7  & 3   (42.9\%) \\ % &  4 (57.1\%) & - \\
-com.twitter.android       & 5.9 &   21 &  4  & 3   (75.0\%) \\ % &  1 (25.0\%) & - \\
-com.walmart.android       & 5.8 &   33 &  8  & 5   (62.5\%) \\ % &  3 (37.5\%) & - \\
-net.zedge.android       & 6.5 &   37 &  8  & 4   (50.0\%) \\ % &  4 (50.0\%) & - \\
+air.com.sgn.cookiejam.gp   & 2.7  & 17  & 3  & 2 (66.7\%)  & 1 (50.0\%)  \\ % & 1 (33.3\%)  & -
+com.crimsonpine.stayinline   & 3.2  & 15  & 2  & 2 (100.0\%)  & 2 (100.0\%)  \\ % & 0 (0.0\%)   & -
+com.devuni.flashlight    & 1.4  & 16  & 3  & 1 (33.3\%)  & 1 (100.0\%)  \\ % & 2 (66.7\%)  & -
+com.emoji.Smart.Keyboard   & 0.8  & 3   & 3  & 2 (66.7\%)  & 0 (0.0\%)   \\ % & 1 (33.3\%)  & -
+com.facebook.katana     & 0.6  & 3   & 0  & -     & -     \\ % & 0 (0.0\%)   & -
+com.grillgames.guitarrockhero  & 6.2  & 51  & 14 & 14 (100.0\%)  & 8 (57.1\%)  \\ % & 0 (0.0\%)   & -
+com.jb.emoji.gokeyboard    & 5.2  & 42  & 10 & 7 (70.0\%)  & 0 (0.0\%)   \\ % & 3 (30.0\%)  & -
+com.king.candycrushsaga    & 2.6  & 15  & 1  & 0 (0.0\%)   & -          \\ % & 1 (100.0\%)  & -
+com.pandora.android     & 5.7  & 57  & 12 & 9 (75.0\%)  & 4 (44.4\%)  \\ % & 3 (25.0\%)  & -
+com.spotify.music     & 5.4  & 20  & 7  & 3 (42.9\%)  & 1 (33.3\%)  \\ % & 4 (57.1\%)  & -
+com.twitter.android     & 5.9  & 21  & 4  & 3 (75.0\%)  & 1 (33.3\%)  \\ % & 1 (25.0\%)  & -
+com.walmart.android     & 5.8  & 33  & 8  & 5 (62.5\%)  & 3 (60.0\%)  \\ % & 3 (37.5\%)  & -
+net.zedge.android     & 6.5  & 37  & 8  & 4 (50.0\%)  & 4 (100.0\%)  \\ % & 4 (50.0\%)  & -
 \hline
 %--------------------------------------------------------------------
-Average        & 5.0 & 27.2 & 6.3 & 4.1 (67.6\%) \\ % & 2.2 (32.4\%) & - \\
+Total        & 52.0  & 330  & 75 & 52 (69.3\%)   & 25 (48.1\%)  \\ % & 1.8 (30.7\%)  & -
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
@@ -75,8 +79,8 @@ Average        & 5.0 & 27.2 & 6.3 & 4.1 (67.6\%) \\ % & 2.2 (32.4\%) & - \\
 \end{table}
 
 
-Column 4 of the table lists exceptions indicating connection failures that occur when the desired server is unavailable, or when a device is put in the disconnected or airplane mode. 
-When investigating the significance of a connection on the overall behavior of an analyzed application, we inject connection failures by replacing connection statements with statements that throw exceptions of the appropriate type. 
+When a connection failure occurs, e.g., when the desired server is unavailable, or when a device is put in the disconnected or airplane mode, each of these methods throws \texttt{java.io.IOException} exception. 
+Thus, for investigating the significance of a connection on the overall behavior of an analyzed application, we inject a connection failure by replacing the connection statement with a statement that throw such exception. 
 This approach was chosen as it leverages the applications' native mechanism for dealing with failures, thus reducing side-effects introduced by our instrumentation to a minimum.
 
 %\vspace{0.1in}
@@ -86,9 +90,10 @@ This approach was chosen as it leverages the applications' native mechanism for 
 As input to our study, we assume an Android application given as an apk file. 
 We use the dex2jar tool suite~\cite{dex2jar} to extract the jar file from the apk.
 We then use the asm framework~\cite{asm} to implement two types of transformations: 
-\begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
+\begin{enumerate}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
 \item \emph{A monitoring transformation} which produces a version of the original application that logs all executions of the connection statements in Table~\ref{tbl:connections}. 
-\item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions of the corresponding type, as specified in Table~\ref{tbl:connections}.
+\item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions.
+% of the corresponding type, as specified in Table~\ref{tbl:connections}.
 \end{enumerate}
 The jar file of the transformed application is then converted back to apk using the dex2jar tool suite and signed with the jarsigner tool distributed with the standard Java JDK.
  
@@ -156,7 +161,7 @@ We then manually scanned the produced output while ignoring differences in conte
 We also ignored the exact content of widgets that are populated by applications in a dynamic manner and are designed to 
 provide continuously updated information that is expected to differ between applications runs, such as tweets in Figures~\ref{fig:screenshots}(d) and (e). These two figures are thus also deemed similar.
 
-In one out of ten analyzed cases, we had to revert to manual execution and comparison of the application runs.
+In one out of the analyzed cases, we had to revert to manual execution and comparison of the application runs.
 That case involved interactions with a visual game that required rapid response time, 
 thus the automated application execution was unable to provide reliable results. 
 
@@ -167,7 +172,7 @@ thus the automated application execution was unable to provide reliable results.
 \subsubsection{Execution Methodology}
 We performed our study in three phases. In the first phase, we installed the original version of each analyzed 
 application on a Nexus 4 mobile device running Android version 4.4.4.
-We manually exercised the application, exploring all its functionality visible to us, and recorded the execution script that captured all triggered actions, as described above. 
+We manually exercised the application for the duration of 5 to 10 minutes, exploring all its functionality visible to us, and recorded the execution script that captured all triggered actions, as described above. 
 We then re-installed the application to recreate a ``clean'' initial state and ran the produced execution script.  
 We used screenshots collected during this run as the baseline for further comparisons. 
 
