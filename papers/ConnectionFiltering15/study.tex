@@ -1,26 +1,48 @@
+%\begin{table}[b]
+%\vspace{-0.1in}
+%\caption{Considered Connection Statements.}
+%\label{tbl:connections}
+%\centering
+%\tabcolsep=1.5pt
+%\resizebox{\columnwidth}{!}{%
+%\begin{tabular}{|l|l|l|l|}
+%\hline
+%& \textbf{Class or Interface} & \textbf{Method} & \textbf{Indication of Failure}\\
+%\hline
+% 1. & java.net.URL                       & openConnection  & java.io.IOException \\
+% 2. & java.net.URLConnection             & connect         & java.io.IOException \\
+% 3. & org.apache.http.client.HttpClient  & execute         & java.io.IOException \\
+% 4. & java.net.Socket                    & getOutputStream & java.io.IOException \\
+%% 5. & android.os.IBinder                 & transact        & android.os.RemoteException \\
+%\hline
+%\end{tabular}
+%}%resizebox
+%%\vspace{-0.1in}
+%\end{table}
+
 \begin{table}[b]
 \vspace{-0.1in}
+%\begin{wraptable}{r}{0.6\linewidth}
 \caption{Considered Connection Statements.}
 \label{tbl:connections}
 \centering
 \tabcolsep=1.5pt
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{|l|l|l|l|}
+\resizebox{0.65\columnwidth}{!}{%
+\begin{tabular}{|l|l|l|}
 \hline
-& \textbf{Class or Interface} & \textbf{Method} & \textbf{Indication of Failure}\\
+& \textbf{Class or Interface} & \textbf{Method}\\
 \hline
- 1. & java.net.URL                       & openConnection  & java.io.IOException \\
- 2. & java.net.URLConnection             & connect         & java.io.IOException \\
- 3. & org.apache.http.client.HttpClient  & execute         & java.io.IOException \\
- 4. & java.net.Socket                    & getOutputStream & java.io.IOException \\
-% 5. & android.os.IBinder                 & transact        & android.os.RemoteException \\
+ 1. & java.net.URL                       & openConnection  \\
+ 2. & java.net.URLConnection             & connect         \\
+ 3. & org.apache.http.client.HttpClient  & execute         \\
+ 4. & java.net.Socket                    & getOutputStream \\
+% 5. & android.os.IBinder                 & transact       \\
 \hline
 \end{tabular}
 }%resizebox
-%\vspace{-0.1in}
 \end{table}
-
-
+%
+%\end{wraptable}
 
 \vspace{-0.1in}
 \section{Communication in Android}
@@ -34,8 +56,9 @@ In this section, we describe the design of the study that we conducted to gain m
 %\noindent 
 %{\bf Connection Statements.}
 \subsubsection{Connection Statements}
-The list of the connection statements that we consider in our study is given in Table~\ref{tbl:connections}.
-The first three are responsible for establishing HTTP connections with backend servers, with the forth one provides socket-based communication. We also included all classes that derive from those listed in Table~\ref{tbl:connections}.
+Table~\ref{tbl:connections} lists the base classes and their corresponding methods that we consider in our study. 
+%The first three are responsible for establishing HTTP connections with backend servers, while the forth one provides socket-based communication. 
+We also include all sub-classes of those listed in the table.
 % and the last one allows 
 %RPC communication with other applications and services installed on the same mobile device. 
 
@@ -79,8 +102,8 @@ Total        & 52.0  & 330  & 75 & 52 (69.3\%)   & 25 (48.1\%)  \\ % & 1.8 (30.7
 \end{table}
 
 
-When a connection failure occurs, e.g., when the desired server is unavailable, or when a device is put in the disconnected or airplane mode, each of these methods throws \texttt{java.io.IOException} exception. 
-Thus, for investigating the significance of a connection on the overall behavior of an analyzed application, we inject a connection failure by replacing the connection statement with a statement that throw such exception. 
+When a connection failure occurs, e.g., when the desired server is unavailable, or when a device is put in disconnected or airplane mode, each of these methods throw \texttt{java.io.IOException} exception. 
+Thus, for investigating the significance of a connection on the overall behavior of an analyzed application, we inject a connection failure by replacing the connection statement with a statement that throws such an exception. 
 This approach was chosen as it leverages the applications' native mechanism for dealing with failures, thus reducing side-effects introduced by our instrumentation to a minimum.
 
 %\vspace{0.1in}
@@ -95,8 +118,9 @@ We then use the asm framework~\cite{asm} to implement two types of transformatio
 \item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions.
 % of the corresponding type, as specified in Table~\ref{tbl:connections}.
 \end{enumerate}
-The jar file of the transformed application is then converted back to apk using the dex2jar tool suite and signed with the jarsigner tool distributed with the standard Java JDK.
+The jar file of the transformed application is then converted back to apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK.
  
+As a side effect of resigning applications, their authentication when communicating with services such as Google Plus APIs might be broken~\cite{googleAPI}, preventing the users from signing in with their Google Plus account or performing in-app purchases from the Google Play store. Due to this known limitation, we refrain from executing such scenarios in our analysis, as discussed below. 
 
 %\vspace{0.1in}
 %\noindent 
@@ -157,7 +181,7 @@ along with a visual diff of each two corresponding images, as shown in Figure~\r
 the Walmart and twitter applications. 
 We used the ImageMagick compare tool~\cite{imagemagick}
 to produce the visual diff images automatically. 
-We then manually scanned the produced output while ignoring differences in content of advertisement messages and the status of the device, deeming screenshots in Figures~\ref{fig:screenshots}(a) and (b) similar. 
+We then manually scanned the produced output while ignoring differences in content of advertisement messages and the status of the device, deeming the screenshots in Figures~\ref{fig:screenshots}(a) and (b) similar. 
 We also ignored the exact content of widgets that are populated by applications in a dynamic manner and are designed to 
 provide continuously updated information that is expected to differ between applications runs, such as tweets in Figures~\ref{fig:screenshots}(d) and (e). These two figures are thus also deemed similar.
 
@@ -170,11 +194,12 @@ thus the automated application execution was unable to provide reliable results.
 %\noindent 
 %{\bf Execution Methodology.}
 \subsubsection{Execution Methodology}
-We performed our study in three phases. In the first phase, we installed the original version of each analyzed 
+We performed our study in three phases. In the first phase, 
+we installed the original version of each analyzed 
 application on a Nexus 4 mobile device running Android version 4.4.4.
-We manually exercised the application for the duration of 5 to 10 minutes, exploring all its functionality visible to us, and recorded the execution script that captured all triggered actions, as described above. 
-We then re-installed the application to recreate a ``clean'' initial state and ran the produced execution script.  
-We used screenshots collected during this run as the baseline for further comparisons. 
+We manually exercised the application for the duration of 5 to 10 minutes, exploring all its functionality visible to us. We refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases though, due to the instrumentation-related limitations mentioned above.
+During that execution, we recorded the execution script that captured all triggered actions. 
+We then re-installed the application to recreate a ``clean'' initial state and re-run the script collecting schreenshort that were used as the baseline for further comparisons. 
 
 In the second phase, we used the Monitoring Transformation to produce a version of the original application that logs information about all existing and triggered connection statements. We ran the produced version using the execution script and collected the statistics about its communication patterns.  
 
@@ -195,49 +220,49 @@ were blocked, to detect any  possible issues missed by the automated analysis.
 %\noindent 
 %{\bf Subjects.} 
 \subsubsection{Subjects}
-As the subjects of our study, we downloaded 15 top-popular applications available on the Google Play store in November 2014. 
-We excluded from this list three chat applications, as our evaluation methodology does not allow assessing the usability of a chat application without a predictably available chat partner. 
-We also excluded two applications whose asm-based instrumentation failed, most probably become they use language constructs that are not supported by that framework.
+As the subjects of our study, we downloaded the 20 top-popular applications available on the Google Play store in November 2014. 
+We excluded from this list chat applications, as our evaluation methodology does not allow assessing the usability of a chat application without a predictably available chat partner. 
+We also excluded applications whose asm-based instrumentation failed, most probably become they use language constructs that are not supported by that framework.
 
-The remaining ten applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding sizes are given in the second column of the table. 
-We did not extend our dynamic analysis beyond these ten applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. As such, inclusion of additional ones was not expected to provide substantially new insights. 
+The remaining thirteen applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding sizes are given in the second column of the table. 
+We did not extend our dynamic analysis beyond these thirteen applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. As such, inclusion of additional ones was not expected to provide substantially new insights. 
 
 \subsection{Results}
 The quantitative results of the study are presented in columns~3--7 of Table~\ref{tbl:applications}. 
 Column 3 and 4 of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
 While some of the non-triggered statements can correspond to execution paths that were not explored during our dynamic application traversal, the vast majority of the statements originate in  
-third-party libraries included in the application but only partially used, e.g., various Google services for mobile developers, advertising and analytics libraries and more.
-In fact, we identified nine different advertising and analytics libraries used by the ten applications that we analyzed, 
+third-party libraries included in the application but only partially used, e.g., various Google services for mobile developers, A\&A libraries and more.
+In fact, we identified fourteen different A\&A libraries used by the thirteen applications that we analyzed, 
 and many times a single applications uses multiple such libraries.
 
-An interesting case is the facebook application (row 3 in Table~\ref{tbl:applications}), where most of the application code is dynamically loaded at runtime from resources shipped within the apk file. 
-Our analysis was unable to traverse this dynamically loaded code, and we thus excluded the application from the further analysis, noting that the only three connection statements that existed in the application jar file are never triggered. 
+An interesting case is the facebook application (row 5 in Table~\ref{tbl:applications}), where most of the application code is dynamically loaded at runtime from resources shipped within the apk file. 
+Our analysis was unable to traverse this dynamically loaded code, and we thus excluded the application from the further analysis, noting that the only three connection statements that existed in the application jar file are never triggered. We also excluded from the further analysis the candycrushsaga application (row 8 in Table~\ref{tbl:applications}), as it did not exhibit any non-essential connections.
 
-\begin{table}[t]
-\caption{Communication Types.}
-\label{tbl:statementTypes}
-\centering
-%\tabcolsep=1.5pt
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{|m{3.4cm}|C{2.3cm}|C{1.5cm}|}
-\hline
-%--------------------------------------------------------------------
-                                                &  HTTP and Socket   & RPC \\
-\hline
-%--------------------------------------------------------------------
-    Triggered                                   &  35 (30.7\%)       & 79 (69.3\%) \\
-\hline
-%--------------------------------------------------------------------
- Non-essential (total)                          &  18 (25.5\%)       & 53 (74.6\%) \\
-\hline
-%--------------------------------------------------------------------
- Non-essential (Google and Known A\&A Services) & 8 (17.7\%)         & 37 (82.2\%) \\
-\hline
-%--------------------------------------------------------------------
-\end{tabular}
-}% resizebox
-\vspace{-0.2in}
-\end{table}
+%\begin{table}[t]
+%\caption{Communication Types.}
+%\label{tbl:statementTypes}
+%\centering
+%%\tabcolsep=1.5pt
+%\resizebox{\columnwidth}{!}{%
+%\begin{tabular}{|m{3.4cm}|C{2.3cm}|C{1.5cm}|}
+%\hline
+%%--------------------------------------------------------------------
+%                                                &  HTTP and Socket   & RPC \\
+%\hline
+%%--------------------------------------------------------------------
+%    Triggered                                   &  35 (30.7\%)       & 79 (69.3\%) \\
+%\hline
+%%--------------------------------------------------------------------
+% Non-essential (total)                          &  18 (25.5\%)       & 53 (74.6\%) \\
+%\hline
+%%--------------------------------------------------------------------
+% Non-essential (Google and Known A\&A Services) & 8 (17.7\%)         & 37 (82.2\%) \\
+%\hline
+%%--------------------------------------------------------------------
+%\end{tabular}
+%}% resizebox
+%\vspace{-0.2in}
+%\end{table}
 
 
 %\vspace{0.1in}
@@ -245,25 +270,31 @@ Our analysis was unable to traverse this dynamically loaded code, and we thus ex
 %{\bf Classification of the Triggered Statements.}
 \subsubsection{Classification of the Triggered Statements}
 Column 5 of Table~\ref{tbl:applications} shows the number of connection statements that we determined as non-essential during our study. 
-Averaged for all applications, 65\% of the connections fall in that category. 
-This means that only 35\% of the connection statements triggered by an application affect its observable behavior, 
-when executed for the exact same scenario with the connection being either enabled or disabled (see column 6 of Table~\ref{tbl:applications}). 
+Averaged for all applications, 69\% of the connections fall in that category. 
+This means that only 31\% of the connection statements triggered by an application affect its observable behavior, 
+when executed for the exact same scenario with the connection being either enabled or disabled.
+% (see column 6 of Table~\ref{tbl:applications}). 
 
-Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  essential were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
+%Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  essential were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
 
 \conclusion{To answer RQ1, we conclude that non-essential communication often occur in real-world applications: 
-65\% of the triggered connection statements can be deemed non-essential.}
+69\% of the triggered connection statements can be deemed non-essential.}
 
+The last column of Table~\ref{tbl:applications} 
+%Table~\ref{tbl:statementTypes} shows the distribution of the triggered connection statements 
+%into external communication performed via HTTP and sockets, and internal RPC communication. 
+%Overall, 30\% of all triggered connection statements correspond to external communication while 70\% -- to
+%internal ones, as shown in the second row of the table.
+%The breakdown is similar for the connection statements that we deemed non-essential: slightly more than 25\%
+%correspond to external communication and the remainder -- to the internal communication with services installed on the same device, as shown in the third row of Table~\ref{tbl:statementTypes}.
+%
+%The last row of the table
+presents statistic considering the communication with known A\&A services. 
+It turns out that only 48\% of all non-essential connections target such libraries. 
+That is, more than half of non-essential connections originate from application-specific libraries and their purpose is unknown to us.
 
-Table~\ref{tbl:statementTypes} shows the distribution of the triggered connection statements 
-into external communication performed via HTTP and sockets, and internal RPC communication. 
-Overall, 30\% of all triggered connection statements correspond to external communication while 70\% -- to
-internal ones, as shown in the second row of the table.
-The breakdown is similar for the connection statements that we deemed non-essential: slightly more than 25\%
-correspond to external communication and the remainder -- to the internal communication with services installed on the same device, as shown in the third row of Table~\ref{tbl:statementTypes}.
-
-The last row of the table present statistic considering the communication with known advertisement and analytic services. The table shows that almost 18\% of the non-essential connections used for these purpose flow to the external services and 82\% -- to internal ones, which further communicate with external services to deliver the required content. 
-Google services are commonly, but not exclusively, used by numerous applications. 
+%almost 18\% of the non-essential connections used for these purpose flow to the external services and 82\% -- to internal ones, which further communicate with external services to deliver the required content. 
+%Google services are commonly, but not exclusively, used by numerous applications. 
 
 %\vspace{0.1in}
 %\noindent 
@@ -275,18 +306,19 @@ Google services are commonly, but not exclusively, used by numerous applications
 \subsubsection{Lessons Learned}
 The collected statistics show that no principle distinction between essential and non-essential connections  
 can be made just by considering connection types and their destinations. 
-That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where authors 
-show that blocking all messages to advertising and analytics services made more than 60\% of the applications either less functional or completely dysfunctional. 
-We conclude that a more sophisticated 
+That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where the authors 
+show that blocking all messages to A\&A services made more than 60\% of the applications either less functional or completely dysfunctional. 
+Moreover, some malicious applications deliberately hide their payloads by using package names which look legitimate and benign~\cite{Zhou:Jiang:SP2012}. We conclude that a more sophisticated 
 technique for identifying the non-essential communication performed by the applications is required. 
 
-We manually investigated binaries of several analyzed applications, to gain more insights into the way applications treat non-necessary connections of each of the identified type and communication target. 
-We noticed that, in a large number of cases, connection failures are silently ignored by the applications without producing any visual indication to the user. 
-That is, the exception triggered by the connection failure of a non-essential connection is either caught and ignored locally in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. 
+We manually investigated binaries of several analyzed applications, to gain more insights into the way applications treat non-necessary connections. % of each of the identified type and communication target. 
+We noticed that, in a large number of cases, connection successes do not trigger any notifications in the application's user interface and, at the same time, connection failures are also silently ignored by the applications without producing any visual indication to the user. 
+For the failures, the exception triggered by a non-essential connection is either caught and ignored locally in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by  application developers and is rarely accessed by the end-user.
 
-In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by  application developers and is rarely accessed by the end-user.
+\conclusion{To answer RQ2, we conjecture that non-essential connections can be detected by inspecting updates to GUI elements on both the success and the failure path of a connection statement. 
+Lack of such GUI updates is indicative for a connection being non-essential for the application execution as the user is unaware of both the success and the failure of the communication.}
 
-\conclusion{To answer RQ2, we conjecture that non-essential connections can be detected by inspecting connection failure paths. The lack of updates to GUI elements on the failure path is indicative for a connection being silently ignored by the application, thus being non-essential for the application execution.}
+%\conclusion{To answer RQ2, we conjecture that non-essential connections can be detected by inspecting connection failure paths. The lack of updates to GUI elements on the failure path is indicative for a connection being silently ignored by the application, thus being non-essential for the application execution.}
 
 
 
