@@ -1,37 +1,26 @@
-\section{Failure-Handling Analysis}
+\section{Static Analysis for Classifying Connections}
 \label{sec:analysis}
 
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=false]+
 
 In this section we describe the static analysis algorithm we employ to
-automatically classify connections.  Given an Android application, the
-static analysis classifies each statement that may invoke a
-connection call as either {\it essential} or {\it non-essential}.
-Intuitively, we define an essential connection statement, $s$, as
-meeting either of the following criteria:
+automatically classify connections.  Android applications are
+developed as a series of external event handler routines, e.g., button
+click and application exit.  Given an Android application, the static
+analysis classifies each statement that may invoke a connection call
+as either {\it essential} or {\it non-essential}.  We begin with
+definitions and our problem statement: 
 
-\begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.05in}
-\item{\bf User-Interface Cue}: When $s$ triggers an error, the user
-may be notified of the error via a user interface cue during error
-handling.
-\item {\bf Program Exit}: When $s$ triggers an error, the program 
-   may stop executing.  
-\end{enumerate}
 
-\noindent Conversely, a non-essential connection call does not meet
-either of the two criteria.  
-
-Android applications are developed in Java, and program execution
-follows the semantics of Java. In an Android application, each
-connection call $s$ may generate an exception (of dynamic type $e$)
-that reaches a subset of the program's \lstinline!catch! blocks.  At
-runtime, when $e$ is triggered by $s$, the executing method's trap
-table is consulted, and if no \lstinline!catch! blocks are defined to
-handle $e$ at $s$, then $e$ is passed back up the stack to the
-calling method at the calling statement, and the process repeats.  If
-the Android runtime is returned to during the stack unwinding, the
-application is typically exited with an error.  
-
+%% In an Android application, each
+%% connection call $s$ may generate an exception (of dynamic type $e$)
+%% that reaches a subset of the program's \lstinline!catch! blocks.  At
+%% runtime, when $e$ is triggered by $s$, the executing method's trap
+%% table is consulted, and if no \lstinline!catch! blocks are defined to
+%% handle $e$ at $s$, then $e$ is passed back up the stack to the
+%% calling method at the calling statement, and the process repeats.  If
+%% the Android runtime is returned to during the stack unwinding, the
+%% application is typically exited with an error.  
 
 \begin{figure}
 \begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)},basicstyle=\ttfamily\scriptsize]
@@ -105,102 +94,85 @@ handling of thrown \lstinline!RemoteException! to the end of the
 handling of the rethrown \lstinline!AdvertisingException!.
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
-\item \textsc{\bfseries{Problem}}: Analyze each connection call,
-$s$, in an Android application to determine whether the application
-could possibly exit on a failure at $s$ or could modify the user
-interface during a failure handling path of $s$.
+\item \textsc{\bfseries{Definition (Essential and Non-essential
+    Connections)}}.  For connection statement $s$, $s$ is classified as
+  an {\it essential connection} if meets at least one of the following
+  criteria:
+  
+\begin{enumerate}[leftmargin=0.5cm]
+
+\item{\bf User-Interface Cue on Error}: When $s$ triggers an error,
+  the user may be notified of the error via a user interface cue
+  during failure handling.
+
+\item {\bf Program Exit on Error}: When $s$ triggers an error, the
+  program may stop executing due to a failure handling path not
+  terminating at an application event handler method.
+
+\item {\bf User-Interface Cue on Success}: When $s$ succeeds, there
+  exists a possible modification to the user interface {\it before}
+  either (a) the next external event is handled by the application or
+  (b) processing continues beyond the error handling of $s$.
+
+\end{enumerate}
+
+\noindent Conversely, a non-essential connection call does not meet
+any of the criteria.  
+
 \end{description}
 
-To solve this problem statically, our failure-handling analysis
-conservatively calculates all possible failure handling for exceptions
-that denotes connection failure for each connection call in the
-application.  If there exists a failure-handling path of $s$ on $e$
-that may include a call to a method that notifies the user of the
-failure, then $s$ is considered essential.  If it is possible for $e$,
-when triggered at $s$, to propagate back up the stack to the Android
-runtime, $s$ is considered essential.
+\begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
+\item \textsc{\bfseries{Problem}}: For each connection call in an
+  Android application, determine whether it is essential or
+  non-essential.
+\end{description}
 
-\subsection{Static Analysis of Android Applications}
+%% To solve this problem statically, our failure-handling analysis
+%% conservatively calculates all possible failure handling for exceptions
+%% that denotes connection failure for each connection call in the
+%% application.  If there exists a failure-handling path of $s$ on $e$
+%% that may include a call to a method that notifies the user of the
+%% failure, then $s$ is considered essential.  If it is possible for $e$,
+%% when triggered at $s$, to propagate back up the stack to the Android
+%% runtime, $s$ is considered essential.
+
 
 %% Android applications are developed in Java and compiled to Dalvik
 %% executable format (dex) byte code.  Android applications are
 %% distributed as packages that do not include the Java source; packages
 %% include only the dex byte code and application resources such as
 %% images, sounds, and GUI declarations.  
-Static analysis of Android
-applications is notoriously difficult because of issues
-including~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}:
 
-\begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
+\subsection{Call Graph Construction}
 
-\item Android applications execute in the context of the Android API
-  and runtime.  The application thus represents an incomplete program.
-  
-\item The Android API and runtime comprises multiple millions of lines of
-  code implemented in multiple programming languages.  Furthermore,
-  much of the implementation is left for device manufactures to
-  implement, and is thus proprietary and closed-source. 
+Static analysis of Android applications is notoriously difficult
+because of the complexity and dynamic nature of the Android runtime
+and API; precise, whole-program analysis runs the high-risk of missing
+dynamic program behavior and not scaling to real-world Android
+applications~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
+Static analysis must either model the Android application execution
+environment, or account for possible dynamic program behaviors with
+conservative analysis choices; otherwise some runtime behaviors could
+be unconsidered.  
 
-\item Applications are event-driven and dynamic by nature.
-  Applications define event handlers for possible runtime events that
-  are triggered in the Android runtime, and passed to the application
-  for handling. 
-
-\item Applications interact heavily with the Android API.  The Android
-  API includes most of the Java standard library, plus additional
-  utility and resource access classes.
-
-\item Android application packages typically ship with third-party
-  libraries for performing operations such as advertising, analytics,
-  and interaction with remote services.  These libraries are commonly
-  large, obfuscated, and include heavy use of reflection.
-
-\end{itemize}
-
-It is not feasible for a static analysis to include analysis of the
-source code of the Android runtime and API because of the size and
-multi-language nature of this code base.  Thus static analysis must
-either model the Android application execution environment, or account
-for possible dynamic program behaviors with conservative analysis
-choices; otherwise some runtime behaviors could be unconsidered.
-Precise, whole-program analysis runs the high-risk of missing dynamic
-program behavior and not scaling to real-world Android
-application~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
+The presented analysis has the following limitations. Dynamically
+loaded code is not be considered.  The analysis considers only checked
+exceptions.  We use a best-effort, though aggressive, policy to
+account for reflection semantics; this policy could miss possible
+runtime semantics. Our analysis is implemented in the Soot Java
+Analysis Framework~\cite{Vallee-Rai2000} and utilizes libraries and
+the Android API model provided by
+DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
+presentation of the analysis below assumes the application is
+represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 
 Our analysis employs a class hierarchy analysis (CHA)~\cite{Dean1995}
 to build a call graph with refinement achieved by intra-procedural
 data-flow analysis.  After much experimentation with higher precision,
 though brittle, points-to analysis techniques, this analysis
 combination gave us the best performance for the classification task.
-We augment the call graph to account for reflected method calls, and
-conservatively account for exceptions that can be thrown by native
-code.  Our failure-handling analysis over-approximates the runtime
-behaviors of the applications, and under-approximates the connection
-calls that could be non-essential.
-
-The presented analysis has the following limitations. Dynamically
-loaded code is not be considered.  The analysis considers only checked
-exceptions.  A best-effort, though aggressive, policy is used to
-account for reflection semantics; this policy could miss possible
-runtime semantics.
-
-Our analysis is implemented in the Soot Java Analysis
-Framework~\cite{Vallee-Rai2000} and utilizes libraries and the Android
-API model provided by
-DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
-presentation of the analysis below assumes the application is
-represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
-
-\vspace{-0.05in}
-\subsection{Call Graph Construction}
-
-%%  A call graph represents the possible dynamic calling
-%% relationship between methods of the application.  Each node represents
-%% a method, and each edge, $(f,g)$ indicates that $f$ may call $g$ at
-%% run time.
-
-Our algorithm first computes a static call graph based on CHA
-analysis. To compute a call graph, we augment the application code with the
+   
+To compute a call graph, we augment the application code with the
 DroidSafe Android Device Implementation
 (ADI)~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.  The ADI
 is a Java-based model of the Android runtime and API that attempts to
@@ -232,6 +204,10 @@ the call can be determined using a def-use analysis~\cite{Aho2006},
 then we limit the edges to only targets that have the same number and
 types of arguments.  This strategy works well for us in
 practice and aggressively accounts for reflection semantics.
+
+Our static analysis over-approximates the runtime behaviors of the
+applications, and under-approximates the connection calls that could
+be non-essential.
 
 %\vspace{-0.05in}
 \subsection{Failure Handler Analysis}
@@ -447,14 +423,16 @@ the containing method) for handlers of the connection statement's
 exception.  However, once a handler is found, and the handler calls a
 sequence of methods that ends in a possible rethrown exception, the
 sequence of methods defines the only stack that should be searched for
-a handler of the rethrown exception.  The stack is pushed on line
-\ref{alg-push-stack-lines} of \textsc{AnalyzeHandler} for each method
-call of a reachable handler code.  During the handler search of the
-execution stack in \textsc{FindCatches}, the
-stack is consulted to guide the search on line
-\ref{alg:stack-test-line}, only visiting the edge is at the head of
-the stack. The stack is popped when visiting a caller method of the
-current method in \textsc{FindCatches} line~\ref{alg:stack-pop-line}.
+a handler of the rethrown exception.  
+
+%% The stack is pushed on line
+%% \ref{alg-push-stack-lines} of \textsc{AnalyzeHandler} for each method
+%% call of a reachable handler code.  During the handler search of the
+%% execution stack in \textsc{FindCatches}, the
+%% stack is consulted to guide the search on line
+%% \ref{alg:stack-test-line}, only visiting the edge is at the head of
+%% the stack. The stack is popped when visiting a caller method of the
+%% current method in \textsc{FindCatches} line~\ref{alg:stack-pop-line}.
 
 During handler search in \textsc{FindCatches}, if no handler is found
 locally, and the method is a possible entry point called from the
@@ -493,48 +471,48 @@ to analyze the failure handling.  The classification of the thrown
 statement is propagated to the current excepting statement in
 line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
 
-\begin{figure}[t]
-\begin{algorithmic}[1]
-\scriptsize
-\Procedure{GetPossibleThrownTypes}{meth,stmt}
-\State thrownTypes = $[]$
-\State tryStmts = \textsc{GetTryBlock}(meth,stmt)
+%% \begin{figure}[t]
+%% \begin{algorithmic}[1]
+%% \scriptsize
+%% \Procedure{GetPossibleThrownTypes}{meth,stmt}
+%% \State thrownTypes = $[]$
+%% \State tryStmts = \textsc{GetTryBlock}(meth,stmt)
 
-\For {tryStmt $\in$ tryStmts}
+%% \For {tryStmt $\in$ tryStmts}
 
-\If {\textsc{IsThrowStmt}(tryStmt)}
+%% \If {\textsc{IsThrowStmt}(tryStmt)}
 
-\For {defStmt $\in$ \textsc{GetLocalDefs}(\textsc{GetOp}(stmt))}
-\If {\textsc{IsAlloc}(defStmt)}
-\State rethrownTypes $\gets$ rethrownTypes $\cup$ 
-\State \hspace{1cm} \textsc{GetAllocType}(defStmt)
-\ElsIf {\textsc{IsCaughtExceptionStmt}(defStmt)}
-\State reThrownTypes $\gets$ rethrownTypes $\cup$
-\State \hspace{1cm} \textsc{GetPossibleThrownTypes}(meth, defStmt)
-\Else 
-\State \textbf{return} $\emptyset$
-\label{alg:getpossiblethrown-return-null}
-\EndIf
-\EndFor
+%% \For {defStmt $\in$ \textsc{GetLocalDefs}(\textsc{GetOp}(stmt))}
+%% \If {\textsc{IsAlloc}(defStmt)}
+%% \State rethrownTypes $\gets$ rethrownTypes $\cup$ 
+%% \State \hspace{1cm} \textsc{GetAllocType}(defStmt)
+%% \ElsIf {\textsc{IsCaughtExceptionStmt}(defStmt)}
+%% \State reThrownTypes $\gets$ rethrownTypes $\cup$
+%% \State \hspace{1cm} \textsc{GetPossibleThrownTypes}(meth, defStmt)
+%% \Else 
+%% \State \textbf{return} $\emptyset$
+%% \label{alg:getpossiblethrown-return-null}
+%% \EndIf
+%% \EndFor
 
-\ElsIf {\textsc{HasInvoke}(tryStmt)}
+%% \ElsIf {\textsc{HasInvoke}(tryStmt)}
 
-\For {(succStmt, succMeth) $\in$ \textsc{GetSuccs}(cg, tryStmt)}
-\State thrownTypes $\gets$ thrownTypes $\cup$ 
-\State \hspace{1cm}\textsc{GetThrowsExceptions}(succMeth)
-\EndFor
+%% \For {(succStmt, succMeth) $\in$ \textsc{GetSuccs}(cg, tryStmt)}
+%% \State thrownTypes $\gets$ thrownTypes $\cup$ 
+%% \State \hspace{1cm}\textsc{GetThrowsExceptions}(succMeth)
+%% \EndFor
 
-\EndIf
+%% \EndIf
 
-\EndFor
+%% \EndFor
 
-\State \textbf{return} thrownTypes
+%% \State \textbf{return} thrownTypes
 
-\EndProcedure
-\end{algorithmic}
-\caption{Calculate exception types caught at statement.\label{alg:GetPossibleThrownTypes}}
-  \vspace{-0.1in}
-\end{figure}
+%% \EndProcedure
+%% \end{algorithmic}
+%% \caption{Calculate exception types caught at statement.\label{alg:GetPossibleThrownTypes}}
+%%   \vspace{-0.1in}
+%% \end{figure}
 
 
 \lstDeleteShortInline+
@@ -569,13 +547,27 @@ line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
 
 \lstDeleteShortInline+
 
-Figure~\ref{alg:GetPossibleThrownTypes} gives the algorithm for
-\textsc{GetPossibleThrownTypes}.  First, the method calculates the
-\lstinline!try! block that associates with the \lstinline!catch! block
-that encloses $stmt$. Next, the procedure examines \lstinline!throw!
-and call statements of the \lstinline!try!.  For a call statement, the
+
+
+Figure~\ref{fig:helper-funs} lists the helper procedures employed in
+the failure handling analysis.
+
+\lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
+
+\begin{figure}[t]
+\scriptsize
+\renewcommand*{\arraystretch}{1.3}
+\begin{tabular}{|p{3.3in}|}
+\hline 
+
+\textsc{GetPossibleThrownTypes}($meth$,$stmt$): Calculate the
+possible exception types caught at the catch block that begins with
+$stmt$ of $meth$. The method calculates the
++try+ block that associates with the +catch+ block
+that encloses $stmt$. The procedure examines +throw+
+and call statements of the +try+.  For a call statement, the
 procedure adds to the return list all exception types declared throws
-by all methods that the call can target.  For a \lstinline!throw!
+by all methods that the call can target.  For a +throw+
 statement, the reaching definitions of the thrown value are
 calculated.  If the reaching definition is an allocation, then add to
 the return list the type of the allocation.  If the reaching
@@ -583,50 +575,77 @@ definition is a caught exception statement, then
 \textsc{GetPossibleThrownExceptions} recursively calls itself to find
 the nesting try block statements and continue the calculation.  If a
 definition of any other statement type can reach the thrown value,
-then the procedure returns null to denote that it cannot calculate the
-thrown type (line~\ref{alg:getpossiblethrown-return-null}).  This
-situation causes the examined connection call or rethrown statement in
-\textsc{AnalyzeHandler} to be labeled essential (we have not included
-the code in the algorithms to propagate this situation to the
-essential set, though it is in our implementation).
-
-
-\subsection{Helper Procedures}
-
-The analysis employs the following helper procedures: 
-
-\begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
-
-\item \textsc{FindCompatCatch}($meth$,$stmt$,$ex$): Return the first
-  statement of the \lstinline!catch! block that will handle an
+then return null to denote that it cannot calculate the
+thrown.  
+\\
+\hline
+\textsc{FindCompatCatch}($meth$,$stmt$,$ex$): Return the first
+  statement of the +catch+ block that will handle an
   exception of type $ex$ thrown at statement stmt in method meth.
-
-\item \textsc{IsEventHandler}($meth$): Return true if method $meth$
+\\
+\hline
+\textsc{IsEventHandler}($meth$): Return true if method $meth$
   overrides a method defined in the Android API.  This method
   over-approximates the methods that can be called by the Android
   runtime to handle events.
-
-\item \textsc{GetCatchStmts}($stmt$,$meth$): Given the start of a
-  \lstinline!catch! block defined in the trap table of method $meth$,
-  return all statements that were defined in the source code for the
-  \lstinline!catch! block of $stmt$.  Since the dex bytecode does not
-  provide the ending statement of traps, we need to calculate the
-  extent of the catch block.  \textsc{GetCatchStmts} takes advantage
-  of the property that Java compilers do not produce code that jumps
-  from outside of the catch block into the middle of a catch block.
-  So to calculate the \lstinline!catch! block's extent,
-  \textsc{GetCatchStmts} (1) produces a control flow graph (CFG) for
-  $meth$, (2) colors all statements reachable from $stmt$ in the CFG,
-  (3) for each statement, $c$ of $meth$, if all predecessors of $c$ in
-  the CFG are colored then $c$ is included in the set of statements
-  that are returned ($stmt$ is also included in the return set). This
-  method calculates an over-estimation of \lstinline!catch! block
-  extents, e.g., it includes \lstinline!finally! blocks.
-
-\item \textsc{GetTryBlock}($meth$,$stmt$): Given a statement $stmt$
-  that begins a \lstinline!catch! block in method $meth$, return the
+\\
+\hline
+\textsc{GetCatchStmts}($stmt$,$meth$): Given the start of a
++catch+ block defined in the trap table of method $meth$,
+return all statements that were defined in the source code for the
++catch+ block of $stmt$.  This method calculates an
+over-estimation of +catch+ block extents, e.g., it includes
++finally+ blocks.
+\\
+\hline
+\textsc{GetTryBlock}($meth$,$stmt$): Given a statement $stmt$
+  that begins a +catch+ block in method $meth$, return the
   list of statement of try block associated with the enclosing
-  \lstinline!catch! block of $stmt$.
+  +catch+ block of $stmt$.
+\\
+\hline
+\end{tabular}
+\caption{\label{fig:helper-funs}Failure Analysis Helper Functions.}
+\end{figure}
 
-\end{description}
+\lstDeleteShortInline+
+
+
+
+%% \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
+
+%% \item \textsc{FindCompatCatch}($meth$,$stmt$,$ex$): Return the first
+%%   statement of the \lstinline!catch! block that will handle an
+%%   exception of type $ex$ thrown at statement stmt in method meth.
+
+%% \item \textsc{IsEventHandler}($meth$): Return true if method $meth$
+%%   overrides a method defined in the Android API.  This method
+%%   over-approximates the methods that can be called by the Android
+%%   runtime to handle events.
+
+%% \item \textsc{GetCatchStmts}($stmt$,$meth$): Given the start of a
+%%   \lstinline!catch! block defined in the trap table of method $meth$,
+%%   return all statements that were defined in the source code for the
+%%   \lstinline!catch! block of $stmt$.  Since the dex bytecode does not
+%%   provide the ending statement of traps, we need to calculate the
+%%   extent of the catch block.  \textsc{GetCatchStmts} takes advantage
+%%   of the property that Java compilers do not produce code that jumps
+%%   from outside of the catch block into the middle of a catch block.
+%%   So to calculate the \lstinline!catch! block's extent,
+%%   \textsc{GetCatchStmts} (1) produces a control flow graph (CFG) for
+%%   $meth$, (2) colors all statements reachable from $stmt$ in the CFG,
+%%   (3) for each statement, $c$ of $meth$, if all predecessors of $c$ in
+%%   the CFG are colored then $c$ is included in the set of statements
+%%   that are returned ($stmt$ is also included in the return set). This
+%%   method calculates an over-estimation of \lstinline!catch! block
+%%   extents, e.g., it includes \lstinline!finally! blocks.
+
+%% \item \textsc{GetTryBlock}($meth$,$stmt$): Given a statement $stmt$
+%%   that begins a \lstinline!catch! block in method $meth$, return the
+%%   list of statement of try block associated with the enclosing
+%%   \lstinline!catch! block of $stmt$.
+
+%% \end{description}
+ 
+\subsection{Success Analysis}
 
