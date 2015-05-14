@@ -57,7 +57,7 @@ In this section, we describe the design of the study that we conducted to gain m
 %{\bf Connection Statements.}
 \subsubsection{Connection Statements}
 Table~\ref{tbl:connections} lists the base classes and their corresponding methods that we consider in our study. 
-%The first three are responsible for establishing HTTP connections with backend servers, while the forth one provides socket-based communication. 
+%The first three are responsible for establishing HTTP connections with backend servers, while the fourth one provides socket-based communication. 
 We also include all sub-classes of those listed in the table.
 % and the last one allows 
 %RPC communication with other applications and services installed on the same mobile device. 
@@ -199,7 +199,8 @@ we installed the original version of each analyzed
 application on a Nexus 4 mobile device running Android version 4.4.4.
 We manually exercised the application for the duration of 5 to 10 minutes, exploring all its functionality visible to us. We refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases though, due to the instrumentation-related limitations mentioned above.
 During that execution, we recorded the execution script that captured all triggered actions. 
-We then re-installed the application to recreate a ``clean'' initial state and re-run the script collecting schreenshort that were used as the baseline for further comparisons. 
+We then re-installed the application %to recreate a ``clean'' state 
+and re-run the script to collect schreenshort that were used as the baseline for further comparisons. 
 
 In the second phase, we used the Monitoring Transformation to produce a version of the original application that logs information about all existing and triggered connection statements. We ran the produced version using the execution script and collected the statistics about its communication patterns.  
 

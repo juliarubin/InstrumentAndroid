@@ -140,7 +140,7 @@ connection target in a state different from the one it has before, and further c
 {\bf RQ3: How well does static detection perform?}
 To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth analysis of thirteen popular applications from Google Play.
 The results show that it features a high precision -- 93\% of the identified connection are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify  60\% of all non-essential connection in the studied application.
-Only 2 connections in total are miss-classified as non-essential: one is responsible for controlling the advertisement material presented by the Google Ads component installed on the device, and another -- for presenting images of additional apps that can be downloaded from Google Play. 
+Only 2 connections in total are mis-classified as non-essential: one is responsible for controlling the advertisement material presented by the Google Ads component installed on the device, and another -- for presenting images of additional apps that can be downloaded from Google Play. 
 
 To gain further insides on the quality of our technique, we apply the technique on additional XXX top-popular applications from Google Play. For these applications, we inject failures in all connection statements deemed non-essential by our static analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
 
