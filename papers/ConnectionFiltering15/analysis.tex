@@ -213,6 +213,45 @@ and (3) success backward analysis.  The analysis will terminate if a
 step determines that the connection is essential. Otherwise, a
 connection is considered non-essential.
 
+\lstDeleteShortInline+
+\lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
+
+\begin{table}[t]
+\small
+\renewcommand*{\arraystretch}{1.3}
+\caption{Considered UI Elements.}
+\label{tbl:ui}
+\centering
+\tabcolsep=1.5pt
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{|l|P{4.7cm}|P{5.7cm}|}
+\hline
+& \textbf{Class or Interface} & \textbf{Methods} \\
+\hline
+1. & android.app.Dialog                                 					& setContentView \\
+2. & android.support.v7.app.\newline{}ActionBarActivityDelegate  			& setContentView \\
+3. & android.view.View                                  					& onLayout, layout, onDraw, onAttachedToWindow \\
+4. & android.view.ViewGroup                             					& addView, addFocusables, addTouchables, addChildrenForAccessibility \\
+5. & android.view.ViewManager                           					& addView, updateViewLayout \\
+6. & android.view.WindowManagerImpl.\newline{}CompatModeWrapper  	        & addView \\
+7. & android.webkit.WebView                             					& loadData, loadDataWithBaseURL, loadUrl \\
+8. & android.widget.TextView       											& append, setText \\
+9. & android.widget.Toast        											& makeText \\
+\hline
+\end{tabular}
+}%resizebox
+\end{table}
+
+\lstDeleteShortInline+
+
+\lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=false]+
+
+Table~\ref{tbl:connections} lists the target methods that we consider
+connection calls and each method's associated failure exception.
+The set of target methods that are considered as affecting the user
+interface are listed in Table~\ref{tbl:ui}.  We also define all
+overriding methods of the methods listed in the table as UI methods.
+
 \subsection{Failure Handler Analysis}
 
 Failure analysis determines if a connection call modifies the user
@@ -222,8 +261,6 @@ graph for ease of understanding.  An iterator over all application
 statements calls the analysis separately for the combination of each
 statement in the application that could target a connection call and
 an exception that indicates communication failure.
-Table~\ref{tbl:connections} lists the target methods that we consider
-connection calls and each method's associated failure exception.
 
 %resize line numbers
 \algrenewcommand\alglinenumber[1]{\scriptsize #1:}
@@ -380,44 +417,35 @@ cg)
 \end{figure}
 
 For each \lstinline!catch! that is found during the
-\textsc{FindCatch}, handler analysis of the reachable statements of
-the \lstinline!catch! block is performed (\textsc{FindCatch}, line
-\ref{findcatches-analyze-call}).  Figure~\ref{alg:analyzehandler}
-gives the listing of the handler analysis procedure
-\textsc{AnalzyeHandler}. The analysis considers the reachable
-statements inter-procedurally and flow-insens\-itively.  Handler
-analysis searches for: (1) calls to application methods, (2)
-\lstinline!throw! statements (3) calls to native methods, and (4)
-possible calls to UI methods. When the analysis finds a call to an
-application method, it pushes the current statement and method onto
-the stack and recursively calls itself for the new method to analyze the
-new method's statements (lines
+\textsc{FindCatch}, \textsc{AnalzyeHandler} of
+Figure~\ref{alg:analyzehandler} analyzes the reachable statements of
+the handler. The analysis considers the reachable statements
+inter-procedurally and flow-insens\-itively.  Handler analysis
+searches for: (1) calls to application methods, (2) \lstinline!throw!
+statements (3) calls to native methods, and (4) possible calls to UI
+methods. When the analysis finds a call to an application method, it
+pushes the current statement and method onto the stack and recursively
+calls itself for the new method to analyze the new method's statements
+(lines
 \ref{alg:ah-app-method-call-start}-\ref{alg:ah-app-method-call-end}).
 If analysis finds a \lstinline!throw!  statement, the handler analysis
-spawns a new \textsc{FindCatches} analysis to find all the
-possible handlers of each rethrown exception (lines
+spawns a new \textsc{FindCatches} analysis to find all the possible
+handlers of each rethrown exception (lines
 \ref{alg:found-throws-start}-\ref{alg:found-throws-end}).  If analysis
 finds a call to a native method, we assume that it will throw all
 exceptions it is defined to throw, handler analysis spawns a
 \textsc{FindCatches} instance for each exception declared throws
 (line~\ref{alg:native-method-line}).  If a call is encountered that
 could target a UI method, then the statement that began the handler
-analysis is considered essential since the failure handling affects the
-user interface (line~\ref{alg:ui-method-found}).
+analysis is considered essential since the failure handling affects
+the user interface (line~\ref{alg:ui-method-found}).
 
-\textsc{FindCatches} and \textsc{AnalyzeHandler} maintain a set of
-statement and exception pairs, essential, that records pairs that are
-calculated as essential.  After all connection call statement and
-exception pairs are analyzed, pairs not in the essential set are
-considered non-essential.
+%% \textsc{FindCatches} and \textsc{AnalyzeHandler} maintain a set of
+%% statement and exception pairs, essential, that records pairs that are
+%% calculated as essential.  After all connection call statement and
+%% exception pairs are analyzed, pairs not in the essential set are
+%% considered non-essential.
 
-
-
-
-
-The set of target methods that are considered as affecting the user
-interface are listed in Table~\ref{tbl:ui}.  We also define all
-overriding methods of the methods listed in the table as UI methods.
 
 A stack of pairs of method call statement and method is maintained
 during the analysis.  The analysis uses the stack to focus the handler
@@ -473,9 +501,7 @@ connection call (or rethrown exception statement) is considered
 essential (line \ref{alg:unknown-last-def-throw}).  If only
 allocations and caught exception statements reach the thrown value,
 then the handler analysis spawns a new \textsc{FindCatches} instance
-to analyze the failure handling.  The classification of the thrown
-statement is propagated to the current excepting statement in
-line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
+to analyze the failure handling. 
 
 %% \begin{figure}[t]
 %% \begin{algorithmic}[1]
@@ -522,37 +548,6 @@ line \label{alg:progagate-line} of \textsc{AnalyzeHandler}.
 
 
 \lstDeleteShortInline+
-
-\lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
-
-\begin{table}[t]
-\small
-\renewcommand*{\arraystretch}{1.3}
-\caption{Considered UI Elements.}
-\label{tbl:ui}
-\centering
-\tabcolsep=1.5pt
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{|l|P{4.7cm}|P{5.7cm}|}
-\hline
-& \textbf{Class or Interface} & \textbf{Methods} \\
-\hline
-1. & android.app.Dialog                                 					& setContentView \\
-2. & android.support.v7.app.\newline{}ActionBarActivityDelegate  			& setContentView \\
-3. & android.view.View                                  					& onLayout, layout, onDraw, onAttachedToWindow \\
-4. & android.view.ViewGroup                             					& addView, addFocusables, addTouchables, addChildrenForAccessibility \\
-5. & android.view.ViewManager                           					& addView, updateViewLayout \\
-6. & android.view.WindowManagerImpl.\newline{}CompatModeWrapper  	        & addView \\
-7. & android.webkit.WebView                             					& loadData, loadDataWithBaseURL, loadUrl \\
-8. & android.widget.TextView       											& append, setText \\
-9. & android.widget.Toast        											& makeText \\
-\hline
-\end{tabular}
-}%resizebox
-\end{table}
-
-\lstDeleteShortInline+
-
 
 
 Figure~\ref{fig:helper-funs} lists the helper procedures employed in
