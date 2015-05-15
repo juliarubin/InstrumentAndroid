@@ -101,25 +101,32 @@ essential and non-essential communication.
 %\vspace{0.1in}
 \noindent 
 {\bf RQ2: Can non-essential communication be detected statically?}
-Detailed investigation of multiple detected cases of non-essential connections led us to develop a novel static application
-analysis that can detect such connection automatically. 
-The core idea behind our analysis is to look for cases when both connection success and its failure 
-are ``silently''
-ignored by the application, i.e., when no information is not propagated back to the end user.
-{\bf JR: Michael, please update here accordingly to your changes in Sec. 3}.
-  The static analysis
-classifies each connection call by inspecting the execution of the
-application during {\it failure handling} of the connection call.
-Failure handling begins when the exception is propagated to the
-connection call and ends when the execution exits the exception
-handler of the exception or the handlers of all rethrown exceptions
-that are raised during handling.
-If a failure handling exception could affect the user interface
-through a call to a predefined set of API calls, we classify the
-connection call to be {\em essential}.  We classify it as {\em essential}
-also if there is a failure handling
-path that could exit the program, because a thrown exception
-propagates back into the Android runtime.
+Detailed investigation of multiple detected cases of non-essential
+connections led us to develop a novel static application analysis that
+can detect such connection automatically.  The core idea behind our
+analysis is that the processing associated with a non-essential
+connection call does not directly affect the user interface on success
+or failure, and a non-essential connection call will not cause
+application exit on failure. 
+
+The static analysis first calculates all possible flows of control of
+the application during {\it failure handling} of the connection
+call. For an exception $e$ of connection statement $s$ in method $m$,
+failure handling is the set of methods on all possible call stacks for
+$m$ that either pass the exception $e$ up the stack or handle $e$.
+Next, the static analysis calculates the set of methods that are
+reachable on successful forward processing of $s$ during the Android
+events that could trigger $s$.  
+
+The union of these two sets define our notion of {\it direct} success
+and failure processing of connection statement $s$.  This set is then
+searched for method call invocations that could target a predefined
+set of API calls that affect the user interface.  If such a call is
+found, then $s$ is deemed essential.  Furthermore, if a failure
+handling path includes a method that is an application event handler
+that does not handle the exception, then the application will
+propagate the exception to the Android runtime and could exit on the
+exception, and the connection call is deemed essential.
 
 Our static analysis is designed to scale to large Android applications
 and to conservatively approximate the behavior of dynamic constructs
