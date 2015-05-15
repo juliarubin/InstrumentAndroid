@@ -2,20 +2,20 @@
 \label{sec:intro} 
 
 Mobile applications enjoy almost permanent connectivity and the
-ability to exchange information with their own back-end and other 
-third-party servers over the net. 
-This paper shows that much of this communication delivers no value to the
-user of the application: disabling such communication leaves the
-delivered application experience completely intact.  Yet, this
-communication comes with costs such as bandwidth charges, power
-consumption on the device, potential privacy breaches and analytic data
-release, and the unsuspected presence of continued communication
-between the device and remote organizations. In fact, we observed
-that several applications silently spawn services that communicate with
-third-party servers even when the application itself is no longer
-active, with the user completely unaware that the spawned services are
-still running in the background.
-{\bf JR: Michael, if you have some energy, more motivation why we don't like this excessive communication would be a good fit here.}
+ability to exchange information with their own back-end and other
+third-party servers.  This paper shows that much of this communication
+delivers no value to the user of the application: disabling such
+communication leaves the delivered application experience completely
+intact.  Yet, this communication comes with costs such as bandwidth
+charges, power consumption on the device, potential privacy breaches
+and analytic data release, and the unsuspected presence of continued
+communication between the device and remote organizations. In fact, we
+observed that several applications silently spawn services that
+communicate with third-party servers even when the application itself
+is no longer active, with the user completely unaware that the spawned
+services are still running in the background.  {\bf JR: Michael, if
+  you have some energy, more motivation why we don't like this
+  excessive communication would be a good fit here.}
 
 This paper takes the first steps towards automatically identifying and
 disabling these kinds of non-essential communications. We start by

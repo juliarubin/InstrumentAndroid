@@ -9,8 +9,8 @@ developed in Java as a series of external event handler routines,
 e.g., button click and application exit.  Given an Android
 application, the static analysis classifies each statement that may
 invoke a connection call as either {\it essential} or {\it
-  non-essential}.  We begin with definitions and our problem
-statement:
+  non-essential}.  We begin with machinery that allows us to define
+essential and non-essential connection statements with precision.
 
 
 %% In an Android application, each
@@ -23,42 +23,42 @@ statement:
 %% the Android runtime is returned to during the stack unwinding, the
 %% application is typically exited with an error.  
 
-\begin{figure}
-\begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)},basicstyle=\ttfamily\scriptsize]
-public class ApplicationClass {
-    void f() {
-        try {
-            g();
-            (*@{\it stmtA};@*)
-        } catch (AdvertisingException e) {
-            (*@{\it stmtB};@*)
-        }
-        (*@{\it stmtC};@*)
-    }
-}
-public class AdvertisingAPIClass {
-    void g() throws AdvertisingException {
-        try {
-            (*@{\it stmtD};@*)
-            connect();  //throws RemoteException (*@\label{connect-fig-line}@*)
-            (*@{\it stmtE};@*)
-        } catch (RemoteException e) {
-            (*@{\it stmtF};@*)
-            throw new AdvertisingException();            
-        }        
-        (*@{\it stmtG};@*)
-    }
-}
-\end{lstlisting}
-\vspace{-0.2in}
-\caption{\label{fig:failure-handling}An example of failure handling.
-% of
-%  of a connection call at line ~\ref{connect-fig-line}.  Statements
-%  {\it stmtF}, \lstinline!throw new! \lstinline!AdvertisingException()!, and {\it stmtB}
-%  are in the failure handling of this statement for exception \lstinline!RemoteException!.
-}
-\vspace{-0.1in}
-\end{figure}
+%% \begin{figure}
+%% \begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)},basicstyle=\ttfamily\scriptsize]
+%% public class ApplicationClass {
+%%     void f() {
+%%         try {
+%%             g();
+%%             (*@{\it stmtA};@*)
+%%         } catch (AdvertisingException e) {
+%%             (*@{\it stmtB};@*)
+%%         }
+%%         (*@{\it stmtC};@*)
+%%     }
+%% }
+%% public class AdvertisingAPIClass {
+%%     void g() throws AdvertisingException {
+%%         try {
+%%             (*@{\it stmtD};@*)
+%%             connect();  //throws RemoteException (*@\label{connect-fig-line}@*)
+%%             (*@{\it stmtE};@*)
+%%         } catch (RemoteException e) {
+%%             (*@{\it stmtF};@*)
+%%             throw new AdvertisingException();            
+%%         }        
+%%         (*@{\it stmtG};@*)
+%%     }
+%% }
+%% \end{lstlisting}
+%% \vspace{-0.2in}
+%% \caption{\label{fig:failure-handling}An example of failure handling.
+%% % of
+%% %  of a connection call at line ~\ref{connect-fig-line}.  Statements
+%% %  {\it stmtF}, \lstinline!throw new! \lstinline!AdvertisingException()!, and {\it stmtB}
+%% %  are in the failure handling of this statement for exception \lstinline!RemoteException!.
+%% }
+%% \vspace{-0.1in}
+%% \end{figure}
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 \item \textsc{\bfseries{Definition (Rethrown Exception)}}.  A
@@ -82,17 +82,17 @@ that handles $e$ and any failure triggered by the handling of $e$
 exceptions triggered by $e$ are handled and flow returns to normal
 execution.  
 
-Figure~\ref{fig:failure-handling} give a simplified representation of
-failure handling pattern that we observed in the twitter application.
-Method \lstinline!f! invokes method \lstinline!g!.  In \lstinline!g!,
-a connection call is encountered on line~\ref{connect-fig-line};
-assume during execution this connection call throws a
-+RemoteException+.  The failure handling for this
-connection call and exception is the set of statements:
-{\it stmtF}, \lstinline!throw new! +AdvertisingException()+,
-and {\it stmtB}.  These statements are executed from the start of the
-handling of thrown \lstinline!RemoteException! to the end of the
-handling of the rethrown \lstinline!AdvertisingException!.
+%% Figure~\ref{fig:failure-handling} give a simplified representation of
+%% failure handling pattern that we observed in the twitter application.
+%% Method \lstinline!f! invokes method \lstinline!g!.  In \lstinline!g!,
+%% a connection call is encountered on line~\ref{connect-fig-line};
+%% assume during execution this connection call throws a
+%% +RemoteException+.  The failure handling for this
+%% connection call and exception is the set of statements:
+%% {\it stmtF}, \lstinline!throw new! +AdvertisingException()+,
+%% and {\it stmtB}.  These statements are executed from the start of the
+%% handling of thrown \lstinline!RemoteException! to the end of the
+%% handling of the rethrown \lstinline!AdvertisingException!.
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 \item \textsc{\bfseries{Definition (Essential and Non-essential
@@ -122,11 +122,11 @@ any of the criteria.
 
 \end{description}
 
-\begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
-\item \textsc{\bfseries{Problem}}: For each connection call in an
-  Android application, determine whether it is essential or
-  non-essential.
-\end{description}
+%% \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
+%% \item \textsc{\bfseries{Problem}}: For each connection call in an
+%%   Android application, determine whether it is essential or
+%%   non-essential.
+%% \end{description}
 
 %% To solve this problem statically, our failure-handling analysis
 %% conservatively calculates all possible failure handling for exceptions
@@ -144,7 +144,7 @@ any of the criteria.
 %% include only the dex byte code and application resources such as
 %% images, sounds, and GUI declarations.  
 
-\subsection{Call Graph Construction}
+\subsection{Constructing an Accurate Call Graph for Android Apps }
 
 Static analysis of Android applications is notoriously difficult
 because of the complexity and dynamic nature of the Android runtime
@@ -165,11 +165,14 @@ DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
 presentation of the analysis below assumes the application is
 represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 
-Our analysis employs a class hierarchy analysis (CHA)~\cite{Dean1995}
-to build a call graph with refinement achieved by intra-procedural
-data-flow analysis.  After much experimentation with higher precision,
-though brittle, points-to analysis techniques, this analysis
-combination gave us the best performance for the classification task.
+The design of our analysis prioritizes high precision over high recall
+because we do not want to block connection calls that perform
+essential communication. Our analysis employs a class hierarchy
+analysis (CHA)~\cite{Dean1995} to build a call graph with refinement
+achieved by intra-procedural data-flow analysis.  After much
+experimentation with higher precision, though brittle, points-to
+analysis techniques, this analysis combination gave us the best
+performance for the classification task.
    
 To compute a call graph, we augment the application code with the
 DroidSafe Android Device Implementation
@@ -664,9 +667,7 @@ Here we summarize the success analysis of connection call $s$ enclosed
 in method $m$ by presenting a high-level description of two conceptual
 phases:
 
-\begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
-
-\item {\bfseries Success Forward Analysis}: Code reachable from the
+\subsubsection{Success Forward Analysis} Code reachable from the
   statement immediately after $s$ is searched for a connection call,
   following call statements to analyze their target method(s).  This is
   accomplished by traversing all paths in the interprocedural control
@@ -674,15 +675,13 @@ phases:
   exceptional control paths when analyzing the CFG.  The analysis does
   not follow call graph edges into the Android API.
 
-\item {\bfseries Success Backward Analysis}: For all methods $f$ such
+\subsubsection{Success Backward Analysis} For all methods $f$ such
   that there is a path from $f$ to $m$ in the call graph and $f$ was
   searched during the Failure Handler Analysis, examine all statements
   of $f$ for calls that affect the user interface.  This has the
   effect of traversing the call graph backwards from $m$ $s$ for UI
   calls, stopping at event handlers (that are called by the Android
   API) and, on a path, stopping once the exception of $s$ is handled.
-
-\end{description}
 
 If the success forward and success backward analysis do not find any
 calls that could affect the user interface, then the connection call
@@ -699,23 +698,14 @@ naturally denotes a unified block of processing, so our analysis
 reasons about event handlers to bound the success search to represent
 the direct processing of a connection call.
 
-Another insight gleaned from examination of our applications in the
+Another insight gleaned from examination of the applications in the
 study in Section~\ref{sec:study} is that direct processing associated
 with a successful invocation of connection call $s$ in method $m$ ends
-by the successful control flow merges back with the exceptional
+when the successful control flow merges back with the exceptional
 control flow. This is the motivation for why the success backward
 analysis only examines methods that were analyzed by the failure
 analysis.  We suppose that, for all stacks of $m$, methods beyond the
 failure analysis do not contribute to processing of $s$.
-
-The design our analysis prioritizes high precision over high recall
-because we do not want to block connection calls that perform
-essential communication.  This strategy guided our decision to employ
-CHA for call graph construction and incorporate aggressive heuristics
-for capturing reflection.  As will be demonstrated in the next
-section, we achieve very high precision for the classification task,
-while still achieving recall that blocks a significant number of
-invocations of non-essential connection calls.
 
 The presented analysis has the following limitations. Dynamically
 loaded code is not considered.  The analysis considers only checked
