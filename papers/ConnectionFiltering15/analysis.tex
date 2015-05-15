@@ -102,18 +102,18 @@ execution.
   
 \begin{enumerate}[leftmargin=0.5cm]
 
-\item{\bf User-Interface Cue on Error}: When $s$ triggers an error,
-  the user may be notified of the error via a user interface cue
+\item{\bf User-Interface Cue on Failure}: When $s$ triggers an exception,
+  the user may be notified of the failure via a user interface cue
   during failure handling.
 
-\item {\bf Program Exit on Error}: When $s$ triggers an error, the
+\item {\bf Program Exit on Failure}: When $s$ triggers an exception, the
   program may stop executing due to a failure handling path not
   terminating at an application event handler method.
 
 \item {\bf User-Interface Cue on Success}: When $s$ succeeds, there
   exists a possible modification to the user interface {\it before}
   either (a) the next external event is handled by the application or
-  (b) processing continues beyond the error handling of $s$.
+  (b) processing continues beyond the failure handling of $s$.
 
 \end{enumerate}
 
@@ -216,7 +216,7 @@ connection is considered non-essential.
 \subsection{Failure Handler Analysis}
 
 Failure analysis determines if a connection call modifies the user
-interface or could exit the application on error.  We organize the
+interface or could exit the application on exception.  We organize the
 static failure-handling analysis as a recursive traversal on the call
 graph for ease of understanding.  An iterator over all application
 statements calls the analysis separately for the combination of each
@@ -402,7 +402,7 @@ exceptions it is defined to throw, handler analysis spawns a
 \textsc{FindCatches} instance for each exception declared throws
 (line~\ref{alg:native-method-line}).  If a call is encountered that
 could target a UI method, then the statement that began the handler
-analysis is considered essential since the error handling affects the
+analysis is considered essential since the failure handling affects the
 user interface (line~\ref{alg:ui-method-found}).
 
 \textsc{FindCatches} and \textsc{AnalyzeHandler} maintain a set of
@@ -661,23 +661,23 @@ all stacks handle $s$'s exception, then our analysis continues with
 the success paths of $s$. The success analysis determines if there is
 any user interface modification after the connection succeeds but
 before control returns to the Android runtime and before control
-merges back to the error paths.
+merges back to the failure handling paths.
 
 Here we summarize the success analysis of connection call $s$ enclosed
 in method $m$ by presenting a high-level description of two conceptual
 phases:
 
 \subsubsection{Success Forward Analysis} Code reachable from the
-  statement immediately after $s$ is searched for a connection call,
-  following call statements to analyze their target method(s).  This is
-  accomplished by traversing all paths in the interprocedural control
-  flow graph (CFG) starting at $s$.  We follow both normal and
-  exceptional control paths when analyzing the CFG.  The analysis does
-  not follow call graph edges into the Android API.
+  statement immediately after $s$ is searched for a connection call.
+  This is accomplished by traversing all paths in the interprocedural
+  control flow graph (CFG) starting at $s$ and following method invoke
+  expressions.  We follow both normal and exceptional control paths
+  when analyzing the CFG.  The analysis does not follow call graph
+  edges into the Android API.
 
 \subsubsection{Success Backward Analysis} For all methods $f$ such
   that there is a path from $f$ to $m$ in the call graph and $f$ was
-  searched during the Failure Handler Analysis, examine all statements
+  searched during the failure handling analysis, examine all statements
   of $f$ for calls that affect the user interface.  This has the
   effect of traversing the call graph backwards from $m$ $s$ for UI
   calls, stopping at event handlers (that are called by the Android
@@ -690,13 +690,13 @@ is classified as non-essential.
 \subsection{Design Discussion and Limitations}
 
 The intuition for our static analysis is that essential connection
-calls affect the user interface {\it always} on error and {\it
-  directly} on success.  The former is examined during the failure
-handling analysis and the later is analyzed during the success
-analysis.  An execution trace that handles a single runtime event
-naturally denotes a unified block of processing, so our analysis
-reasons about event handlers to bound the success search to represent
-the direct processing of a connection call.
+calls {\it always} affect the user interface either on success or
+failure. Furthermore, the effect is {\it direct} on success.  As a
+marker for the notion of a {\it direct effect}, an execution trace
+that handles a single runtime event naturally denotes a unified block
+of processing, so our analysis reasons about event handlers to bound
+the success search to represent the direct processing of a connection
+call.
 
 Another insight gleaned from examination of the applications in the
 study in Section~\ref{sec:study} is that direct processing associated
