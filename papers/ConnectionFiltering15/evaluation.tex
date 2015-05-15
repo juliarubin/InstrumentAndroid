@@ -1,4 +1,5 @@
 \begin{table}[t]
+\vspace{-0.15in}
 \caption{Comparison with the Manually Established Results.}
 \label{tbl:eval}
 \centering
@@ -11,20 +12,20 @@
                                 & Precision         & Recall            &    \\
 \hline
 %--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp  & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 1min 50s \\
-com.crimsonpine.stayinline  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 1min 52s \\
-com.devuni.flashlight   & 1/2 (50.0\%)  & 1/1 (100.0\%)  &          \\
-com.emoji.Smart.Keyboard  & 2/2 (100.0\%)  & 2/2 (100.0\%)  &          \\
-com.grillgames.guitarrockhero & 1/1 (100.0\%)  & 1/14 (7.1\%)  & 2min 54s \\
-com.jb.emoji.gokeyboard   & 4/4 (100.0\%)  & 4/7 (57.1\%)  &          \\
-com.pandora.android    & 4/4 (100.0\%)  & 4/9 (44.4\%)  & 2min 13s \\
-com.spotify.music    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 2min 18s \\
-com.twitter.android    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 2min 33s \\
-com.walmart.android    & 3/3 (100.0\%)  & 3/5 (60.0\%)  & 2min 17s \\
-net.zedge.android    & 3/4 (75.0\%)  & 3/4 (75.0\%)  & 2min 31s \\
+air.com.sgn.cookiejam.gp  & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 2min 11s \\
+com.crimsonpine.stayinline  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 2min 24s \\
+com.devuni.flashlight   & 1/2 (50.0\%)  & 1/1 (100.0\%)  & 1min 44s \\
+com.emoji.Smart.Keyboard  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 1min 16s \\
+com.grillgames.guitarrockhero & 1/1 (100.0\%)  & 1/14 (7.1\%)  & 6min 14s \\
+com.jb.emoji.gokeyboard   & 4/4 (100.0\%)  & 4/7 (57.1\%)  & 3min 22s \\
+com.pandora.android    & 4/4 (100.0\%)  & 4/9 (44.4\%)  & 2min 41s \\
+com.spotify.music    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 2min 51s \\
+com.twitter.android    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 3min  3s \\
+com.walmart.android    & 3/3 (100.0\%)  & 3/5 (60.0\%)  & 3min  2s \\
+net.zedge.android    & 3/4 (75.0\%)  & 3/4 (75.0\%)  & 4min 13s \\
 \hline
 %--------------------------------------------------------------------
-Average       & 23/25 (93.2\%) & 23/52 (60.0\%) & 2min 18s \\
+Average       & 23/25 (93.2\%) & 23/52 (60.0\%) & 2min 48s \\
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
@@ -33,72 +34,92 @@ Average       & 23/25 (93.2\%) & 23/52 (60.0\%) & 2min 18s \\
 
 \section{Experiments}
 \label{sec:evaluation}
-To establish the quality of our static analysis technique, we first evaluate its precision and recall on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). 
-We then apply our analysis on 500 top-popular Android applications from Google Play. 
-We select XX of these application for further investigation: we inject failures in all connection statements identified as non-essential by our static analysis, as described in Section~\ref{sec:study}, 
-and they employ humans to check whether these are any observable differences between the original and the modified application, 
-Finally, we use the 
+In this section, we report on our experiments for establishing the quality of our technique. 
+We then apply it to gathered information about common patterns of non-essential communication in the wild and report on our findings. 
 
-For the remaining ones, we use the gathered information to report on common patterns of non-essential communication in the wild.
+%To establish the quality of our static analysis technique, we first evaluate its precision and recall on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). 
+%We then apply our analysis on 500 top-popular Android applications from Google Play. 
+%We select XX of these application for further investigation. In that investigation, we inject failures in all connection statements identified as non-essential by our static analysis, as described in Section~\ref{sec:study}, 
+%and they employ humans to check whether these are any observable differences between the original and the modified application, 
+%Finally, we use the 
 
-\subsection{Evaluation of the Static Analysis}
-For our evaluation, we limit the set of results reported by the static analysis to those that were, in fact,
- triggered during our dynamic study (see Table~\ref{tbl:applications} in Section~\ref{sec:study}): these are the connection statements for which we have reliable information to compare against. 
+\subsection{Quality of the Static Analysis}
+To establish the quality of our static analysis technique, we 
+first evaluate its accuracy, i.e., precision and recall, on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}).
+We then do a usability assessment, evaluating the experience of the users when running a version of an application with all non-essential connection identified by our technique disabled. 
+
+\subsubsection{Accuracy Assessment}
+For the accuracy evaluation, we look again at the applications listed in 
+Table~\ref{tbl:applications}, exploding the facebook and candycrash applications that did not exhibit any non-essential connections. We limit the set of results reported by the static analysis to those that were, in fact, triggered during our dynamic study: these are the connection statements for which we have reliable information to compare against. 
+% (see Table~\ref{tbl:applications} in Section~\ref{sec:study}): these are the connection statements for which we have reliable information to compare against. 
 We assess the results, for each application individually and averaged for all applications, using the metrics below. The results are summarized in Table~\ref{tbl:eval}.
 
-\begin{enumerate}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
+\begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
 \item
-\emph{Expected}: the size of the predetermined expected result, i.e., the number of connections listed as non-essential in Table~\ref{tbl:applications}.
-\item
-\emph{Reported}: the number of connections deemed as non-essential by the static analysis. 
-\item
- \emph{Correct}: the number of non-essential connections correctly identified by the static analysis, i.e., those that were deemed as non-essential in the dynamic study as well.
+%\emph{Expected}: the size of the predetermined expected result, i.e., the number of connections listed as non-essential in Table~\ref{tbl:applications}.
+%\item
+%\emph{Reported}: the number of connections deemed as non-essential by the static analysis. 
+%\item
+% \emph{Correct}: the number of non-essential connections correctly identified by the static analysis, i.e., those that were deemed as non-essential in the dynamic study as well.
 % reported by the technique.\\
 \item
-\emph{Precision}: the fraction of relevant results among those reported,
-% by the technique,
- calculated as \emph{$\frac{\text{Correct}}{\text{Reported}}$}. 
+\emph{Precision}: the fraction of correctly identified results among those reported by the technique.
+% calculated as \emph{$\frac{\text{Correct}}{\text{Reported}}$}. 
 \item
-\emph{Recall}: the fraction of relevant results among those expected, calculated as
-\emph{$\frac{\text{Correct}}{\text{Expected}}$}.
+\emph{Recall}: the fraction of correctly identified results results among those expected (i.e., marked as non-essential during the dynamic study). 
+%, calculated as
+%\emph{$\frac{\text{Correct}}{\text{Expected}}$}.
 %\item
 %\emph{F-measure}: a harmonized measure combining precision and recall, whose
 %value is high if both precision and recall are high, calculated as \emph{$\frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}$}. This measure is usually used to evaluate the accuracy of a technique as
 %it does not allow trading-off precision for recall and vise versa.
 \item \emph{Execution time}: the execution time of the analysis, measured by averaging results of
 three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} CPU E5-2690 v2 @ 3.00GHz machine running Ubuntu 12.04.5. The machine was configured to use at most 16GB of heap and to perform no parallelization for a single application, i.e., each application uses one core only.
-\end{enumerate}
-  
-As can be seen in the second and the third columns of Table~\ref{tbl:eval}, the overall averaged precision of our analysis is 83.3\%. 
-The analysis correctly identified 64 non-essential connections out of the total 82 reported. 
-18 connections were mis-classified, out of which 16 correspond to \emph{optional} application behaviors, i.e.,
-when connection failures are indeed ignored and the applications proceed without the missing information. The 
-remaining two cases correspond to a \emph{stateful} communication within the application. 
-The details of each of these cases are given below: 
-
-\begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
-\item 13 connections are used for presenting \emph{optional} advertisement content: 
-3 in the \emph{net.zedge.android} application, and 
-5 in \\
-\emph{com.crimsonpine.stayinline} and \emph{com.grillgames.guitarrockhero} each.
-\item 3 connections correspond to 
-\emph{optional} application behaviors: 2 in the \emph{com.walmart.android} application, responsible for providing location-aware search, and 1 in the \emph{com.spotify.music} application, responsible for enhancing the presented album with images.
-\item 2 connections, both in \emph{com.spotify.music}, correspond to \emph{stateful} communication within the application. 
-Blocking each of these connections, individually, harms the application's search capabilities.
 \end{itemize}
+  
+As can be seen in the second column of Table~\ref{tbl:eval}, the overall averaged precision of our analysis is 93.2\%. 
+The analysis correctly identifies all but one non-essential connection, in the \emph{net.zedge.android} application (last row of Table~\ref{tbl:eval}).  
+The mis-classified connection is responsible for presenting advertisement material and belongs to the \emph{com.mopub.mobileads} A\&A service library packaged with the application. 
+That library relies on asynchronous RPC communication with the Google Plus services 
+installed on the same device. Our static analysis does not track intra-application communication between different applications and services on the device, hence the mis-classification.   
+ 
+% out of the total 82 reported. 
+%18 connections were mis-classified, out of which 16 correspond to \emph{optional} application behaviors, i.e.,
+%when connection failures are indeed ignored and the applications proceed without the missing information. The 
+%remaining two cases correspond to a \emph{stateful} communication within the application. 
+%The details of each of these cases are given below: 
 
-Considering the advertisement information as non-essential gives an overall average precision of 90.8\%, as shown in column 4 of Table~\ref{tbl:eval}. 
-That is, depending on the user's perspective, 
-between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
+%\begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
+%\item 13 connections are used for presenting \emph{optional} advertisement content: 
+%3 in the \emph{net.zedge.android} application, and 
+%5 in \\
+%\emph{com.crimsonpine.stayinline} and \emph{com.grillgames.guitarrockhero} each.
+%\item 3 connections correspond to 
+%\emph{optional} application behaviors: 2 in the \emph{com.walmart.android} application, responsible for providing location-aware search, and 1 in the \emph{com.spotify.music} application, responsible for enhancing the presented album with images.
+%\item 2 connections, both in \emph{com.spotify.music}, correspond to \emph{stateful} communication within the application. 
+%Blocking each of these connections, individually, harms the application's search capabilities.
+%\end{itemize}
+%
+%Considering the advertisement information as non-essential gives an overall average precision of 90.8\%, as shown in column 4 of Table~\ref{tbl:eval}. 
+%That is, depending on the user's perspective, 
+%between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
 
-While designed to be conservative, our analysis is able to correctly identify 64 out of 106 connection statements deemed non-essential in the empirical study, resulting in the overall recall of 63.8\% (column 3 in Table~\ref{tbl:eval}). Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
-The technique correctly identifies the majority of non-essential connections.
+While designed to be conservative, our analysis is able to correctly identify %64 out of 106 connection
+60\% of statements deemed non-essential in the empirical study 
+%, resulting in the overall recall of 63.8\% 
+(column 3 in Table~\ref{tbl:eval}). 
+Conservative call graph construction, specifically w.r.t. reflection, is a major contributor to the observed low recall. {\JR: Michael, pls check.}
+On the flip side, the analysis is highly efficient and runs in a matter of minutes even on large applications, as shown in the last column of table Table~\ref{tbl:eval}.
 
-Finally, the last column of table Table~\ref{tbl:eval} shows that our analysis is highly efficient -- it runs in a matter of minutes even on large applications. 
 
-\subsubsection{Usability assessment}
+%Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
+%The technique correctly identifies the majority of non-essential connections.
 
-We recruted two users and paired each one up with one of the authors of this paper.  Each pair was given two devices - one running. 
+\subsubsection{Usability Assessment}
+To check whether our technique is able to provide actionable results, we selected 100 applications that persisted in the list of the top 500 popular applications on Google Play between November 2014 and May 2015. Out of these, we excluded xx chat applications, 
+
+
+We recruited two users and paired each one up with one of the authors of this paper.  Each pair was given two devices - one running. 
 The users simultaneously executed the same app on both devices and noted all differences.
 
 Each app was executed for 5 to 10 mins. Sign in and in app purchases.
@@ -152,28 +173,27 @@ Results.
 \label{tbl:callers}
 \centering
 \tabcolsep=1.5pt
-\resizebox{0.9\columnwidth}{!}{%
-\begin{tabular}{|r|P{3.2cm}|P{3.5cm}|C{1.8cm}|C{1.8cm}|}
+\resizebox{1.0\columnwidth}{!}{%
+\begin{tabular}{|c|P{2.6cm}|P{3.6cm}|C{1.9cm}|C{2.4cm}|}
 \hline
 %--------------------------------------------------------------------
-    &                         & Description                           & Used in \# (\%) of Apps  \\
+ &
+ \textbf{Package} &
+ \textbf{Description} &
+ \textbf{Used in \#~(\%)~of~Apps} &
+ \textbf{Non-essential~calls (\%~of~total~calls)} \\
 \hline
-%--------------------------------------------------------------------
- 1. & com.google.android.gms            &  Google mobile services             & 403 (80.6\%)  \\
- 2. & com.facebook                &  Facebook services               & 190 (38.0\%)  \\
- 3. & com.android.\newline{}vending.billing     &  Google in-app billing             & 139 (27.8\%)  \\
- 4. & com.chartboost.sdk             &  Gaming services                & 116 (23.2\%)  \\
- 5. & com.flurry.sdk               &  Advertising, monetization and analytics services & 79 (15.8\%)  \\
- 6. & com.millennialmedia.\newline{}android     &  Advertising, monetization and analytics services & 76 (15.2\%)  \\
- 7. & com.mopub.mobileads             &  Advertising, monetization and analytics services & 70 (14.0\%)  \\
- 8. & com.tapjoy                 &  Advertising, monetization and analytics services & 47  (9.4\%)  \\
- 9. & com.bda.controller             &  PhoneGap game controller            & 23  (4.6\%)  \\
-10. & com.unity3d.\newline{}plugin.downloader    &  Gaming Services                & 21  (4.2\%)  \\
-%11. & com.outfit7.\newline{}talkingfriends.offers  &  Components of Outfit7 Android developers     & 16  (3.2\%)  \\
-%12. & com.google.android.\newline{}youtube.player  &  Google YouTube API               & 11  (2.2\%)  \\
-%13. & com.cleanmaster               &  Phone Booster and Antivirus app         & 8  (1.6\%)  \\
-%14. & com.ijinshan.kbackup             &  Cloud backup and restore app          & 3  (0.6\%)  \\
-%15. & cn.wps.moffice               &  Office app                  & 1  (0.2\%)  \\
+1.  & com.google.android    & Google services          & 382 (76.4\%)  & 1913 (49.9\%) \\
+2.  & com.gameloft      & Gaming services          & 17 (3.4\%)  & 784 (87.4\%) \\
+3.  & com.inmobi      & Advertising, monetization and analytics services  & 61 (12.2\%)  & 615 (67.6\%) \\
+4.  & com.millennialmedia.\newline{}android  & Advertising, monetization and analytics services  & 78 (15.6\%)  & 447 (58.8\%) \\
+5.  & com.mopub.mobileads    & Advertising, monetization and analytics services  & 72 (14.4\%)  & 320 (56.9\%) \\
+6.  & com.tapjoy      & Advertising, monetization and analytics services  & 49 (9.8\%)  & 277 (43.8\%) \\
+7.  & com.facebook      & Facebook services          & 112 (22.4\%)  & 222 (24.3\%) \\
+8.  & com.unity3d      & Gaming services          & 77 (15.4\%)  & 203 (41.8\%) \\
+9.  & (default)       & Default package of an application      & 23 (4.6\%)  & 178 (48\%) \\
+10.  & com.flurry      & Advertising, monetization and analytics services  & 95 (19\%)   & 175 (35.3\%) \\
+
 \hline
 %--------------------------------------------------------------------
 \end{tabular}

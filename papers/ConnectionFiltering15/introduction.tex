@@ -129,11 +129,10 @@ API calls and callbacks by analyzing each application in the context
 of a rich model of the Android
 API~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. 
 
-Our technique is not designed to handle
+We perform intra-application analysis only, i.e., ignoring effects of RPC communication between multiple applications on the same device. Moreover, our technique is not designed to handle
 %(1) \emph{optional} behaviors, for which failing connections are silently ignored, but successful connections result in presenting additional information to the user; 
 %advertisement content usually falls into that category. 
-\emph{stateful} communication patterns, for which a connection attempt leaves the 
-connection target in a state different from the one it has before, and further communication is influenced by the server's state. Our experiments show that such cases of communication with remote servers are rare. 
+\emph{stateful} communication patterns with external services, i.e., those when a connection attempt leaves the target in a state different from the one it had before, and further communication is influenced by the server's state. Our experiments show that both such cases are rare. 
 
 %\vspace{0.05in}
 \noindent 
