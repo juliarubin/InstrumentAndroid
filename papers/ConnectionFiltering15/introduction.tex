@@ -13,9 +13,10 @@ communication between the device and remote organizations. In fact, we
 observed that several applications silently spawn services that
 communicate with third-party servers even when the application itself
 is no longer active, with the user completely unaware that the spawned
-services are still running in the background.  {\bf JR: Michael, if
-  you have some energy, more motivation why we don't like this
-  excessive communication would be a good fit here.}
+services are still running in the background. 
+% {\bf JR: Michael, if
+%  you have some energy, more motivation why we don't like this
+%  excessive communication would be a good fit here.}
 
 This paper takes the first steps towards automatically identifying and
 disabling these kinds of non-essential communications. We start by
@@ -148,9 +149,9 @@ To assess the precision and recall of our technique, we evaluate it on the ``tru
 The results show that it features a high precision -- 93\% of the identified connection are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify  60\% of all non-essential connection in the studied application.
 Only 2 connections in total are misclassified as non-essential: one is responsible for controlling the advertisement material presented by the Google Ads component installed on the device, and another -- for presenting images of additional apps that can be downloaded from Google Play. 
 
-To gain further insides on the quality of our technique, we apply the technique on additional XXX top-popular applications from Google Play. For these applications, we inject failures in all connection statements deemed non-essential by our static analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
+To gain further insides on the quality of our technique, we apply the technique on additional 47 top-popular applications from Google Play. For these applications, we inject failures in all connection statements deemed non-essential by our static analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
 
-The results of our usability assessment are encouraging: there were no observable differences in xx\% of the application (xx cases). In xx\% of the applications (xx cases) differences where related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only xx\% of the applications (xx cases) missed functional features considered essential by the users. 
+The results of our usability assessment are encouraging: there were no observable differences in 63.8\% of the application (30 cases). In 25.6\% of the applications (12 cases) differences where related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
 These results imply that our technique produces actionable results that could already be applied to eliminate many cases of non-essential communication. 
 
 
@@ -192,8 +193,8 @@ The approach relies on interactive injection of connection failures and identifi
 
 \item It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 69\% of the connections attempted by thirteen top-popular free applications on Google Play fall into that category.    
 
-\item It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The technique is highly scalable and precise: out of XX highly popular applications on Google Play, 
-xx\% worked without any interference and further xx\% work with only insignificant interference when 
+\item It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The technique is highly scalable and precise: out of 47 highly popular applications on Google Play, 
+63.8\% worked without any interference and further 25.6\% work with only insignificant interference when 
 disabling all connections identified by the technique.
 
 % precision and recall of the technique is 93\% and 60\%, respectively, when evaluated against the empirically established truth set.       
