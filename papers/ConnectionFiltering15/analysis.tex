@@ -5,11 +5,12 @@
 
 In this section we describe the static analysis algorithm we employ to
 automatically classify connections.  Android applications are
-developed as a series of external event handler routines, e.g., button
-click and application exit.  Given an Android application, the static
-analysis classifies each statement that may invoke a connection call
-as either {\it essential} or {\it non-essential}.  We begin with
-definitions and our problem statement: 
+developed in Java as a series of external event handler routines,
+e.g., button click and application exit.  Given an Android
+application, the static analysis classifies each statement that may
+invoke a connection call as either {\it essential} or {\it
+  non-essential}.  We begin with definitions and our problem
+statement:
 
 
 %% In an Android application, each
@@ -153,13 +154,11 @@ applications~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
 Static analysis must either model the Android application execution
 environment, or account for possible dynamic program behaviors with
 conservative analysis choices; otherwise some runtime behaviors could
-be unconsidered.  
-
-The presented analysis has the following limitations. Dynamically
-loaded code is not be considered.  The analysis considers only checked
-exceptions.  We use a best-effort, though aggressive, policy to
-account for reflection semantics; this policy could miss possible
-runtime semantics. Our analysis is implemented in the Soot Java
+be unconsidered.  Our static analysis over-approximates the runtime
+behaviors of the applications, and under-approximates the connection
+calls that could be non-essential.
+ 
+Our analysis is implemented in the Soot Java
 Analysis Framework~\cite{Vallee-Rai2000} and utilizes libraries and
 the Android API model provided by
 DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
@@ -205,17 +204,21 @@ then we limit the edges to only targets that have the same number and
 types of arguments.  This strategy works well for us in
 practice and aggressively accounts for reflection semantics.
 
-Our static analysis over-approximates the runtime behaviors of the
-applications, and under-approximates the connection calls that could
-be non-essential.
+The static analysis is performed in three steps for each connection
+statement: (1) failure handler analysis, (2) success forward analysis,
+and (3) success backward analysis.  The analysis will terminate if a
+step determines that the connection is essential. Otherwise, a
+connection is considered non-essential.
 
-%\vspace{-0.05in}
 \subsection{Failure Handler Analysis}
-We organize the static failure-handling analysis as a recursive
-traversal on the call graph for ease of understanding.  An iterator
-over all application statements calls the analysis separately for the
-combination of each statement in the application that could target a
-connection call and an exception that indicates communication failure.
+
+Failure analysis determines if a connection call modifies the user
+interface or could exit the application on error.  We organize the
+static failure-handling analysis as a recursive traversal on the call
+graph for ease of understanding.  An iterator over all application
+statements calls the analysis separately for the combination of each
+statement in the application that could target a connection call and
+an exception that indicates communication failure.
 Table~\ref{tbl:connections} lists the target methods that we consider
 connection calls and each method's associated failure exception.
 
@@ -279,15 +282,15 @@ connection calls and each method's associated failure exception.
 \end{figure}
 
 The analysis starts with the \textsc{FindCatches} procedure listed in
-Figure~\ref{alg:findcatches}.  For each start of the analysis on a
-statement and exception pair, $s$ and $e$, respectively, the procedure
-first consults $s$'s containing method to find an appropriate
-\lstinline!catch!; if $e$ is not caught locally, the analysis
-recursively visits all direct predecessors of the method to find
-\lstinline!catch! blocks that trap the call statement edge (lines
+Figure~\ref{alg:findcatches}.  For each statement and exception pair,
+$s$ and $e$, respectively, the procedure first consults $s$'s
+containing method to find an appropriate \lstinline!catch!; if $e$ is
+not caught locally, the analysis recursively visits all direct
+predecessors of the method to find \lstinline!catch! blocks that trap
+the call statement edge (lines
 \ref{alg:no-local-hander-start}-\ref{alg:no-local-hander-end}).  For
-  each predecessor, $p$, if a catch is not found that wraps the call
-  edge, then $p$'s direct predecessors are visited, and so on.
+each predecessor, $p$, if a catch is not found that wraps the call
+edge, then $p$'s direct predecessors are visited, and so on.
 
 \begin{figure}[t]
 \begin{algorithmic}[1]
@@ -384,7 +387,7 @@ analysis searches for: (1) calls to application methods, (2)
 \lstinline!throw! statements (3) calls to native methods, and (4)
 possible calls to UI methods. When the analysis finds a call to an
 application method, it pushes the current statement and method onto
-the stack and recursive calls itself for the new method to analyze the
+the stack and recursively calls itself for the new method to analyze the
 new method's statements (lines
 \ref{alg:ah-app-method-call-start}-\ref{alg:ah-app-method-call-end}).
 If analysis finds a \lstinline!throw!  statement, the handler analysis
@@ -648,4 +651,75 @@ over-estimation of +catch+ block extents, e.g., it includes
 %% \end{description}
  
 \subsection{Success Analysis}
+
+For connection statement $s$, if the failure analysis concludes that
+no user interface call could be invoked during failure handling and
+all stacks handle $s$'s exception, then our analysis continues with
+the success paths of $s$. The success analysis determines if there is
+any user interface modification after the connection succeeds but
+before control returns to the Android runtime and before control
+merges back to the error paths.
+
+Here we summarize the success analysis of connection call $s$ enclosed
+in method $m$ by presenting a high-level description of two conceptual
+phases:
+
+\begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
+
+\item {\bfseries Success Forward Analysis}: Code reachable from the
+  statement immediately after $s$ is searched for a connection call,
+  following call statements to analyze their target method(s).  This is
+  accomplished by traversing all paths in the interprocedural control
+  flow graph (CFG) starting at $s$.  We follow both normal and
+  exceptional control paths when analyzing the CFG.  The analysis does
+  not follow call graph edges into the Android API.
+
+\item {\bfseries Success Backward Analysis}: For all methods $f$ such
+  that there is a path from $f$ to $m$ in the call graph and $f$ was
+  searched during the Failure Handler Analysis, examine all statements
+  of $f$ for calls that affect the user interface.  This has the
+  effect of traversing the call graph backwards from $m$ $s$ for UI
+  calls, stopping at event handlers (that are called by the Android
+  API) and, on a path, stopping once the exception of $s$ is handled.
+
+\end{description}
+
+If the success forward and success backward analysis do not find any
+calls that could affect the user interface, then the connection call
+is classified as non-essential.
+
+\subsection{Design Discussion and Limitations}
+
+The intuition for our static analysis is that essential connection
+calls affect the user interface {\it always} on error and {\it
+  directly} on success.  The former is examined during the failure
+handling analysis and the later is analyzed during the success
+analysis.  An execution trace that handles a single runtime event
+naturally denotes a unified block of processing, so our analysis
+reasons about event handlers to bound the success search to represent
+the direct processing of a connection call.
+
+Another insight gleaned from examination of our applications in the
+study in Section~\ref{sec:study} is that direct processing associated
+with a successful invocation of connection call $s$ in method $m$ ends
+by the successful control flow merges back with the exceptional
+control flow. This is the motivation for why the success backward
+analysis only examines methods that were analyzed by the failure
+analysis.  We suppose that, for all stacks of $m$, methods beyond the
+failure analysis do not contribute to processing of $s$.
+
+The design our analysis prioritizes high precision over high recall
+because we do not want to block connection calls that perform
+essential communication.  This strategy guided our decision to employ
+CHA for call graph construction and incorporate aggressive heuristics
+for capturing reflection.  As will be demonstrated in the next
+section, we achieve very high precision for the classification task,
+while still achieving recall that blocks a significant number of
+invocations of non-essential connection calls.
+
+The presented analysis has the following limitations. Dynamically
+loaded code is not considered.  The analysis considers only checked
+exceptions.  We use a best-effort, though aggressive, policy to
+account for reflection semantics; this policy could miss possible
+runtime semantics.  
 
