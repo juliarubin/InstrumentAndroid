@@ -104,12 +104,17 @@ installed on the same device. Our static analysis does not track inter-applicati
 %That is, depending on the user's perspective, 
 %between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
 
-While designed to be conservative, our analysis is able to correctly identify %64 out of 106 connection
+While designed to be conservative, our analysis is able to correctly identify 
+%64 out of 106 connection
 60\% of statements deemed non-essential in the empirical study 
 %, resulting in the overall recall of 63.8\% 
-(column 3 in Table~\ref{tbl:eval}). 
-Conservative call graph construction, specifically w.r.t. reflection, is a major contributor to the observed low recall. {\bf JR: Michael, pls check.}
-On the flip side, the analysis is highly efficient and runs in a matter of minutes even on large applications, as shown in the last column of table Table~\ref{tbl:eval}.
+(column 3 in Table~\ref{tbl:eval}).  A conservative, though feasibly
+analyzable, definition of processing related to a connection call and
+conservative call graph construction, specifically w.r.t. reflection,
+are the major reason we do not achieve higher recall.  Finally, the
+analysis is highly efficient and runs in a matter of minutes even on
+large applications, as shown in the last column of table
+Table~\ref{tbl:eval}.
 
 
 %Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
