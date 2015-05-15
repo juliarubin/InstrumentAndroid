@@ -34,8 +34,8 @@ Average       & 23/25 (93.2\%) & 23/52 (60.0\%) & 2min 48s \\
 
 \section{Experiments}
 \label{sec:evaluation}
-In this section, we report on our experiments for establishing the quality of our technique. 
-We then apply it to gathered information about common patterns of non-essential communication in the wild and report on our findings. 
+We start by assessing the quality of our static analysis technique. 
+We then apply it to gather information about common patterns of non-essential communication in the 500 most popular Android applications on Google Play. 
 
 %To establish the quality of our static analysis technique, we first evaluate its precision and recall on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}). 
 %We then apply our analysis on 500 top-popular Android applications from Google Play. 
@@ -44,29 +44,26 @@ We then apply it to gathered information about common patterns of non-essential 
 %Finally, we use the 
 
 \subsection{Quality of the Static Analysis}
-To establish the quality of our static analysis technique, we 
+To establish the quality of our technique, we 
 first evaluate its accuracy, i.e., precision and recall, on the ``truth set'' established during our in-depth case study (see Section~\ref{sec:study}).
-We then do a usability assessment, evaluating the experience of the users when running a version of an application with all non-essential connection identified by our technique disabled. 
+We then do a usability assessment, evaluating the user-experience when running a version of an application in which we disable all connections deemed non-essential, and compare that to the experience running the original copy.  
 
-\subsubsection{Accuracy Assessment}
-For the accuracy evaluation, we look again at the applications listed in 
-Table~\ref{tbl:applications}, exploding the facebook and candycrash applications that did not exhibit any non-essential connections. We limit the set of results reported by the static analysis to those that were, in fact, triggered during our dynamic study: these are the connection statements for which we have reliable information to compare against. 
+\subsubsection{Accuracy}
+For the accuracy evaluation, we look again at all applications listed in 
+Table~\ref{tbl:applications} except facebook and candycrush, as these two applications  did not exhibit any non-essential communication. We limit the set of results reported by the static analysis to those that were, in fact, triggered during our dynamic study: only for these connections we have established the ``ground truth''. 
 % (see Table~\ref{tbl:applications} in Section~\ref{sec:study}): these are the connection statements for which we have reliable information to compare against. 
-We assess the results, for each application individually and averaged for all applications, using the metrics below. The results are summarized in Table~\ref{tbl:eval}.
+We assess the results, for each application individually and averaged for all applications, using the metrics below. 
 
 \begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
-\item
 %\emph{Expected}: the size of the predetermined expected result, i.e., the number of connections listed as non-essential in Table~\ref{tbl:applications}.
 %\item
 %\emph{Reported}: the number of connections deemed as non-essential by the static analysis. 
 %\item
 % \emph{Correct}: the number of non-essential connections correctly identified by the static analysis, i.e., those that were deemed as non-essential in the dynamic study as well.
 % reported by the technique.\\
-\item
-\emph{Precision}: the fraction of correctly identified results among those reported by the technique.
+\item \emph{Precision}: the fraction of connection statements correctly identified as non-essential among those reported by the technique.
 % calculated as \emph{$\frac{\text{Correct}}{\text{Reported}}$}. 
-\item
-\emph{Recall}: the fraction of correctly identified results results among those expected (i.e., marked as non-essential during the dynamic study). 
+\item \emph{Recall}: the fraction of connection statements correctly identified as non-essential among those expected, i.e., marked as non-essential during the dynamic study. 
 %, calculated as
 %\emph{$\frac{\text{Correct}}{\text{Expected}}$}.
 %\item
@@ -77,12 +74,14 @@ We assess the results, for each application individually and averaged for all ap
 three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} CPU E5-2690 v2 @ 3.00GHz machine running Ubuntu 12.04.5. The machine was configured to use at most 16GB of heap and to perform no parallelization for a single application, i.e., each application uses one core only.
 \end{itemize}
   
-As can be seen in the second column of Table~\ref{tbl:eval}, the overall averaged precision of our analysis is 93.2\%. 
+The results of this experiment are summarized in Table~\ref{tbl:eval}.  
+The second column of the table shows that the overall averaged precision of our analysis is 93.2\%. 
 The analysis correctly identifies all but two non-essential connections. 
-The first one, in \emph{com.devuni.flashlight} is responsible for presenting images of additional applications that can be downloaded from the Google Play store. The mis-classification stems from the fact that UI updates happen after the success and failure paths unifies, so we miss that in our search. 
-The second, in \emph{net.zedge.android}, is responsible for presenting advertisement material and belongs to the \emph{com.mopub.mobileads} A\&A service library packaged with the application. 
-That library relies on asynchronous RPC communication with the Google Plus services 
-installed on the same device. Our static analysis does not track inter-application communication between different applications and services on the device, hence the mis-classification.   
+The first one, in \emph{com.devuni.flashlight}, is responsible for presenting icons of extensions that can be downloaded from Google Play. The misclassification stems from the fact that GUI updates for these images happen after the success and failure paths unifies, and are thus missed by our search. 
+
+The second misclassified connection, in \emph{net.zedge.android}, is responsible for presenting advertisement material and belongs to the \emph{com.mopub.mobileads} A\&A service library packaged with the application. 
+That library relies on asynchronous RPC communication with Google services 
+installed on the same device. Our static analysis does not track inter-application communication between various applications and services on the device, hence the false-positive result.   
  
 % out of the total 82 reported. 
 %18 connections were mis-classified, out of which 16 correspond to \emph{optional} application behaviors, i.e.,
@@ -117,19 +116,51 @@ On the flip side, the analysis is highly efficient and runs in a matter of minut
 %The technique correctly identifies the majority of non-essential connections.
 
 \subsubsection{Usability Assessment}
-To check whether our technique is able to provide actionable results, we selected 100 applications that persisted in the list of the top 500 popular applications on Google Play in November 2014 and May 2015 samples. Out of these, we excluded: 12 application that were non-operational (either did not run or required payment to continue running), 
+To check whether our technique is able to provide actionable results, we further select 100 applications that persisted in the list of the 500 most popular free applications on Google Play in November 2014 and May 2015 samples. 
+We used two Nexus devices running Android v4.4.4, installing the original version of an applications on one, and a modified version on the other. We produced the modified version by the \emph{blocking transformation} specified in Section~\ref{sec:study} to disable all calls identified as non-essential by the static analysis. 
 
+We recruited two human subjects, both experienced software developers, and paired each with an author of this paper.
+Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for 5 to 10 minutes, and to record all differences during that execution.
+We asked the participants to avoid signing in with a Google Plus account or performing in-app purchases from the Google Play store, as these features are not supported in resigned applications, as discussed in Section~\ref{sec:study}.
 
-We recruited two users and paired each one up with one of the authors of this paper.  Each pair was given two devices - one running. 
-The users simultaneously executed the same app on both devices and noted all differences.
+When analyzing the results of that experiment, we exclude 14 application that were non-operational (either did not run, in both versions, or required payment to continue running);
+ 17 applications for which asm-based instrumentation failed or the instrumented version did not run due to issues related to the resigning process;
+ 2 Google Play applications that we could not replace;
+5 chat applications;
+4 applications that either contained no connection statements or had no non-essential connection statements detected;
+and 11 applications for which no non-essential connection statement were triggered during the execution of the application.
 
-Each app was executed for 5 to 10 mins. Sign in and in app purchases.
+\begin{table}[b]
+\vspace{-0.15in}
+\caption{Results of usability assessment.}
+\label{tbl:userstudy}
+\centering
+\tabcolsep=2.5pt
+\resizebox{0.6\columnwidth}{!}{%
+\begin{tabular}{|l|C{1.8cm}|}
+\hline
+Classification & \# (\%) of cases\\
+\hline
+%--------------------------------------------------------------------
+Identical       & 30 (63.8\%) \\
+No advertisement     & 9  (19.1\%) \\
+Missing some functionality   & 3  (6.4\%) \\
+Missing essential functionality  & 5  (10.6\%) \\
+\hline
+%--------------------------------------------------------------------
+\end{tabular}
+}% resizebox
+\end{table}
 
-Subjects.
+Information about the remaining 47 applications is given in Table~\ref{tbl:userstudy}. 
+Our participants did not observe any noticeable differences in 30 applications (63.8\%). 
+In 9 cases (19.1\%), the advertisement material was missing, similarly to the zedge example described above. For 3 applications (6.4\%), the participants observed absence of features that they considered minor: 2 cases of missing icons, in the flashlight and the talkingben applications, and 1 case were they could not create an account for the antivirus application, but the core functionality of that application was intact. 
 
-Results.
+Only 5 applications (10.6\%) where missing essential functionality or seriously broken: Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might me related to resigning issues, but we could not verify that. 
 
-\conclusion{To answer RQ3, we conclude that a static analysis can be applied for an accurate detection of non-essential connections. Our highly scalable technique features up to 90\% precision and 64\% recall, respectively.}
+Overall, these results are very encouraging and demonstrate that, in a vast majority of cases, the results of our static analysis can be directly applied to disable non-essential communication. 
+
+\conclusion{To answer RQ3, we conclude that the static analysis proposed in this paper can be applied for an accurate detection of non-essential connections. The technique is precise, highly scalable and provides actionable output for disabling non-essential communication in mobile applications.}
 
 
 
@@ -167,46 +198,13 @@ Results.
 %}% resizebox
 %\end{table}
 
-\begin{table}[t]
-\renewcommand*{\arraystretch}{1.3}
-\vspace{-0.15in}
-\caption{Top 10 Non-Essential Communication Callers.}
-\label{tbl:callers}
-\centering
-\tabcolsep=1.5pt
-\resizebox{1.0\columnwidth}{!}{%
-\begin{tabular}{|c|P{2.6cm}|P{3.6cm}|C{1.9cm}|C{2.4cm}|}
-\hline
-%--------------------------------------------------------------------
- &
- \textbf{Package} &
- \textbf{Description} &
- \textbf{Used in \#~(\%)~of~Apps} &
- \textbf{Non-essential~calls (\%~of~total~calls)} \\
-\hline
-1.  & com.google.android    & Google services          & 382 (76.4\%)  & 1913 (49.9\%) \\
-2.  & com.gameloft      & Gaming services          & 17 (3.4\%)  & 784 (87.4\%) \\
-3.  & com.inmobi      & Advertising, monetization and analytics services  & 61 (12.2\%)  & 615 (67.6\%) \\
-4.  & com.millennialmedia.\newline{}android  & Advertising, monetization and analytics services  & 78 (15.6\%)  & 447 (58.8\%) \\
-5.  & com.mopub.mobileads    & Advertising, monetization and analytics services  & 72 (14.4\%)  & 320 (56.9\%) \\
-6.  & com.tapjoy      & Advertising, monetization and analytics services  & 49 (9.8\%)  & 277 (43.8\%) \\
-7.  & com.facebook      & Facebook services          & 112 (22.4\%)  & 222 (24.3\%) \\
-8.  & com.unity3d      & Gaming services          & 77 (15.4\%)  & 203 (41.8\%) \\
-9.  & (default)       & Default package of an application      & 23 (4.6\%)  & 178 (48\%) \\
-10.  & com.flurry      & Advertising, monetization and analytics services  & 95 (19\%)   & 175 (35.3\%) \\
 
-\hline
-%--------------------------------------------------------------------
-\end{tabular}
-}% resizebox
-\end{table}
 
-\subsection{Non-Essential Communication In the Wild}
+\subsection{Non-Essential Communication in the Wild}
 
-We apply our technique on the 500 most popular Android application
-downloaded from the Google Play store in January 2015.  Our goal is to
-investigate how often non-essential communication occurs in real-life
-applications and what are its most common destinations.
+We next apply our technique on the 500 most popular Android application
+downloaded from the Google Play store. By considering such a large data set, our goal is to
+investigate how often non-essential communication occurs and what its most common sources are.
 
 %\begin{table}[t]
 %\caption{Analysis of the 500 Top-Popular Applications from Google Play.}
@@ -228,6 +226,41 @@ applications and what are its most common destinations.
 %%}% resizebox
 %\end{table}
 
+\begin{table}[t]
+\renewcommand*{\arraystretch}{1.3}
+\vspace{-0.15in}
+\caption{Top 10 Non-Essential Communication Callers.}
+\label{tbl:callers}
+\centering
+\tabcolsep=1.5pt
+\resizebox{1.0\columnwidth}{!}{%
+\begin{tabular}{|c|P{2.6cm}|P{3.6cm}|C{1.9cm}|C{2.4cm}|}
+\hline
+%--------------------------------------------------------------------
+ &
+ \textbf{Package} &
+ \textbf{Description} &
+ \textbf{Used in \#~(\%)~of~Apps} &
+ \textbf{Non-essential~calls (\%~of~total~calls)} \\
+\hline
+1.  & com.google.android    & Google services          & 382 (76.4\%)  & 1913 (49.9\%) \\
+2.  & com.gameloft      & Mobile games          & 17 (3.4\%)  & 784 (87.4\%) \\
+3.  & com.inmobi      & A\&A services  & 61 (12.2\%)  & 615 (67.6\%) \\
+4.  & com.millennialmedia.\newline{}android  & A\&A services  & 78 (15.6\%)  & 447 (58.8\%) \\
+5.  & com.mopub.mobileads    & A\&A services  & 72 (14.4\%)  & 320 (56.9\%) \\
+6.  & com.tapjoy      & A\&A services  & 49 (9.8\%)  & 277 (43.8\%) \\
+7.  & com.facebook      & Facebook services          & 112 (22.4\%)  & 222 (24.3\%) \\
+8.  & com.unity3d      & Gaming services          & 77 (15.4\%)  & 203 (41.8\%) \\
+9.  & (default)       & Default package of an application      & 23 (4.6\%)  & 178 (48\%) \\
+10.  & com.flurry      & A\&A services  & 95 (19\%)   & 175 (35.3\%) \\
+
+\hline
+%--------------------------------------------------------------------
+\end{tabular}
+}% resizebox
+\end{table}
+
+
 Our analysis reveals that 46.2\% of all connections encoded in these application can be considered non-essential (8,539 connection out of 18,480 in total).
 These results are consistent with the observation of our empirical study described in Section~\ref{sec:study}.
 %, showing that a large percent of connections
@@ -241,21 +274,27 @@ These results are consistent with the observation of our empirical study describ
 %made by applications can be considered non-essential.  In fact, even
 %with our conservative analysis, 84\% of connections fall into that
 %category.
+
 Table~\ref{tbl:callers} presents the top 10 packages in which
 non-essential connections occur.  As the numbers are aggregated for
-500 applications, it is not a surprise that Google Services, as well
-as gaming, advertisement and analytics services, are on the top of the
-list -- numerous applications use these services, as shown in the last
-column of Table~\ref{tbl:callers}.  By manually investigating some of
-the most-popular connections in reverse-engineered versions of the
-applications, we observed that those connections are designed to be
-``best-effort'' only. For example, an application might attempt to
-obtain user-specific advertisement information, but continues with
-generic advertisement if that attempt fails.  The prevalence of mobile
-services and their ``best-effort'' behavior make us believe that it
-would be beneficial if these services were designed to allow users to
-select the level of support they wish to obtain, instead of relying
-merely on connectivity for that purpose.
+500 applications, it is no surprise that Google Services, as well
+as gaming, advertisement and analytics services, are on top of the
+list -- numerous applications use these services, as shown in the one but last
+column of Table~\ref{tbl:callers}.
+More surprising is the \emph{com.gameloft} package that is part of 17 different mobile applications by the same company. The number of non-essential connection statements these game applications contain is notable. 
+
+The last column of Table~\ref{tbl:userstudy} shows the percentage of non-essential connections out of all connection statements in the corresponding package. This number varies between 24\% and 87\%, confirming, again, our initial observation in Section~\ref{sec:study} that the source of a connection cannot be use to determine its impact on the application behavior. 
+
+%By manually investigating some of
+%the most-popular connections in reverse-engineered versions of the
+%applications, we observed that those connections are designed to be
+%``best-effort'' only. For example, an application might attempt to
+%obtain user-specific advertisement information, but continues with
+%generic advertisement if that attempt fails.  The prevalence of mobile
+%services and their ``best-effort'' behavior make us believe that it
+%would be beneficial if these services were designed to allow users to
+%select the level of support they wish to obtain, instead of relying
+%merely on connectivity for that purpose.
 
  
 %The last column of the table shows the ratio of non-essential calls 
@@ -269,8 +308,9 @@ merely on connectivity for that purpose.
 %it is just not used by a specific application, but might be used by another one, so it is good to analaze it in any case
 
 
-\conclusion{To answer RQ4, we conclude that non-essential communication is very common in real-life applications. 
-Most such communication is performed with various mobile services that are designed to be ``best-effort only'', i.e., communication failures do not prevent 
-successful application execution. Designing mobile services that allow the user to select the preferred level of support instead of relying merely on connectivity would be beneficial.}
+\conclusion{To answer RQ4, we conclude that non-essential communication is common in real-life applications. 
+Such communication is not exclusive to the by A\&A packages, and not all communication stemming from these packages is non-essential.}
+% and   packaged performed with various mobile services that are designed to be ``best-effort only'', i.e., communication failures do not prevent 
+%successful application execution. Designing mobile services that allow the user to select the preferred level of support instead of relying merely on connectivity would be beneficial.}
 
 
