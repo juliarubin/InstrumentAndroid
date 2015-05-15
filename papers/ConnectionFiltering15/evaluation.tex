@@ -78,10 +78,11 @@ three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\te
 \end{itemize}
   
 As can be seen in the second column of Table~\ref{tbl:eval}, the overall averaged precision of our analysis is 93.2\%. 
-The analysis correctly identifies all but one non-essential connection, in the \emph{net.zedge.android} application (last row of Table~\ref{tbl:eval}).  
-The mis-classified connection is responsible for presenting advertisement material and belongs to the \emph{com.mopub.mobileads} A\&A service library packaged with the application. 
+The analysis correctly identifies all but two non-essential connections. 
+The first one, in \emph{com.devuni.flashlight} is responsible for presenting images of additional applications that can be downloaded from the Google Play store. The mis-classification stems from the fact that UI updates happen after the success and failure paths unifies, so we miss that in our search. 
+The second, in \emph{net.zedge.android}, is responsible for presenting advertisement material and belongs to the \emph{com.mopub.mobileads} A\&A service library packaged with the application. 
 That library relies on asynchronous RPC communication with the Google Plus services 
-installed on the same device. Our static analysis does not track intra-application communication between different applications and services on the device, hence the mis-classification.   
+installed on the same device. Our static analysis does not track inter-application communication between different applications and services on the device, hence the mis-classification.   
  
 % out of the total 82 reported. 
 %18 connections were mis-classified, out of which 16 correspond to \emph{optional} application behaviors, i.e.,
@@ -108,7 +109,7 @@ While designed to be conservative, our analysis is able to correctly identify %6
 60\% of statements deemed non-essential in the empirical study 
 %, resulting in the overall recall of 63.8\% 
 (column 3 in Table~\ref{tbl:eval}). 
-Conservative call graph construction, specifically w.r.t. reflection, is a major contributor to the observed low recall. {\JR: Michael, pls check.}
+Conservative call graph construction, specifically w.r.t. reflection, is a major contributor to the observed low recall. {\bf JR: Michael, pls check.}
 On the flip side, the analysis is highly efficient and runs in a matter of minutes even on large applications, as shown in the last column of table Table~\ref{tbl:eval}.
 
 
@@ -116,7 +117,7 @@ On the flip side, the analysis is highly efficient and runs in a matter of minut
 %The technique correctly identifies the majority of non-essential connections.
 
 \subsubsection{Usability Assessment}
-To check whether our technique is able to provide actionable results, we selected 100 applications that persisted in the list of the top 500 popular applications on Google Play between November 2014 and May 2015. Out of these, we excluded xx chat applications, 
+To check whether our technique is able to provide actionable results, we selected 100 applications that persisted in the list of the top 500 popular applications on Google Play in November 2014 and May 2015 samples. Out of these, we excluded: 12 application that were non-operational (either did not run or required payment to continue running), 
 
 
 We recruited two users and paired each one up with one of the authors of this paper.  Each pair was given two devices - one running. 
