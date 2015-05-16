@@ -38,7 +38,7 @@ The following research questions drive this investigation:
   widely used mobile applications?}  To estimate the significance of
 the problem, we conduct an empirical study that focuses on identifying
 and investigating the nature of non-essential communication in thirteen of the 
-top twenty most-popular applications in Google Play.
+top twenty most-popular applications in Google Play.  
 %We focus on the two most
 %common connection types: HTTP and socket.  
 %The former two are
@@ -57,18 +57,19 @@ application state by capturing a screenshot of the device.
 %\vspace{0.05in}
 %\noindent\emph{Instrumentation:} 
 We then instrument the application to log information
-about each triggered connection statement, install the instrumented version on a mobile device and execute it using the recorded script.
+about all triggered connection statement %, install the instrumented version on a mobile device 
+and execute the instrumented version using the same script.
 %\vspace{0.05in}
 %\noindent\emph{Disable Connections:} 
-Finally, we iterate over all triggered connections, disabling each at a time.
+Finally, we iterate over all identified triggered connections, disabling each at a time and producing a modified version of the application with this connection disabled.
 %To disable a connection, we replace the connection statement  
 %with a statement that throws an exception indicating connection failure, 
 %i.e., the one that would be thrown when the device is in a disconnected mode. 
 %
 %\vspace{0.05in}
 %\noindent\emph{Run Modified Application:} 
-We install the modified
-application, run it using the previously recorded script and compare obtained screenshots 
+We run the modified
+version, again, using the recorded script, and compare the obtained screenshots 
 %Similarly to the approach
 %in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, the
 %screenshots documenting the execution of the modified application are
@@ -170,18 +171,19 @@ We perform intra-application analysis only, i.e., ignoring effects of RPC commun
 {\bf RQ3: How well does static detection perform?}
 To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth dynamic study describe above. %of thirteen popular applications from Google Play.
 The results show that our static analysis features a high precision -- 93\% of the non-essential connection calls identified by the static analysis are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify 60\% of all non-essential connection in the studied application.
-Only two connections in total are misclassified as non-essential: one is responsible for presenting the advertisement material via Google Ads component installed on the device, and another -- for presenting icons of additional apps that can be downloaded from Google Play. 
+Only two connections in total are misclassified as non-essential: one is responsible for presenting advertisement material via the Google Ads component installed on the device, and another -- for presenting icons of additional apps that can be downloaded from Google Play. 
 
-To gain further insights on the quality of our technique, we apply it on additional 47 top-popular applications from Google Play. For these applications, we inject failures in all connection statements deemed non-essential by our analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
+To gain further insights on the quality of our technique, we apply it on additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed non-essential by our analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
 
-The results of this usability assessment are encouraging: there were no observable differences in 63.8\% of the application (30 cases). In 25.6\% of the applications (12 cases) differences where related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
+The results of this  assessment are encouraging: there were no observable differences in 63.8\% of the application (30 cases). In 25.6\% of the applications (12 cases) differences where related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
 These results imply that our technique produces actionable results that could already be applied to eliminate many cases of non-essential communication. 
 
 
 %\vspace{0.05in}
 \noindent 
 {\bf RQ4: How often does non-essential communication occur in real-life applications and what are its most common sources?}
-Inspired by the high precision of our technique, we apply it on the top 500 popular applications from Google Play. This experiment reveals that 46\% of connection statements encoded in these applications 
+%Inspired by the high precision of our technique, 
+We apply our technique on the top 500 popular applications from Google Play. This experiment reveals that 46\% of connection statements encoded in these applications 
 are deemed non-essential.
 Most common sources of non-essential communication are Google services %for mobile developers 
 and various A\&A services. Yet, these are not the exclusive source of non-essential communication, and not all communication made from these packages is non-essential. 
