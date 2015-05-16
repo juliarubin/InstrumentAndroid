@@ -674,11 +674,12 @@ phases:
 
 \subsubsection{Success Backward Analysis} For all methods $f$ such
   that there is a path from $f$ to $m$ in the call graph and $f$ was
-  searched during the failure handling analysis, examine all statements
-  of $f$ for calls that affect the user interface.  This has the
-  effect of traversing the call graph backwards from $m$ $s$ for UI
-  calls, stopping at event handlers (that are called by the Android
-  API) and, on a path, stopping once the exception of $s$ is handled.
+  searched during the failure handling analysis, examine all
+  statements of $f$ for calls that affect the user interface.  This
+  has the effect of traversing the call graph backwards from $m$ at
+  $s$ for UI calls, stopping at event handlers (that are called by the
+  Android API) and, on a path, stopping once the exception(s) of $s$ is
+  handled.
 
 If the success forward and success backward analysis do not find any
 calls that could affect the user interface, then the connection call
@@ -701,7 +702,7 @@ with a successful invocation of connection call $s$ in method $m$ ends
 when the successful control flow merges back with the exceptional
 control flow. This is the motivation for why the success backward
 analysis only examines methods that were analyzed by the failure
-analysis.  We suppose that, for all stacks of $m$, methods beyond the
+analysis.  We assume that for all stacks of $m$, methods beyond the
 failure analysis do not contribute to processing of $s$.
 
 The presented analysis has the following limitations. Dynamically
