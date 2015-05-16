@@ -1,3 +1,4 @@
+%\vspace{-0.1in}
 \section{Static Analysis for Classifying Connections}
 \label{sec:analysis}
 
@@ -23,7 +24,7 @@ essential and non-essential connection statements with precision.
 %% the Android runtime is returned to during the stack unwinding, the
 %% application is typically exited with an error.  
 
-%% \begin{figure}
+%% \begin{}
 %% \begin{lstlisting}[numbers=left, escapeinside={(*@}{@*)},basicstyle=\ttfamily\scriptsize]
 %% public class ApplicationClass {
 %%     void f() {
@@ -318,11 +319,11 @@ an exception that indicates communication failure.
 \end{algorithmic}
 \vspace{-0.05in}
 \caption{Find \lstinline!catch! blocks for exception thrown at statement.}\label{alg:findcatches}
-\vspace{-0.2in}
+\vspace{-0.1in}
 \end{figure}
 
 The analysis starts with the \textsc{FindCatches} procedure listed in
-Figure~\ref{alg:findcatches}.  For each statement and exception pair,
+Fig.~\ref{alg:findcatches}.  For each statement and exception pair,
 $s$ and $e$, respectively, the procedure first consults $s$'s
 containing method to find an appropriate \lstinline!catch!; if $e$ is
 not caught locally, the analysis recursively visits all direct
@@ -413,12 +414,12 @@ cg)
 \end{algorithmic}
 \caption{Analyze reachable statements during handling for UI
   interaction or rethrown exceptions.}\label{alg:analyzehandler}
-\vspace{-0.05in}
+\vspace{-0.1in}
 \end{figure}
 
 For each \lstinline!catch! that is found during the
 \textsc{FindCatch}, \textsc{AnalzyeHandler} of
-Figure~\ref{alg:analyzehandler} analyzes the reachable statements of
+Fig.~\ref{alg:analyzehandler} analyzes the reachable statements of
 the handler. The analysis considers the reachable statements
 inter-procedurally and flow-insens\-itively.  Handler analysis
 searches for: (1) calls to application methods, (2) \lstinline!throw!
@@ -550,7 +551,7 @@ to analyze the failure handling.
 \lstDeleteShortInline+
 
 
-Figure~\ref{fig:helper-funs} lists the helper procedures employed in
+Fig.~\ref{fig:helper-funs} lists the helper procedures employed in
 the failure handling analysis.
 
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
@@ -607,6 +608,7 @@ over-estimation of +catch+ block extents, e.g., it includes
 \hline
 \end{tabular}
 \caption{\label{fig:helper-funs}Failure Analysis Helper Functions.}
+\vspace{-0.1in}
 \end{figure}
 
 \lstDeleteShortInline+

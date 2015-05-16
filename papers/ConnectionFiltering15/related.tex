@@ -1,11 +1,13 @@
+\vspace{-0.1in}
 \section{Related Work}
 \label{sec:related}
-Work related to this paper falls into three categories: (1)
-user-centric analysis to identify spurious application behaviors (2)
-information propagation in mobile applications, and (3) static
-exception analysis for Java. 
+Work related to this paper falls into three categories:
+% (1)
+%user-centric analysis to identify spurious application behaviors (2)
+%information propagation in mobile applications, and (3) static
+%exception analysis for Java. 
 
-%\vspace{0.05in}
+\vspace{-0.05in}
 %\noindent 
 \subsubsection{User-Centric Analysis for Identifying Spurious Behaviors in Mobile Applications}
 Huang et al.~\cite{Huang:Zhang:Tan:Wang:Liang:ICSE14} propose a technique, AsDroid, for identifying contradictions between a user interaction function and the behavior that it performs. 
@@ -21,6 +23,7 @@ Elish et al.~\cite{Elish:Yao:Ryder:MOST12} propose an approach for identifying m
 
 %\vspace{0.05in}
 %\noindent 
+\vspace{-0.05in}
 \subsubsection{Information Propagation in Mobile Applications}
 The most prominent technique for dynamic information propagation tracking in Android is TaintDroid~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10}, which detects flows of information from a selected set of sensitive sources to a set of sensitive sinks.
 %TaintDroid is used, extended and customized by several follow-up research projects.
@@ -61,6 +64,7 @@ While our approaches have a similar ultimate goal -- to provide visibility into 
 
 %\vspace{0.05in}
 %\noindent 
+\vspace{-0.05in}
 \subsubsection{Exception Analysis for Java}  A rich body of static analysis
 techniques has been developed to analyze and account for exceptional
 control and data
@@ -76,8 +80,9 @@ analysis techniques will provide higher precision than our technique
 conservatively, though aggressively, consider difficult to analyze
 Android application development idioms such as reflection, native
 methods, and missing program semantics of the Android API defined in
-non-Java languages.  We initially experimented with high-precision
-abstraction techniques such a deep object-sensitive points-to
-analysis~\cite{Smaragdakis2011}; however, the abstraction choices
-either did not scale or the precision and recall of the full analysis
-was unacceptable.
+non-Java languages.  
+%We initially experimented with high-precision
+%abstraction techniques such a deep object-sensitive points-to
+%analysis~\cite{Smaragdakis2011}; however, the abstraction choices
+%either did not scale or the precision and recall of the full analysis
+%was unacceptable.

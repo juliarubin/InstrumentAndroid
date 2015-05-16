@@ -193,7 +193,7 @@ Nguyen Nguyen\IEEEauthorrefmark{4}
 and Martin Rinard\IEEEauthorrefmark{1}}
 \IEEEauthorblockA{\IEEEauthorrefmark{1}Massachusetts Institute of Technology, USA}
 \IEEEauthorblockA{\IEEEauthorrefmark{4}Global InfoTek, Inc, USA}
-\IEEEauthorblockN{mjulia@mit.edu, mgordon@mit.edu, nguyen@uwinsoftware.com, rinard@mit.edu}
+%\IEEEauthorblockN{mjulia@mit.edu, mgordon@mit.edu, nguyen@uwinsoftware.com, rinard@mit.edu}
 }
 
 
@@ -214,9 +214,9 @@ This paper studies communication patterns in mobile applications. Our analysis
 shows that almost 70\% of the external communication made by top-popular
 Android applications from Google Play has no effect on the user-observable
 application functionality. To detect such communication in an efficient
-manner, we propose a highly precise and scalable static-analysis technique: it achieves 93\% precision and 60\% recall compared to the empirically determined ``ground truth'' and runs in a matter of
+manner, we propose a highly precise and scalable static-analysis technique: it achieves 93\% precision and 60\% recall compared to the empirically determined ``ground truth'', and runs in a matter of
 a few minutes.
-Furthermore, disabling connections deemed non-essential by our technique leaves the delivered application experience either completely intact or with insignificant interference in 42 out of the 47 applications, as assessed by human evaluators. 
+Furthermore, according to human evaluators, in 42 out of 47 cases, disabling connections deemed non-essential by our analysis leaves the delivered application experience either completely intact or with only insignificant interference. 
 We conclude that our technique is effective for identifying and disabling non-essential communication and use it to analyze communication patters in the 500 top-popular applications from Google Play. 
 \end{abstract}
 
@@ -238,10 +238,11 @@ We conclude that our technique is effective for identifying and disabling non-es
 \input{related}
 \input{conclusions}
 
+\newpage
 %\vspace{-0.05in}
 %\bibliographystyle{latex8}
-\bibliographystyle{abbrv}
-%\bibliographystyle{IEEEtran}
+%bibliographystyle{abbrv}
+\bibliographystyle{IEEEtran}
 %{\small
 \bibliography{00,references-do-not-modify}
 %}

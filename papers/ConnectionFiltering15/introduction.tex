@@ -1,3 +1,4 @@
+\vspace{-0.05in}
 \section{Introduction}
 \label{sec:intro} 
 
@@ -18,6 +19,7 @@ services are still running in the background.
 %  you have some energy, more motivation why we don't like this
 %  excessive communication would be a good fit here.}
 
+
 This paper takes the first steps towards automatically identifying and
 disabling these kinds of non-essential communications. We start by
 analyzing communication patterns of
@@ -30,13 +32,13 @@ such non-essential communication automatically. We use our analysis to further
 investigate this unfortunate phenomenon and report on our findings. 
 The following research questions drive this investigation:
 
-%\vspace{0.1in}
+
 \noindent 
 {\bf RQ1: How frequently does non-essential communication occur in
   widely used mobile applications?}  To estimate the significance of
 the problem, we conduct an empirical study that focuses on identifying
 and investigating the nature of non-essential communication in thirteen of the 
-top twenty 20 most-popular applications in Google Play.
+top twenty most-popular applications in Google Play.
 %We focus on the two most
 %common connection types: HTTP and socket.  
 %The former two are
@@ -80,13 +82,12 @@ applications such as twitter, and the device's status bar.
 %We also
 %separately note connections that contribute to presenting
 %advertisement content, if the analyzed application has any.
-
 %\vspace{0.05in}
 %\noindent\emph{Result Summary:} 
 Our study reveals that around 70\% of
 the \emph{exercised} connection statements are not essential~--- disabling
 them has no noticeable effect on the observable application
-functionality. Interestingly, only less than half of such non-essential connections correspond to communication initiated from the known advertisement and analytics (A\&A) packages included in the application; other statements are triggered by the core application itself. 
+functionality. Interestingly, only less than half of such non-essential connections correspond to communication initiated from known advertisement and analytics (A\&A) packages included in the application; other statements are triggered by the core application itself. 
 Thus, looking at the package information only is not sufficient for distinguishing between
 essential and non-essential communication. 
 % Slightly more than 25\% of these correspond to HTTP
@@ -98,21 +99,20 @@ essential and non-essential communication.
 %application behavior are used for advertising purposes only.
 %{\bf JR: update.}
 
-%\vspace{0.1in}
 \noindent 
 {\bf RQ2: Can non-essential communication be detected statically?}
 Detailed investigation of multiple detected cases of non-essential
-connections inspired us to develop a novel static application analysis technique that
+connections inspired us to develop a novel static application analysis that
 can detect such connections automatically.  The core idea behind our
-analysis is to look for cases when both connection success and failure are ``silently'' ignored by the application, i.e., when no information is propagated back to the user neither on success nor on   failure of the connection. 
+analysis is to look for cases when both connection success and failure are ``silently'' ignored by the application, i.e., when no information is presented to the user neither on success nor on   failure of the connection. 
 
 We scope our analysis of the program control flow graph by considering
 the \emph{direct processing} of a connection statement.  That includes
 \emph{forward stack processing} and \emph{failure handling}
 executions.  The former is the execution reachable after the
 connection statement but limited to processing of the Android runtime
-events that could trigger the connection statement.  The latter is the
-execution that traverse the methods up the calls stack and is limited
+events that could trigger the connection statement.  The latter traverses
+the methods up the calls stack and is limited
 by the points at which the exception raised by the call statement and
 all related rethrown exceptions are handled.
 
@@ -168,28 +168,30 @@ We perform intra-application analysis only, i.e., ignoring effects of RPC commun
 %\vspace{0.05in}
 \noindent 
 {\bf RQ3: How well does static detection perform?}
-To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth analysis of thirteen popular applications from Google Play.
-The results show that it features a high precision -- 93\% of the identified connection are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify  60\% of all non-essential connection in the studied application.
-Only 2 connections in total are misclassified as non-essential: one is responsible for controlling the advertisement material presented by the Google Ads component installed on the device, and another -- for presenting images of additional apps that can be downloaded from Google Play. 
+To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth dynamic study describe above. %of thirteen popular applications from Google Play.
+The results show that our static analysis features a high precision -- 93\% of the non-essential connection calls identified by the static analysis are indeed classified as non-essential during the manual analysis. Even though it is designed to be conservative, it is still able to identify 60\% of all non-essential connection in the studied application.
+Only two connections in total are misclassified as non-essential: one is responsible for presenting the advertisement material via Google Ads component installed on the device, and another -- for presenting icons of additional apps that can be downloaded from Google Play. 
 
-To gain further insights on the quality of our technique, we apply the technique on additional 47 top-popular applications from Google Play. For these applications, we inject failures in all connection statements deemed non-essential by our static analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
+To gain further insights on the quality of our technique, we apply it on additional 47 top-popular applications from Google Play. For these applications, we inject failures in all connection statements deemed non-essential by our analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
 
-The results of our usability assessment are encouraging: there were no observable differences in 63.8\% of the application (30 cases). In 25.6\% of the applications (12 cases) differences where related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
+The results of this usability assessment are encouraging: there were no observable differences in 63.8\% of the application (30 cases). In 25.6\% of the applications (12 cases) differences where related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
 These results imply that our technique produces actionable results that could already be applied to eliminate many cases of non-essential communication. 
 
 
 %\vspace{0.05in}
 \noindent 
 {\bf RQ4: How often does non-essential communication occur in real-life applications and what are its most common sources?}
-Inspired by the high precision of our technique, we apply it on the top 500 popular applications from Google Play. This experiment reveals that 46\% of connection sites encoded in these applications 
+Inspired by the high precision of our technique, we apply it on the top 500 popular applications from Google Play. This experiment reveals that 46\% of connection statements encoded in these applications 
 are deemed non-essential.
-Most common sources of non-essential communication are various Google services for mobile developers. We conjecture 
-that applications commonly register for various such services without eventually using them. 
-Additional common targets are advertisement, analytics and gaming services. 
+Most common sources of non-essential communication are Google services %for mobile developers 
+and various A\&A services. Yet, these are not the exclusive source of non-essential communication, and not all communication made from these packages is non-essential. 
+%We conjecture 
+%that applications commonly register for various such services without eventually using them. 
+%Additional common targets are advertisement, analytics and gaming services. 
 
 %\vspace{0.05in}
 \noindent 
-{\bf Significance of the Work.}  Our work focuses on benign mobile
+{\bf Positioning of the Work.}  Our work focuses on benign
 applications that can be downloaded from popular application stores
 and that are installed by millions of users.  By identifying and
 highlighting application functionality hidden from the user, the goal
@@ -208,10 +210,10 @@ The paper makes the following contributions:
 \vspace{-0.05in}
 \begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.01in}
 
-\item It sets \emph{a new problem} of distinguishing between essential and non-essential release of information by mobile applications in an automated manner. The goal is to improve the
+\item It sets \emph{a new problem} of distinguishing between essential and non-essential communication in an automated manner. The goal is to improve the
 transparency and trustworthiness of mobile applications.
 
-\item It proposes \emph{a semi-automated dynamic approach} for detecting non-essential releases of information in Android applications which does not require access to the application source code. 
+\item It proposes \emph{a semi-automated dynamic approach} for detecting non-essential communication in Android applications that does not require access to the application source code. 
 The approach relies on interactive injection of connection failures and identification of cases in which the injected failures do not affect the observable application functionality. 
 
 \item It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 69\% of the connections attempted by thirteen top-popular free applications on Google Play fall into that category.    
@@ -222,7 +224,7 @@ disabling all connections identified by the technique.
 
 % precision and recall of the technique is 93\% and 60\%, respectively, when evaluated against the empirically established truth set.       
 
-\item It provides \emph{quantitative evidence} for the prevalence of non-essential connections in the 500 top-popular free applications on Google Play and identifies common sources of such communication. 
+\item It provides \emph{quantitative evidence} for the prevalence of non-essential connections in the 500 top-popular free applications on Google Play and identifies common patters of such communication. 
 
 %, showing that 84\% of connections encoded in these applications can be deemed as non-essential.
 

@@ -1,4 +1,5 @@
 \vspace{0.05in}
+\vspace{-0.1in}
 \section{Limitations and Threats to \\Validity}
 \label{sec:limitations}
 %In this section we discuss the limitations of our empirical study and our static technique for detecting non-essential connections.
@@ -16,7 +17,9 @@ We only report on the results comparing these similar runs.
 During our analysis, we disabled connections one by one, iterating over their list arranged in a lexicographic (i.e., semantically random) order. As such, we could miss cases when 
 several connections can be excluded altogether, but not individually. 
 Since exploring all connection state combinations is exponential, we opted for this linear approach that still guarantees correct, 
-albeit possibly over-approximate results. Moreover, by focusing on individual connection statements, we cannot distinguish between multiple application behaviors
+albeit possibly over-approximate results. 
+
+Moreover, by focusing on individual connection statements, we cannot distinguish between multiple application behaviors
 that communicate via the same statement in code. We thus conservatively deem a connection as essential if it is essential for at least one of such behaviors. 
 %Exploring more sophisticated techniques for distinguishing between such different behaviors could be a subject of a possible future work.
  
@@ -38,7 +41,7 @@ the state of a connection target but does not present any information to the use
 In many cases, detecting such
 communication statically is impossible because the code executed on
 the target is unknown and unavailable. 
-For a similar reason, in this work, we did not consider RPC communication with applications
+For a similar reason, in this work, we do not consider RPC communication with applications
 installed on the same device. We might explore that direction as part of the future work. 
 %When communication is
 %performed via RPC within the same application, it is exceedingly
