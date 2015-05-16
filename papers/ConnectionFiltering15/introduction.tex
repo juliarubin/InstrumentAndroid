@@ -106,11 +106,15 @@ connections inspired us to develop a novel static application analysis technique
 can detect such connections automatically.  The core idea behind our
 analysis is to look for cases when both connection success and failure are ``silently'' ignored by the application, i.e., when no information is propagated back to the user neither on success nor on   failure of the connection. 
 
-We scope our analysis of the program control flow graph by considering the \emph{direct processing} of a connection statement. 
-That includes \emph{forward stack processing} and \emph{backward stack processing} executions. 
-The former one is the execution reachable after the connection statement but limited to processing of the Android runtime events that trigger the connection statement.
-The latter is the execution that traverse the methods up the calls stack and is limited by the points at which the exception raised by the call statement and all related rethrown exceptions are handled. 
-
+We scope our analysis of the program control flow graph by considering
+the \emph{direct processing} of a connection statement.  That includes
+\emph{forward stack processing} and \emph{failure handling}
+executions.  The former is the execution reachable after the
+connection statement but limited to processing of the Android runtime
+events that trigger the connection statement.  The latter is the
+execution that traverse the methods up the calls stack and is limited
+by the points at which the exception raised by the call statement and
+all related rethrown exceptions are handled.
 
 %that the processing associated with a non-essential
 %connection statements does not directly 
@@ -133,11 +137,12 @@ The latter is the execution that traverse the methods up the calls stack and is 
 
 %The union of these two sets define our notion of {\it direct} success
 %and failure processing of connection statement $s$.  
-The direct processing is then
-searched for method call invocations that could target a predefined
-set of API calls that affect the user interface.  If such a call is
-found, the connection statement is deemed essential.  Furthermore, 
-if the exception is propagated back to the Android runtime (causing the application to exit), the connection call is deemed essential.
+The direct processing of the connection call is searched for method
+call invocations that could target a predefined set of API calls that
+affect the user interface.  If such a call is found, the connection
+call statement is deemed essential.  Furthermore, if the exception
+could be propagated back to the Android runtime (causing the
+application to exit), the connection call is deemed essential.
 Otherwise, it is deemed non-essential.
 
 %includes  exception is 
