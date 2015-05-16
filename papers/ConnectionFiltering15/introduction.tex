@@ -61,7 +61,7 @@ about all triggered connection statement %, install the instrumented version on 
 and execute the instrumented version using the same script.
 %\vspace{0.05in}
 %\noindent\emph{Disable Connections:} 
-Finally, we iterate over all identified triggered connections, disabling each at a time and producing a modified version of the application with this connection disabled.
+Finally, we iterate over all identified triggered connections, disabling each at a time.
 %To disable a connection, we replace the connection statement  
 %with a statement that throws an exception indicating connection failure, 
 %i.e., the one that would be thrown when the device is in a disconnected mode. 
@@ -69,7 +69,7 @@ Finally, we iterate over all identified triggered connections, disabling each at
 %\vspace{0.05in}
 %\noindent\emph{Run Modified Application:} 
 We run the modified
-version, again, using the recorded script, and compare the obtained screenshots 
+version of the application with that connection disabled using the recorded script, and compare the obtained screenshots 
 %Similarly to the approach
 %in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, the
 %screenshots documenting the execution of the modified application are
