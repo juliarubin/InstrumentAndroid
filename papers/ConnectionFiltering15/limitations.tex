@@ -6,10 +6,11 @@
 %\vspace{0.05in}
 %\noindent 
 \subsubsection{Empirical Study}
-Our empirical study has a dynamic nature and thus suffers from the well-known limitations of dynamic analysis: it does not provide an exhaustive exploration of an application's behavior, thus the findings apply only to the execution paths explored during the analysis. 
-Even though we made an effort to cover all application functionality visible to us, we probably missed some behaviors, e.g., those triggered under system settings different from ours. 
+Our empirical study has a dynamic nature and thus suffers from the well-known limitations of dynamic analysis: it does not provide an exhaustive exploration of an application's behavior.
+%, thus the findings apply only to the execution paths explored during the analysis. 
+Even though we made an effort to cover all application functionality visible to us, we might have missed some behaviors, e.g., those triggered under system settings different from ours. 
 We attempted to mitigate this problem by performing all our dynamic experiments on the same device, at the same location and temporally close to each other.  
-We also automated our execution scripts in order to compare behaviors of different application versions under the same scenario and settings. 
+We also automated our execution scripts in order to compare behaviors of different variants under the same scenario and settings. 
 We only report on the results comparing these similar runs.  
 
 During our analysis, we disabled connections one by one, iterating over their list arranged in a lexicographic (i.e., semantically random) order. As such, we could miss cases when 
@@ -25,26 +26,32 @@ We tried to mitigate this problem by not biasing our application selection but r
 %\vspace{0.05in}
 %\noindent 
 \subsubsection{A Static Technique For Detecting Non-Essential Connections}
-Our technique deems \emph{optional} behaviors -- those when failing connections are ignored by the application, but successful connections result in presenting additional information to the user -- as non~essential. 
-As an application can proceed when optional behaviors are excluded, it is debatable whether they are really essential for the application functionality or not. 
-In fact, we believe that it is up to the users to decide whether an optional behavior is indeed essential for their needs. 
-%Towards this end, we plan to investigate approaches for differentiating between optional and ``truly non-essential'' behaviors as part of a future work. 
-
-Our technique also deems as non-essential \emph{stateful} communication that toggles
-the state of a connection target but does not perform any operations in
-fault-processing code. In many cases, detecting such
+Our technique deems 
+%\emph{optional} behaviors -- those when failing connections are ignored by the application, but successful connections result in presenting additional information to the user -- as non~essential. 
+%As an application can proceed when optional behaviors are excluded, it is debatable whether they are really essential for the application functionality or not. 
+%In fact, we believe that it is up to the users to decide whether an optional behavior is indeed essential for their needs. 
+%%Towards this end, we plan to investigate approaches for differentiating between optional and ``truly non-essential'' behaviors as part of a future work. 
+%
+%Our technique also deems 
+as non-essential \emph{stateful} communication that toggles
+the state of a connection target but does not present any information to the user. 
+In many cases, detecting such
 communication statically is impossible because the code executed on
-the target is unknown and unavailable.  Even when communication is
-performed via RPC within the same application, it is exceedingly
-costly for an analysis to determine, with precision, whether a
-connection (or set of connections) is stateful. 
+the target is unknown and unavailable. 
+For a similar reason, in this work, we did not consider RPC communication with applications
+installed on the same device. We might explore that direction as part of the future work. 
+%When communication is
+%performed via RPC within the same application, it is exceedingly
+%costly for an analysis to determine, with precision, whether a
+%connection (or set of connections) is stateful. 
 %As such cases are
 %rare, developing these approaches, orthogonal to our current analysis,
 %is also left to future work.
  
-Some of the non-essential connections that we identified statically might never be triggered dynamically. In fact, our empirical study shows that only less than 5\% of the connection statements in the analyzed applications were indeed triggered.
-Some of such connections belong to execution paths that were not explored during our dynamic application traversal.
-Yet, a large percentage of these connections originate in  
+Some of the non-essential connections that we identified statically might never be triggered dynamically. 
+%In fact, our empirical study shows that only a small fraction of the connection statements in the analyzed applications were indeed triggered.
+%Some of such connections belong to execution paths that were not explored during our dynamic application traversal.
+A large percentage of these connections originate in  
 third-party libraries that are included in the application but only partially used. 
-Analyzing them is still beneficial as this code might be used in other applications.
-Nevertheless, our approach could be combined with techniques for detecting dead code, to provide better results.
+As such, analyzing them is still beneficial as this code might be used in other applications.
+%Nevertheless, our approach could be combined with techniques for detecting dead code, to prevent false-positive results. 

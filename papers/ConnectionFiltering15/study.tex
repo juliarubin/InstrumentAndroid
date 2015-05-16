@@ -20,7 +20,27 @@
 %%\vspace{-0.1in}
 %\end{table}
 
-\begin{table}[b]
+
+
+\vspace{-0.1in}
+\section{Communication in Android}
+\label{sec:study} 
+
+In this section, we describe the design of the study that we conducted to gain more insights into the nature of communication performed by Android applications. We then discuss the study results. 
+
+\subsection{Design of the Study}
+
+%\vspace{0.05in}
+%\noindent 
+%{\bf Connection Statements.}
+\subsubsection{Connection Statements}
+Table~\ref{tbl:connections} lists the base classes and their corresponding methods that we consider in our study. 
+%The first three are responsible for establishing HTTP connections with backend servers, while the fourth one provides socket-based communication. 
+We also include all sub-classes of those listed in the table.
+% and the last one allows 
+%RPC communication with other applications and services installed on the same mobile device. 
+
+\begin{table}[t]
 \vspace{-0.1in}
 %\begin{wraptable}{r}{0.6\linewidth}
 \caption{Considered Connection Statements.}
@@ -43,25 +63,6 @@
 \end{table}
 %
 %\end{wraptable}
-
-\vspace{-0.1in}
-\section{Communication in Android}
-\label{sec:study} 
-
-In this section, we describe the design of the study that we conducted to gain more insights into the nature of communication performed by Android applications. We then discuss the study results. 
-
-\subsection{Design of the Study}
-
-%\vspace{0.05in}
-%\noindent 
-%{\bf Connection Statements.}
-\subsubsection{Connection Statements}
-Table~\ref{tbl:connections} lists the base classes and their corresponding methods that we consider in our study. 
-%The first three are responsible for establishing HTTP connections with backend servers, while the fourth one provides socket-based communication. 
-We also include all sub-classes of those listed in the table.
-% and the last one allows 
-%RPC communication with other applications and services installed on the same mobile device. 
-
 
 \begin{table}[t]
 \caption{Analyzed Applications.}

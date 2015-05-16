@@ -50,29 +50,28 @@ Our study has three major steps. First, we establish baseline
 application behavior.  Towards this end, we record a
 script triggering the application functionality via a series of
 interactions with the application's user interface.  After each
-interaction, we capture a screenshot of the device to record the
-application state.
-
+interaction, the script records the
+application state by capturing a screenshot of the device.
 %\vspace{0.05in}
 %\noindent\emph{Instrumentation:} 
 We then instrument the application to log information
 about each triggered connection statement, install the instrumented version on a mobile device and execute it using the recorded script.
-
 %\vspace{0.05in}
 %\noindent\emph{Disable Connections:} 
 Finally, we iterate over all triggered connections, disabling each at a time.
-To disable a connection, we replace the connection statement  
-with a statement that throws an exception indicating connection failure, 
-i.e., the one that would be thrown when the device is in a disconnected mode. 
+%To disable a connection, we replace the connection statement  
+%with a statement that throws an exception indicating connection failure, 
+%i.e., the one that would be thrown when the device is in a disconnected mode. 
 %
 %\vspace{0.05in}
 %\noindent\emph{Run Modified Application:} 
 We install the modified
-application and run it using the previously recorded script. 
-Similarly to the approach
-in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, the
-screenshots documenting the execution of the modified application are
-compared to those of the original one. 
+application, run it using the previously recorded script and compare obtained screenshots 
+%Similarly to the approach
+%in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, the
+%screenshots documenting the execution of the modified application are
+%compared 
+to those of the original run. 
 
 We consider executions as
 equivalent if they result in screenshots that differ only in the
@@ -103,31 +102,49 @@ essential and non-essential communication.
 \noindent 
 {\bf RQ2: Can non-essential communication be detected statically?}
 Detailed investigation of multiple detected cases of non-essential
-connections led us to develop a novel static application analysis that
-can detect such connection automatically.  The core idea behind our
-analysis is that the processing associated with a non-essential
-connection call does not directly affect the user interface on success
-or failure, and a non-essential connection call will not cause
-application exit on failure. 
+connections inspired us to develop a novel static application analysis technique that
+can detect such connections automatically.  The core idea behind our
+analysis is to look for cases when both connection success and failure are ``silently'' ignored by the application, i.e., when no information is propagated back to the user neither on success nor on   failure of the connection. 
 
-The static analysis first calculates all possible flows of control of
-the application during {\it failure handling} of the connection
-call. For an exception $e$ of connection statement $s$ in method $m$,
-failure handling is the set of methods on all possible call stacks for
-$m$ that either pass the exception $e$ up the stack or handle $e$.
-Next, the static analysis calculates the set of methods that are
-reachable on successful forward processing of $s$ during the Android
-events that could trigger $s$.  
+We scope our analysis of the program control flow graph by considering the \emph{direct processing 
+environment} of a connection statement. 
+That includes: (a) {\it failure handling}  executions, i.e., exception handling blocks that pass the exceptions up the calls stack up and including the point where the exception is handled, or when it is propagated back into the Android runtime; (b) {\it success backward handling}, i.e, XX; and 
+(c) {\it success forward handling}, i.e, all methods that are
+reachable from the catch block handling the exception. 
+%that the processing associated with a non-essential
+%connection statements does not directly 
+%affect the user experience, i.e, no GIU elements are found 
+% %on success
+%%or failure, and a non-essential connection call will not cause
+%%application exit on failure. 
 
-The union of these two sets define our notion of {\it direct} success
-and failure processing of connection statement $s$.  This set is then
+%The static analysis first calculates all possible flows of control of
+%the application during {\it failure handling} of the connection
+%call. 
+%Failure handling begins when the exception is caught 
+%
+%%For an exception $e$ of connection statement $s$ in method $m$,
+%%failure handling is the set of methods on all possible call stacks for
+%%$m$ that either pass the exception $e$ up the stack or handle $e$.
+%Next, the static analysis calculates the set of methods that are
+%reachable on successful forward processing of $s$ during the Android
+%events that could trigger $s$.  
+
+%The union of these two sets define our notion of {\it direct} success
+%and failure processing of connection statement $s$.  
+The direct processing environment is then
 searched for method call invocations that could target a predefined
 set of API calls that affect the user interface.  If such a call is
-found, then $s$ is deemed essential.  Furthermore, if a failure
-handling path includes a method that is an application event handler
-that does not handle the exception, then the application will
-propagate the exception to the Android runtime and could exit on the
-exception, and the connection call is deemed essential.
+found, the connection statement is deemed essential.  Furthermore, 
+if during the failure handling, the exception is propagated back to the Android runtime (causing the application to exit), the connection call is deemed essential.
+Otherwise, it is deemed non-essential.
+
+%includes  exception is 
+%a failure
+%handling path includes a method that is an application event handler
+%that does not handle the exception, then the application will
+%propagate the exception to the Android runtime and could exit on the
+%exception, and the connection call is deemed essential.
 
 Our static analysis is designed to scale to large Android applications
 and to conservatively approximate the behavior of dynamic constructs

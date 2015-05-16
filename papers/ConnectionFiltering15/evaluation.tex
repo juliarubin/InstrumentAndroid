@@ -104,17 +104,12 @@ installed on the same device. Our static analysis does not track inter-applicati
 %That is, depending on the user's perspective, 
 %between 83\% and 90\% of the cases identified as non-essential by the static analysis indeed do not affect the behavior of the applications. 
 
-While designed to be conservative, our analysis is able to correctly identify 
-%64 out of 106 connection
+While designed to be conservative, our analysis is able to correctly identify %64 out of 106 connection
 60\% of statements deemed non-essential in the empirical study 
 %, resulting in the overall recall of 63.8\% 
-(column 3 in Table~\ref{tbl:eval}).  A conservative, though feasibly
-analyzable, definition of processing related to a connection call and
-conservative call graph construction, specifically w.r.t. reflection,
-are the major reason we do not achieve higher recall.  Finally, the
-analysis is highly efficient and runs in a matter of minutes even on
-large applications, as shown in the last column of table
-Table~\ref{tbl:eval}.
+(column 3 in Table~\ref{tbl:eval}). 
+Conservative call graph construction, specifically w.r.t. reflection, is a major contributor to the observed low recall. {\bf JR: Michael, pls check.}
+On the flip side, the analysis is highly efficient and runs in a matter of minutes even on large applications, as shown in the last column of table Table~\ref{tbl:eval}.
 
 
 %Considering advertisement non-essential results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
@@ -125,7 +120,7 @@ To check whether our technique is able to provide actionable results, we further
 We used two Nexus devices running Android v4.4.4, installing the original version of an applications on one, and a modified version on the other. We produced the modified version by the \emph{blocking transformation} specified in Section~\ref{sec:study} to disable all calls identified as non-essential by the static analysis. 
 
 We recruited two human subjects, both experienced software developers, and paired each with an author of this paper.
-Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for 5 to 10 minutes, and to record all differences during that execution.
+Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for 10 minutes, and to record all differences during that execution.
 We asked the participants to avoid signing in with a Google Plus account or performing in-app purchases from the Google Play store, as these features are not supported in resigned applications, as discussed in Section~\ref{sec:study}.
 
 When analyzing the results of that experiment, we exclude 14 application that were non-operational (either did not run, in both versions, or required payment to continue running);
@@ -161,7 +156,8 @@ Information about the remaining 47 applications is given in Table~\ref{tbl:users
 Our participants did not observe any noticeable differences in 30 applications (63.8\%). 
 In 9 cases (19.1\%), the advertisement material was missing, similarly to the zedge example described above. For 3 applications (6.4\%), the participants observed absence of features that they considered minor: 2 cases of missing icons, in the flashlight and the talkingben applications, and 1 case were they could not create an account for the antivirus application, but the core functionality of that application was intact. 
 
-Only 5 applications (10.6\%) where missing essential functionality or seriously broken: Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might me related to resigning issues, but we could not verify that. 
+Only 5 applications (10.6\%) where missing essential functionality %or seriously broken: 
+Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might me related to resigning issues, but we could not verify that. 
 
 Overall, these results are very encouraging and demonstrate that, in a vast majority of cases, the results of our static analysis can be directly applied to disable non-essential communication. 
 
