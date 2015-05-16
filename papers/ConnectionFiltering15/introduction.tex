@@ -218,12 +218,18 @@ The paper makes the following contributions:
 transparency and trustworthiness of mobile applications.
 
 \item It proposes \emph{a semi-automated dynamic approach} for detecting non-essential communication in Android applications that does not require access to the application source code. 
-The approach relies on interactive injection of connection failures and identification of cases in which the injected failures do not affect the observable application functionality. 
+The approach relies on interactive injection of connection failures
+and identification of cases in which the injected failures do not
+affect the observable application functionality.
 
 \item It provides \emph{empirical evidence} for the prevalence of such non-essential connections in real-life applications. Specifically, it shows that 69\% of the connections attempted by thirteen top-popular free applications on Google Play fall into that category.    
 
-\item It proposes \emph{a static technique} that operates on application binaries and identifies non-essential connections -- those where failures are not propagated back to the application's user. The technique is highly scalable and precise: out of 47 highly popular applications on Google Play, 
-63.8\% worked without any interference and further 25.6\% work with only insignificant interference when 
+\item It proposes \emph{a static technique} that operates on
+application binaries and identifies non-essential connections -- those
+that do not directly propagate any effects back to the application's user. The
+technique is highly scalable and precise: out of 47 highly popular
+applications on Google Play, 63.8\% worked without any interference
+and further 25.6\% work with only insignificant interference when
 disabling all connections identified by the technique.
 
 % precision and recall of the technique is 93\% and 60\%, respectively, when evaluated against the empirically established truth set.       
