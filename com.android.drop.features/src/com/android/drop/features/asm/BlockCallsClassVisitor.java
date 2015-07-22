@@ -30,12 +30,17 @@ public class BlockCallsClassVisitor extends BasicClassVisitor {
 		
 		//julia debug
 				if (
-				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ap$a$a") && name.contains("init") ||
-				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/aq$a$a") && name.contains("init") ||
-					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/aq$a$a") && name.contains("a") ||
-					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ap$a$a") && name.contains("a") ||
-					ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/cosmos/android/router/internal/IResolveCallbackReceiver$Stub$Proxy") && name.contains("init") ||
-					ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/mobile/android/service/p") && name.contains("init") ||
+//				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ap$a$a") && name.contains("init") ||
+//				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/aq$a$a") && name.contains("init") ||
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/aq$a$a") && name.contains("a") ||
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ap$a$a") && name.contains("a") ||
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/cosmos/android/router/internal/IResolveCallbackReceiver$Stub$Proxy") && name.contains("init") ||
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/spotify/mobile/android/service/p") && name.contains("init") ||
+				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/bd$a$a") && name.contains("init") ||
+					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/common/internal/e") && name.contains("getStartServiceAction") ||
+					//ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/common/api/GoogleApiClient$Builder") && name.contains("setAccountName") ||
+				//	ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/internal/ly") && name.contains("init") ||
+//					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/dynamic/g") && name.contains("init") ||
 					name.contains("onTransact") 
 //					ClassHierarchy.getInstance().isAncestors(this.name, "com/google/android/gms/ads/AdView") && name.startsWith("onLayout")
 					//this.name.startsWith("com/mopub/mobileads/AdFetchTask") && name.startsWith("fetch") ||

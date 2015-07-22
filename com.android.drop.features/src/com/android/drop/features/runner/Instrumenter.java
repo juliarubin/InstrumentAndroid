@@ -34,7 +34,7 @@ public class Instrumenter {
 	public static void main(String[] args) {
 		
 		
-		Utils.runSystemCommand(Constants.SCRIPTS_DIR + "asmPrepare " + Constants.APP_NAME);
+//		Utils.runSystemCommand(Constants.SCRIPTS_DIR + "asmPrepare " + Constants.APP_NAME);
 		
 		long start = System.currentTimeMillis();
 		
@@ -73,8 +73,8 @@ public class Instrumenter {
 		}
 
 		long end = System.currentTimeMillis();
-		//SimpleDateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
-		//System.out.println("Execution time is " + formatter.format(end - start) + " m:ss:SSS");
+		SimpleDateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+		System.out.println("Execution time is " + formatter.format(end - start) + " m:ss:SSS");
 		System.out.println(instrumentationType + " execution time is " + (end - start) + " ms");
 		
 		Utils.runSystemCommand(Constants.SCRIPTS_DIR + "asmPack " + Constants.APP_NAME + " " + instrumentationType);
@@ -89,7 +89,7 @@ public class Instrumenter {
 
 		try {
 			for (File classFile : classFiles) {
-				System.out.println(instrumentationType + " " + classFile);
+				//System.out.println(instrumentationType + " " + classFile);
 							
 				byte[] inBytes = FileUtils.readFileToByteArray(classFile);
 				

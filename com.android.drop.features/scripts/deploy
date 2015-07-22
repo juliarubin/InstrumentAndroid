@@ -10,8 +10,8 @@ set adb = ~/Documents/eclipse/adt-bundle-mac-x86_64-20140702/sdk/platform-tools/
 
 $adb uninstall $1
 
-#$adb logcat -c
-#$adb logcat > $apkDir/../logs/$1_$2_logcat.log &
+$adb logcat -c
+$adb logcat > $apkDir/../logs/$1_$2_logcat.log &
 
 $adb install -r $apkDir/asmOutput/$1_$2.apk
 

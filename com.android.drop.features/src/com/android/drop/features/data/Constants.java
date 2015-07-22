@@ -29,9 +29,14 @@ public class Constants {
 //	public static String APP_NAME = "com.duolingo";	 
 //	public static String APP_NAME = "com.jb.emoji.gokeyboard";
 	
-	public static String APP_NAME = "com.emoji.Smart.Keyboard";
+//	public static String APP_NAME = "com.ubercab";
+	
+//	public static String APP_NAME = "com.emoji.Smart.Keyboard";
 	
 	//tests
+	//public static String APP_NAME = "com.testads";
+	public static String APP_NAME = "StealLocation";
+	
 	//public static String APP_NAME = "com.g6677.android.princesshs";
 	//public static String APP_NAME = "com.google.android.apps.translate";
 

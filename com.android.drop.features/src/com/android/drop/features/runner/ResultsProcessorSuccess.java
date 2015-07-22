@@ -28,10 +28,10 @@ public class ResultsProcessorSuccess {
 	public static String[] apps = {
 	"air.com.sgn.cookiejam.gp",
 	"com.crimsonpine.stayinline",
-//	"com.devuni.flashlight",
+	"com.devuni.flashlight",
 //	"com.duolingo",
-//	"com.emoji.Smart.Keyboard",
-//	"com.jb.emoji.gokeyboard",
+	"com.emoji.Smart.Keyboard",
+	"com.jb.emoji.gokeyboard",
 //	"com.facebook.katana",
 	"com.grillgames.guitarrockhero",
 //	"com.king.candycrushsaga",
@@ -69,9 +69,8 @@ public class ResultsProcessorSuccess {
 	public static String RES_DIR = "/Volumes/D/data/minst/conf/";
 	public static boolean PRINTOUTS = true;
 	public static int CONNECTION_TYPE = 0; //0 - external; 1 - internal; 2 - both
-	public static String RES_VERSION = "connection-exception-analysis.20150508_2000/";
-	
-
+	//public static String RES_VERSION = "connection-exception-analysis.20150508_2000/"; //installed on devices
+	public static String RES_VERSION = "connection-exception-analysis.20150515_1930/";
 	
 	public static HashSet<String> staticEssential;
 	public static HashSet<String> staticOptional;

@@ -61,6 +61,10 @@ zip $apkDir/asmOutput/$appName.apk -d META-INF/BEONROAD.SF
 zip $apkDir/asmOutput/$appName.apk -d META-INF/BEONROAD.RSA
 zip $apkDir/asmOutput/$appName.apk -d META-INF/NAVER_JA.SF
 zip $apkDir/asmOutput/$appName.apk -d META-INF/NAVER_JA.RSA
+zip $apkDir/asmOutput/$appName.apk -d META-INF/96447545.SF
+zip $apkDir/asmOutput/$appName.apk -d META-INF/96447545.RSA
+
+
     
 zip -r $apkDir/asmOutput/$appName.apk classes.dex
 rm classes.dex

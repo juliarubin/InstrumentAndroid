@@ -100,6 +100,8 @@ public class InstrumentCallsClassVisitor extends BasicClassVisitor {
 						AsmUtils.addPrintoutStatement(mv, logFileName, instrumentationType, 
 						Constants.SOURCE_MARKER + owner + "." + name + desc +
 						" from " + methodSigniture, 2);
+						System.out.println(Constants.SOURCE_MARKER + owner + "." + name + desc +
+								" from " + methodSigniture);
 						AsmUtils.addPrintStackTrace(mv);
 						Statement statement = new Statement(methodSigniture, owner + "." + name + desc, 0);
 						dm.addStatement(statement);
