@@ -9,9 +9,9 @@ automatically classify connections.  Android applications are
 developed in Java as a series of external event handler routines,
 e.g., button click and application exit.  Given an Android
 application, the static analysis classifies each statement that may
-invoke a connection call as either {\it essential} or {\it
-  non-essential}.  We begin with machinery that allows us to define
-essential and non-essential connection statements with precision.
+invoke a connection call as either {\it overt} or {\it
+  covert}.  We begin with machinery that allows us to define
+overt and covert connection statements with precision.
 
 
 %% In an Android application, each
@@ -96,9 +96,9 @@ execution.
 %% handling of the rethrown \lstinline!AdvertisingException!.
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
-\item \textsc{\bfseries{Definition (Essential and Non-essential
+\item \textsc{\bfseries{Definition (Overt and Covert
     Connections)}}.  For connection statement $s$, $s$ is classified as
-  an {\it essential connection} if meets at least one of the following
+  an {\it overt connection} if meets at least one of the following
   criteria:
   
 \begin{enumerate}[leftmargin=0.5cm]
@@ -118,15 +118,15 @@ execution.
 
 \end{enumerate}
 
-\noindent Conversely, a non-essential connection call does not meet
+\noindent Conversely, a covert connection call does not meet
 any of the criteria.  
 
 \end{description}
 
 %% \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 %% \item \textsc{\bfseries{Problem}}: For each connection call in an
-%%   Android application, determine whether it is essential or
-%%   non-essential.
+%%   Android application, determine whether it is overt or
+%%   covert.
 %% \end{description}
 
 %% To solve this problem statically, our failure-handling analysis
@@ -134,9 +134,9 @@ any of the criteria.
 %% that denotes connection failure for each connection call in the
 %% application.  If there exists a failure-handling path of $s$ on $e$
 %% that may include a call to a method that notifies the user of the
-%% failure, then $s$ is considered essential.  If it is possible for $e$,
+%% failure, then $s$ is considered overt.  If it is possible for $e$,
 %% when triggered at $s$, to propagate back up the stack to the Android
-%% runtime, $s$ is considered essential.
+%% runtime, $s$ is considered overt.
 
 
 %% Android applications are developed in Java and compiled to Dalvik
@@ -157,7 +157,7 @@ environment, or account for possible dynamic program behaviors with
 conservative analysis choices; otherwise some runtime behaviors could
 be unconsidered.  Our static analysis over-approximates the runtime
 behaviors of the applications, and under-approximates the connection
-calls that could be non-essential.
+calls that could be covert.
  
 Our analysis is implemented in the Soot Java
 Analysis Framework~\cite{Vallee-Rai2000} and utilizes libraries and
@@ -168,7 +168,7 @@ represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 
 The design of our analysis prioritizes high precision over high recall
 because we do not want to block connection calls that perform
-essential communication. Our analysis employs a class hierarchy
+overt communication. Our analysis employs a class hierarchy
 analysis (CHA)~\cite{Dean1995} to build a call graph with refinement
 achieved by intra-procedural data-flow analysis.  After much
 experimentation with higher precision, though brittle, points-to
@@ -211,8 +211,8 @@ practice and aggressively accounts for reflection semantics.
 The static analysis is performed in three steps for each connection
 statement: (1) failure handler analysis, (2) success forward analysis,
 and (3) success backward analysis.  The analysis will terminate if a
-step determines that the connection is essential. Otherwise, a
-connection is considered non-essential.
+step determines that the connection is overt. Otherwise, a
+connection is considered covert.
 
 \lstDeleteShortInline+
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
@@ -272,7 +272,7 @@ an exception that indicates communication failure.
 {\textbf{Input}: #1}[1]{\textbf{Output}: #1}
 \Procedure{FindCatches}{meth, stmt, ex, visiting, stack, cg}
 
-\If {(stmt, ex) $\in$ visiting || (stmt, ex) $\in$ essential}
+\If {(stmt, ex) $\in$ visiting || (stmt, ex) $\in$ overt}
     \State \textbf{return}
 \EndIf
 
@@ -284,7 +284,7 @@ an exception that indicates communication failure.
 \label{alg:no-local-hander-start}
 \If {\textsc{IsEventHandler}(meth)}
 \label{alg:event-handler-line}
-\State essential $\gets$ essential $\cup$ (stmt, ex)
+\State overt $\gets$ overt $\cup$ (stmt, ex)
 \State \textbf{return}
 \EndIf
 
@@ -301,8 +301,8 @@ an exception that indicates communication failure.
 \State \textsc{FindCatches}(predMeth, predStmt, ex, 
 \State         \hspace{2cm}visiting, newStack, cg)
 
-\If {(predStmt, ex) $\in$ essential}
-\State essential $\gets$ essential $\cup$ (stmt, ex)
+\If {(predStmt, ex) $\in$ overt}
+\State overt $\gets$ overt $\cup$ (stmt, ex)
 \State \textbf{return}
 \EndIf
 \label{alg:no-local-hander-end}
@@ -351,7 +351,7 @@ edge, then $p$'s direct predecessors are visited, and so on.
 
 \If {\textsc{IsUIMethod}(succMeth)}
 \label{alg:ui-method-found}
-\State essential $\gets$ essential $\cup$ exceptStmt
+\State overt $\gets$ overt $\cup$ exceptStmt
 \State \textbf{return}
 
 \ElsIf {\textsc{IsNativeMethod}(succMeth)}
@@ -388,7 +388,7 @@ edge, then $p$'s direct predecessors are visited, and so on.
 \label{alg:getpossiblethrowntypes}
 \Else
 \label{alg:unknown-last-def-throw}
-\State essential $\gets$ essential $\cup$ exceptStmt
+\State overt $\gets$ overt $\cup$ exceptStmt
 \State \textbf{return}
 \EndIf
 
@@ -399,9 +399,9 @@ edge, then $p$'s direct predecessors are visited, and so on.
 \State \textsc{FindCatches}(meth, stmt, rethrownType, visiting, stack,
 cg)
 
-\If {stmt $\in$ essential}
+\If {stmt $\in$ overt}
 \label{alg:progagate-line}
-\State essential $\gets$ essential $\cup$ exceptStmt
+\State overt $\gets$ overt $\cup$ exceptStmt
 \State \textbf{return}
 \EndIf
 \EndFor
@@ -438,14 +438,14 @@ exceptions it is defined to throw, handler analysis spawns a
 \textsc{FindCatches} instance for each exception declared throws
 (line~\ref{alg:native-method-line}).  If a call is encountered that
 could target a UI method, then the statement that began the handler
-analysis is considered essential since the failure handling affects
+analysis is considered overt since the failure handling affects
 the user interface (line~\ref{alg:ui-method-found}).
 
 %% \textsc{FindCatches} and \textsc{AnalyzeHandler} maintain a set of
-%% statement and exception pairs, essential, that records pairs that are
-%% calculated as essential.  After all connection call statement and
-%% exception pairs are analyzed, pairs not in the essential set are
-%% considered non-essential.
+%% statement and exception pairs, overt, that records pairs that are
+%% calculated as overt.  After all connection call statement and
+%% exception pairs are analyzed, pairs not in the overt set are
+%% considered covert.
 
 
 A stack of pairs of method call statement and method is maintained
@@ -473,7 +473,7 @@ During handler search in \textsc{FindCatches}, if no handler is found
 locally, and the method is a possible entry point called from the
 Android runtime, then we conservatively calculate that the exception
 and excepting statement could cause application exit, so the pair is
-added to the essential set (line~\ref{alg:event-handler-line} of
+added to the overt set (line~\ref{alg:event-handler-line} of
 \textsc{FindCatches}). 
 
 During handler analysis, if a \lstinline!throw! statement is
@@ -499,7 +499,7 @@ exceptions that could be thrown.  This is performed in
 If any other type of statement is a definition that reaches the thrown
 value, then the analysis cannot determine the exception type and the
 connection call (or rethrown exception statement) is considered
-essential (line \ref{alg:unknown-last-def-throw}).  If only
+overt (line \ref{alg:unknown-last-def-throw}).  If only
 allocations and caught exception statements reach the thrown value,
 then the handler analysis spawns a new \textsc{FindCatches} instance
 to analyze the failure handling. 
@@ -683,11 +683,11 @@ phases:
 
 If the success forward and success backward analysis do not find any
 calls that could affect the user interface, then the connection call
-is classified as non-essential.
+is classified as covert.
 
 \subsection{Design Discussion and Limitations}
 
-The intuition for our static analysis is that essential connection
+The intuition for our static analysis is that overt connection
 calls {\it always} affect the user interface either on success or
 failure. Furthermore, the effect is {\it direct} on success.  As a
 marker for the notion of a {\it direct effect}, an execution trace

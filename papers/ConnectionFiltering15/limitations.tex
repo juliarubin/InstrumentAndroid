@@ -2,7 +2,7 @@
 \vspace{-0.1in}
 \section{Limitations and Threats to \\Validity}
 \label{sec:limitations}
-%In this section we discuss the limitations of our empirical study and our static technique for detecting non-essential connections.
+%In this section we discuss the limitations of our empirical study and our static technique for detecting covert connections.
 
 %\vspace{0.05in}
 %\noindent 
@@ -14,13 +14,36 @@ We attempted to mitigate this problem by performing all our dynamic experiments 
 We also automated our execution scripts in order to compare behaviors of different variants under the same scenario and settings. 
 We only report on the results comparing these similar runs.  
 
+{\bf JR: add: The reported precision of the proposed approach is a lower bound of the actual
+precision. This is the case since covert communications identified in
+the empirical study may not be covert after all. This is due to the
+limitation of dynamic analysis which is not able to explore all possible
+scenarios.
+
+the authors haven't established the
+direct connection between changes on user interface and absence
+of communications. It is likely that the changes on the user
+interface are due to non−determinism of the program itself
+(e.g., random number) but not the absence of communications. So
+there could be false negatives when identifying covert
+communications in the study.
+
+The static analysis is limited when the communication does not
+affect the user interface directly but transitively through
+other resources. For example, real−time apps can cache recent
+data in a file and use the file to update UI to maintain
+functionality in the case of communication lost. So the
+presence/absence of communications will only directly affect
+the content in the file, but will transitively affect the user
+interface through the file.}
+
 During our analysis, we disabled connections one by one, iterating over their list arranged in a lexicographic (i.e., semantically random) order. As such, we could miss cases when 
 several connections can be excluded altogether, but not individually. 
 Since exploring all connection state combinations is exponential, we opted for this linear approach that still guarantees correct, 
 albeit possibly over-approximate results. 
 
 Moreover, by focusing on individual connection statements, we cannot distinguish between multiple application behaviors
-that communicate via the same statement in code. We thus conservatively deem a connection as essential if it is essential for at least one of such behaviors. 
+that communicate via the same statement in code. We thus conservatively deem a connection as overt if it is overt for at least one of such behaviors. 
 %Exploring more sophisticated techniques for distinguishing between such different behaviors could be a subject of a possible future work.
  
 Finally, our study only includes a limited number of subjects, so the results might not generalize to other applications.
@@ -28,15 +51,15 @@ We tried to mitigate this problem by not biasing our application selection but r
 
 %\vspace{0.05in}
 %\noindent 
-\subsubsection{A Static Technique For Detecting Non-Essential Connections}
+\subsubsection{A Static Technique For Detecting Covert Connections}
 Our technique deems 
-%\emph{optional} behaviors -- those when failing connections are ignored by the application, but successful connections result in presenting additional information to the user -- as non~essential. 
+%\emph{optional} behaviors -- those when failing connections are ignored by the application, but successful connections result in presenting additional information to the user -- as covert. 
 %As an application can proceed when optional behaviors are excluded, it is debatable whether they are really essential for the application functionality or not. 
 %In fact, we believe that it is up to the users to decide whether an optional behavior is indeed essential for their needs. 
-%%Towards this end, we plan to investigate approaches for differentiating between optional and ``truly non-essential'' behaviors as part of a future work. 
+%%Towards this end, we plan to investigate approaches for differentiating between optional and ``truly covert'' behaviors as part of a future work. 
 %
 %Our technique also deems 
-as non-essential \emph{stateful} communication that toggles
+as covert \emph{stateful} communication that toggles
 the state of a connection target but does not present any information to the user. 
 In many cases, detecting such
 communication statically is impossible because the code executed on
@@ -51,7 +74,7 @@ installed on the same device. We might explore that direction as part of the fut
 %rare, developing these approaches, orthogonal to our current analysis,
 %is also left to future work.
  
-Some of the non-essential connections that we identified statically might never be triggered dynamically. 
+Some of the covert connections that we identified statically might never be triggered dynamically. 
 %In fact, our empirical study shows that only a small fraction of the connection statements in the analyzed applications were indeed triggered.
 %Some of such connections belong to execution paths that were not explored during our dynamic application traversal.
 A large percentage of these connections originate in  

@@ -7,6 +7,8 @@ Work related to this paper falls into three categories:
 %information propagation in mobile applications, and (3) static
 %exception analysis for Java. 
 
+{\bf JR: add the comparison to the FeedLack paper.}
+
 \vspace{-0.05in}
 %\noindent 
 \subsubsection{User-Centric Analysis for Identifying Spurious Behaviors in Mobile Applications}
@@ -38,7 +40,7 @@ Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14,Gordon:Kim
 %legitimate on the evidence arising at that point, e.g., the similarity between the data
 %values about to be released and the data obtained via the source APIs. 
 Our work is orthogonal and complimentary to all the above: while they focus on providing precise information flow tracking capabilities and detecting cases when sensitive information flows outside of the application and/or mobile device, 
-our focus is on distinguishing between essential and non-essential flows. 
+our focus is on distinguishing between overt and covert flows. 
 
 The authors of AppFence~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11} build up on TaintDroid and explore approaches for either obfuscating or completely blocking the identified cases of sensitive information release.
 Their study shows that blocking all such cases renders more than 65\% of the application either less functional or completely dysfunctional, blocking cases when information flows to advertisement and analytics services ``hurts'' 10\% of the applications, and blocking the communication with the advertisement and analytics services altogether -- more than 60\% of the applications.
@@ -48,7 +50,7 @@ Our approach for assessing the user-observable effect of that operation is simil
 Both MudFlow~\cite{Avdiienko:Kuznetsov:Gorla:Zeller:Arzt:Rasthofer:Bodden:ICSE15} and AppContext~\cite{Yang:Xiao:Andow:Li:Xie:Enck:ICSE15} build up on the FlowDroid static information flow analysis system~\cite{Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14} and propose approaches 
 for detecting malicious applications by learning ``normal'' application behavior patterns and then identifying outliers. 
 The first work considers flows of information between sensitive sources and sinks, while the second  -- contexts, i.e., the events and conditions, that cause the security-sensitive behaviors to occur. 
-Our work has a complementary nature as we focus on identifying non-essential rather than malicious behaviors, aiming to preserve the overall user experience. 
+Our work has a complementary nature as we focus on identifying covert rather than malicious behaviors, aiming to preserve the overall user experience. 
 
 Shen et al.~\cite{Shen:Vishnubhotla:Todarka:Arora:Dhandapani:Lehner:Ko:Ziarek:ASE14} contribute FlowPermissions -- 
 an approach that extends the Android permission model with a mechanism for allowing the users to examine and grant permissions per an information flow within an application, e.g., a permission to read

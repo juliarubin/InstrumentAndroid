@@ -62,6 +62,7 @@
 %\fontdimen4=0
 
 % *** SUBFIGURE PACKAGES ***
+\usepackage[font=small]{caption}
 \usepackage[tight,footnotesize]{subfigure}
 % subfigure.sty was written by Steven Douglas Cochran. This package makes it
 % easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
@@ -177,7 +178,7 @@
 %\crdata{0-12345-67-8/90/01}  % Allows default copyright data (0-89791-88-6/97/05) to be over-ridden - IF NEED BE.
 % --- End of Author Metadata ---
 
-\title{Non-Essential Communication in Mobile Applications}
+\title{Covert Communication in Mobile Applications}
 
 %%\numberofauthors{1}
 %\author{
@@ -193,7 +194,7 @@ Nguyen Nguyen\IEEEauthorrefmark{4}
 and Martin Rinard\IEEEauthorrefmark{1}}
 \IEEEauthorblockA{\IEEEauthorrefmark{1}Massachusetts Institute of Technology, USA}
 \IEEEauthorblockA{\IEEEauthorrefmark{4}Global InfoTek, Inc, USA}
-%\IEEEauthorblockN{mjulia@mit.edu, mgordon@mit.edu, nguyen@uwinsoftware.com, rinard@mit.edu}
+\IEEEauthorblockN{mjulia@mit.edu, mgordon@mit.edu, nguyen@uwinsoftware.com, rinard@mit.edu}
 }
 
 
@@ -211,13 +212,14 @@ and Martin Rinard\IEEEauthorrefmark{1}}
 %Google Play and determine that more than 80\% of the connection statements
 %in these applications are non-essential.
 This paper studies communication patterns in mobile applications. Our analysis
-shows that almost 70\% of the external communication made by top-popular
+shows that almost 70\% of the external communication made by top-popular free
 Android applications from Google Play has no effect on the user-observable
-application functionality. To detect such communication in an efficient
-manner, we propose a highly precise and scalable static-analysis technique: it achieves 93\% precision and 60\% recall compared to the empirically determined ``ground truth'', and runs in a matter of
-a few minutes.
-Furthermore, according to human evaluators, in 42 out of 47 cases, disabling connections deemed non-essential by our analysis leaves the delivered application experience either completely intact or with only insignificant interference. 
-We conclude that our technique is effective for identifying and disabling non-essential communication and use it to investigate communication patters in the 500 top-popular applications from Google Play. 
+application functionality. To detect such covert communication in an efficient
+manner, we propose a highly precise and scalable static analysis technique: 
+it achieves 93\% precision and 60\% recall compared to the empirically determined ``ground truth'', 
+and runs in a matter of a few minutes.
+Furthermore, according to human evaluators, in 42 out of 47 cases, disabling connections deemed covert by our analysis leaves the delivered application experience either completely intact or with only insignificant interference. 
+We conclude that our technique is effective for identifying and disabling covert communication and use it to investigate communication patterns in the 500 top-popular applications from Google Play. 
 \end{abstract}
 
 % A category with the (minimum) three required fields
