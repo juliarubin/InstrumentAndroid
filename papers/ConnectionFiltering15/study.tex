@@ -159,7 +159,7 @@ We then use the asm framework~\cite{asm} to implement two types of transformatio
 \end{enumerate}
 The jar file of the transformed application is then converted back to apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK.
  
-As a side effect of resigning applications, their authentication when communicating with services such as Google Plus APIs might be broken~\cite{googleAPI}, preventing the users from signing in with their Google Plus account or performing in-app purchases from the Google Play store. {\bf JR: emph. that this is a known problem}. Due to this known limitation, we refrain from executing such scenarios in our analysis, as discussed below. 
+As a known side effect of resigning applications, their authentication when communicating with services such as Google Plus APIs might be broken~\cite{googleAPI}, preventing the users from signing in with their Google Plus account or performing in-app purchases from the Google Play store. For that reason, we refrain from executing such scenarios in our analysis, as discussed below. 
 
 %\vspace{0.1in}
 %\noindent 
@@ -218,14 +218,13 @@ We thus have chosen to manually record the desired application execution scenari
 
 For the comparison of application executions, we started by following the approach in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where screenshots from two different runs are placed side-by-side, 
 along with a visual diff of each two corresponding images, as shown in Fig.~\ref{fig:screenshots}, for 
-the Walmart and twitter applications. 
+the Walmart application. 
 We used the ImageMagick compare tool~\cite{imagemagick}
 to produce the visual diff images automatically. 
-We then manually scanned the produced output while ignoring differences in content of advertisement messages and the status of the device, deeming the screenshots in Figs~\ref{fig:screenshots}(a) and (b) similar. 
-{\bf JR: emph that no judgment, ads are included.}
-We also ignored the exact content of widgets that are populated by applications in a dynamic manner and are designed to 
-provide continuously updated information that is expected to differ between applications runs, such as tweets in Figs~\ref{fig:screenshots}(d) and (e). These two figures are thus also deemed similar.
-{\bf JR: no such figures.}
+We then manually scanned the produced output while ignoring differences in \emph{content} of 
+widgets that are populated by applications in a dynamic manner because such widgets are \emph{expected} to differ between applications runs.
+That is, we ignored differences in the exact \emph{content} of the advertisement messages (but not their overall presence/absence and position), 
+\emph{content} of social network messages, e.g., tweets, and the status of the device, e.g., the exact time. As such, the screenshots in Figs~\ref{fig:screenshots}(a) and (b) were deemed similar, as they differ only in the content of the advertisement information and the information in the status bar.
 
 In one out of the analyzed cases, we had to revert to manual execution and comparison of the application runs.
 That case involved interactions with a visual game that required rapid response time, 
@@ -239,9 +238,9 @@ thus the automated application execution was unable to provide reliable results.
 We performed our study in three phases. In the first phase, 
 we installed the original version of each analyzed 
 application on a Nexus 4 mobile device running Android version 4.4.4.
-We manually exercised the application for 10 minutes, exploring all its functionality visible to us. 
-{\bf JR: mention fetches of data for later updates. Mention coverage.}
-We refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases though, due to the instrumentation-related limitations mentioned above.
+We manually exercised the application for around 10 minutes, exploring all its functionality visible to us. Our goal was to (a) achieve sufficient coverage and (b) keep the application active long enough to allow any background data fetch processes to manifest themselves in the application's GUI. 
+ 
+We refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases, due to the resign-related limitations mentioned above.
 During that execution, we recorded the execution script that captured all triggered actions. 
 We then re-installed the application %to recreate a ``clean'' state 
 and re-ran the script to collect schreenshots that were used as the baseline for further comparisons. 
@@ -279,10 +278,10 @@ The quantitative results of the study are presented in %columns~3--7 of
 Table~\ref{tbl:applications}. 
 Column 3 and 4 of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
 While some of the non-triggered statements can correspond to execution paths that were not explored during our dynamic application traversal, the vast majority of the statements originate in  
-third-party libraries included in the application but only partially used, e.g., various Google services for mobile developers, A\&A libraries.
-{\bf JR: emph this point.}
-In fact, we identified 14 different A\&A libraries used by the 13 applications that we analyzed, 
-and many times a single applications uses multiple such libraries.
+third-party libraries included in the application, e.g., Google and Facebook services for mobile developers and A\&A libraries. 
+Such libraries are often only partially used by an application, which could explain the incomplete coverage.  
+%In fact, we identified 14 different A\&A libraries used by the 13 applications that we analyzed, 
+%and many times a single applications uses multiple such libraries.
 
 An interesting case is the Facebook application (row 5 in Table~\ref{tbl:applications}), where most of the application code is dynamically loaded at runtime from resources shipped within the apk file. 
 Our analysis was unable to traverse this dynamically loaded code, and we thus excluded the application from the further analysis, noting that the only three connection statements that existed in the application jar file are never triggered. We also excluded from the further analysis the Candy Crush Saga application (row 8 in Table~\ref{tbl:applications}), as it did not exhibit any covert connections.

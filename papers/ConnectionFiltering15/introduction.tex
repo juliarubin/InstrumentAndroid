@@ -1,39 +1,75 @@
 \vspace{-0.05in}
 \section{Introduction}
 \label{sec:intro} 
+%Mobile applications enjoy almost permanent connectivity and the
+%ability to exchange information with their own back-end and other
+%third-party servers. 
+%Recent studies examine that information exchange, showing that applications often release sensitive information, such as the user's precise location, phone number or unique device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. 
+%Follow-up works investigate the feasibility of obfuscating or even blocking such information releases altogether~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}.
+%
+%Yet, distinguishing between information releases that enable the anticipated application functionality, e.g., getting accurate navigation instructions, and those that are unexpected from the user's point of view, is still a tedious manual task. This paper takes the first steps towards performing such a distinction 
+%%identifying and disabling such communication 
+%automatically.
+%
+%In~\cite{Nielsen:Molich:CHI90,Blackmon:Polson:Kitajima:Lewis:CHI02}, the authors claim that  
+%"the system should continuously inform the user about what it is doing". 
+%Inspired by that principle, we propose to classify communication into 
+%\emph{overt} and \emph{covert}: 
+%overt communication delivers a tangible value to the user.
+%Covert communication is hidden; disabling it leaves the delivered application experience completely intact.   
+%
+%%Our main insight is that covert : 
+%%delivers no value to the user of the application: 
+%  
+%In practice, covert communication comes with costs such as  
+%potential privacy breaches, bandwidth charges, power consumption on the device  
+%%and analytic data release, 
+%and the unsuspected presence of continued
+%communication between the device and remote organizations. 
+%In fact, we
+%observed that several applications silently spawn services that
+%communicate with third-party servers even when the application itself
+%is no longer active, with the user completely unaware that the spawned
+%services are still running in the background. 
+%
+%To quantify the extent of the problem,  
+%we start by
+%analyzing communication patterns of
+%%in widely used mobile applications such as ten of the top fifteen most
+%popular applications in the Google Play App Store (twitter, WalMart,
+%Spotify, Pandora, etc.). Motivated by the significant
+%amount of covert communication we found in these applications, 
+%we develop a highly precise and scalable static analysis that can identify 
+%such communication automatically. We use our analysis to further 
+%investigate this unfortunate phenomenon and report on our findings. 
+%The following research questions drive this investigation:
+
 Mobile applications enjoy almost permanent connectivity and the
 ability to exchange information with their own back-end and other
-third-party servers. 
-Recent studies examine that information exchange, showing that applications often release sensitive information, such as the user's precise location, phone number or unique device id~\cite{Enck:Gilbert:Chun:Cox:Jung:McDaniel:Sheth:OSDI10, Egele:Kruegel:Kirda:Vign:NDSS11,Tripp:Rubin:SEC14,Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. 
-Follow-up works investigate the feasibility of obfuscating or even blocking such information releases altogether~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}.
-
-Yet, distinguishing between information releases that enable the anticipated application functionality, e.g., getting accurate navigation instructions, and those that are unexpected from the user's point of view, is still a tedious manual task. This paper takes the first steps towards performing such a distinction 
-%identifying and disabling such communication 
-automatically.
-
-In~\cite{Nielsen:Molich:CHI90,Blackmon:Polson:Kitajima:Lewis:CHI02}, the authors claim that  
-"the system should continuously inform the user about what it is doing". 
-Inspired by that principle, we propose to classify communication into 
-\emph{overt} and \emph{covert}: 
-overt communication delivers a tangible value to the user.
-Covert communication is hidden; disabling it leaves the delivered application experience completely intact.   
-
-%Our main insight is that covert : 
-%delivers no value to the user of the application: 
-  
-In practice, covert communication comes with costs such as  
-potential privacy breaches, bandwidth charges, power consumption on the device  
-%and analytic data release, 
+third-party servers.  This paper shows that much of this communication
+does not deliver any tangible value to the application's user: 
+disabling it leaves the delivered application experience completely
+intact.  Yet, this communication comes with costs such as 
+potential privacy breaches,
+bandwidth charges, power consumption on the device,  
 and the unsuspected presence of continued
-communication between the device and remote organizations. 
-In fact, we
+communication between the device and remote organizations. In fact, we
 observed that several applications silently spawn services that
 communicate with third-party servers even when the application itself
 is no longer active, with the user completely unaware that the spawned
 services are still running in the background. 
+% {\bf JR: Michael, if
+%  you have some energy, more motivation why we don't like this
+%  excessive communication would be a good fit here.}
 
-To quantify the extent of the problem,  
-we start by
+
+This paper takes the first steps towards distinguishing between 
+\emph{overt communication} that contributes to the application functionality anticipated by the user, and
+\emph{covert communication} that is hidden and unexpected from the user's point of view.
+%; disabling it leaves the delivered application experience completely intact.   
+%identifying and
+%disabling this kind of covert communication. 
+We start by
 analyzing communication patterns of
 %in widely used mobile applications such as ten of the top fifteen most
 popular applications in the Google Play App Store (twitter, WalMart,
@@ -44,9 +80,8 @@ such communication automatically. We use our analysis to further
 investigate this unfortunate phenomenon and report on our findings. 
 The following research questions drive this investigation:
 
-
 \noindent 
-{\bf RQ1: How frequently is covert communication in widely used mobile applications?} 
+{\bf RQ1: How frequent is covert communication?} % in widely used mobile applications?} 
   % To estimate the significance of the problem, 
 We conduct an empirical study that focuses on %identifying and 
 investigating the nature of communication in thirteen of the 
@@ -165,12 +200,12 @@ We perform intra-application analysis only, i.e., ignoring effects of RPC commun
 \noindent 
 {\bf RQ3: How well does static detection perform?}
 To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth dynamic study described above. %of thirteen popular applications from Google Play.
-The results show that our static analysis features a high precision -- 93\% of the covert connection calls identified by the static analysis are indeed classified as covert during the manual analysis. Even though it is designed to be conservative, it is still able to identify 60\% of all covert connection in the studied application.
+The results show that our static analysis features a high precision -- 93\% of the covert connection calls identified by the static analysis are indeed classified as covert during the manual analysis. Even though it is designed to be conservative, it is still able to identify 60\% of all covert connections in the studied application.
 Only two connections in total are misclassified as covert: one is responsible for presenting advertisement material via the Google Ads component installed on the device, and another -- for presenting icons of additional apps that can be downloaded from Google Play. 
 
-To gain further insights on the quality of our technique, we apply it on additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed covert by our analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
+To gain further insights on the quality of our technique, we apply it to additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed covert by our analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
 
-The results of this  assessment are encouraging: there were no observable differences in 63.8\% of the application (30 cases). In 25.6\% of the applications (12 cases) differences were related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
+The results of this  assessment are encouraging: there were no observable differences in 63.8\% of the applications (30 cases). In 25.6\% of the applications (12 cases) differences were related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
 These results imply that our technique produces actionable results that could already be applied to eliminate many cases of covert communication. 
 
 
@@ -201,6 +236,21 @@ and various A\&A services. Yet, these are not the exclusive source of covert com
 %elimination of these violations in current Android applications
 %provides encouraging evidence that such an improvement is feasible.
 %
+
+\noindent 
+{\bf Significance of the Work.}  
+In~\cite{Nielsen:Molich:CHI90,Blackmon:Polson:Kitajima:Lewis:CHI02,Ko:Zhang:CHI11}, the authors state that  
+"the system should continuously inform the user about what it is doing".
+Inspired by this principle, the goal of our work is to identify 
+%and highlight 
+application functionality hidden from the user.
+This paper studies the extent of that problem in benign
+applications downloaded from popular application stores
+and installed by millions of users.
+We believe that our finding help focusing the effort of improving
+transparency and trust in mobile application domain. 
+
+
 %{\bf JR: say somewhere that free apps have more ads. Say something about the business model.}
 
 %\vspace{0.05in}
@@ -212,9 +262,10 @@ The paper makes the following contributions:
 \begin{enumerate}[leftmargin=0.5cm]\setlength{\itemsep}{-0.01in}
 
 \item It sets \emph{a new problem} of distinguishing between overt and covert communication in an automated manner. 
-%The goal is to improve the
-%transparency and trustworthiness of mobile applications.
-This problem is complementary and orthogonal to the problem of information leakage detection. 
+The goal is to improve the
+transparency and trustworthiness of mobile applications.
+
+%This problem is complementary and orthogonal to the problem of information leakage detection. 
 
 \item It proposes \emph{a semi-automated dynamic approach} for detecting covert communication in Android applications that does not require access to the application source code. 
 The approach relies on interactive injection of connection failures

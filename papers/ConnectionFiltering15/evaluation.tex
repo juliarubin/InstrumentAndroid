@@ -126,13 +126,11 @@ the last column of table Table~\ref{tbl:eval}.
 
 \subsubsection{Usability Assessment}
 To check whether our technique is able to provide actionable results, we further select 100 applications that persisted in the list of the 500 most popular free applications on Google Play in November 2014 and May 2015 samples. 
-{\bf JR: say somewhere that free apps have more ads.}
 We used two Nexus devices running Android v4.4.4, installing the original version of an applications on one. On the other, we installed a modified version that was produced by employing the \emph{blocking transformation} (see Section~\ref{sec:study}) to disable all calls identified as covert by the static analysis. 
 
 We recruited two human subjects, both experienced software developers, and paired each with an author of this paper.
-{\bf JR: Explain why paired.}
-Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for 10 minutes, and to record all differences observed during the execution.
-{\bf JR: Say something about coverage.}
+Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for around 10 minutes, and to record all differences observed during the execution.
+Similar to the experiment described in Section~\ref{sec:study}, our goal was to ensure sufficient coverage and manifestation of background data fetch processes in the application's GUI.
 We asked the participants to avoid signing in with a Google Plus account or performing in-app purchases from the Google Play store, as these features are not supported in resigned applications, as discussed in Section~\ref{sec:study}.
 
 To analyze the results of that experiment in a reliable manner, we exclude 14 applications that were non-operational (either did not run, in both versions, or required payment to continue running);
@@ -170,28 +168,27 @@ Information about the remaining 47 applications is below.
 %\vspace{-0.1in}
 %\item  
 \noindent {\bf Identical: 30 (63.8\%)}.
-Our participants did not observe any noticeable differences in these 30 applications.
-{\bf JR: Explain that this number does not quantify covert communication but rather quantify teh static analysis.}
+Our participants did not observe any noticeable differences in these 30 applications, confirming 
+that the connection statements deemed covert by the static analysis indeed have no effect on the user-observable application behavior. 
 %\item  
 \\
 \noindent {\bf Missing advertisement: 9  (19.2\%)}. 
-Similarly to the zedge example described above, advertisement information was missing in 9 cases. 
-{\bf JR: CAnnot find zedge.}
+Similarly to the Zedge example described above, advertisement information was missing in 9 cases. 
 %\item
 \\
 \noindent{\bf Missing minor functionality: 3  (6.4\%)}. 
-The participants observed absence of features that they perceived as  minor: 2 cases of missing icons, in the flashlight and the talkingben applications, and 1 case were they could not create an account for the antivirus application, but the core functionality of that application was intact. 
+The participants observed the absence of features that they perceived as minor: 2 cases of missing icons, in the Flashlight and the Talkingben applications, as discussed above; 1 case where they were unable to create an account for the antivirus application, but the core functionality of that application was intact. 
 %\item
 \\
 \noindent{\bf Missing essential functionality: 5 (10.6\%)}.
 Only 5 applications were missing essential functionality: %or seriously broken: 
-{\bf JR: Explain why.}
-Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might me related to resigning issues, but we could not verify that. 
+Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might me related to resigning issues, but we could not verify that. Other cases stem from the limitations of our static analysis techniques: performing intra-application analysis, ignoring stateful communication and restricting the search for GUI updates only to statements that occur before the success and failure paths unify.
+We believe that a low number of such cases, together with the high availability and scalability of our analysis, justifies these choices.   
 %\end{itemize}
 
-{\bf JR: Explain how the following is calculated.}
+
 On average, 2.6 covert call statement per an application were triggered at runtime  (min: 1, max: 9, mdn: 2). 
-Counting all dynamic call instances of these statements gives us the average of 
+As each statement can be executed multiple times, we also counted all dynamic call instances of these statements, obtaining the average of 
 299 covert call instances per an application (min: 1, max: 4011, mdn: 11). 
 High average numbers are due to applications that, once installed, are constantly executed in the background,
 and, as it turns out, attempt to communicate with the net. Examples of such applications are  \emph{com.cleanmaster.mguard} and \emph{com.ijinshan.kbatterydoctor\_en}.
@@ -314,13 +311,11 @@ These results are consistent with the observation of our empirical study describ
 %with our conservative analysis, 84\% of connections fall into that
 %category.
 
-{\bf JR: More interesting conclusions? Or drop the entire section?}
-
 Table~\ref{tbl:callers} presents the top 10 packages in which
-covert connections occur.  As the numbers are aggregated for
-500 applications, it is no surprise that Google services, as well
-as gaming, advertisement and analytics services, are on the top of the
-list -- numerous applications use these services, as shown in the third
+covert connections occur. 
+As we analyzed free applications that frequently use open-source packages and then aggregated numbers for
+500 such applications, it is no surprise that Google services, gaming, and A\&A services are at the top of the
+list; the number of applications that use each of these packages is shown in the third
 column of Table~\ref{tbl:callers}.
 More surprising is the \emph{com.gameloft} package (row 2 of Table~\ref{tbl:callers}) that is part of only 17 different mobile applications by the same company. Yet, the number of covert connection statements these game applications contain is notable. 
 

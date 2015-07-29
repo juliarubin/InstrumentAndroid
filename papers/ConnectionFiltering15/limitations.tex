@@ -14,28 +14,8 @@ We attempted to mitigate this problem by performing all our dynamic experiments 
 We also automated our execution scripts in order to compare behaviors of different variants under the same scenario and settings. 
 We only report on the results comparing these similar runs.  
 
-{\bf JR: add: The reported precision of the proposed approach is a lower bound of the actual
-precision. This is the case since covert communications identified in
-the empirical study may not be covert after all. This is due to the
-limitation of dynamic analysis which is not able to explore all possible
-scenarios.
-
-the authors haven't established the
-direct connection between changes on user interface and absence
-of communications. It is likely that the changes on the user
-interface are due to non−determinism of the program itself
-(e.g., random number) but not the absence of communications. So
-there could be false negatives when identifying covert
-communications in the study.
-
-The static analysis is limited when the communication does not
-affect the user interface directly but transitively through
-other resources. For example, real−time apps can cache recent
-data in a file and use the file to update UI to maintain
-functionality in the case of communication lost. So the
-presence/absence of communications will only directly affect
-the content in the file, but will transitively affect the user
-interface through the file.}
+Yet, due to these limitations of dynamic analysis, we could encounter false-positive results: a connection statement that we classified as covert could have an effect on an unexplored part of an application. 
+At the same time, we could also have false-negative results: changes in user interface could stem from the non-determinism in an application itself rather than the absence of communications. 
 
 During our analysis, we disabled connections one by one, iterating over their list arranged in a lexicographic (i.e., semantically random) order. As such, we could miss cases when 
 several connections can be excluded altogether, but not individually. 
@@ -73,6 +53,11 @@ installed on the same device. We might explore that direction as part of the fut
 %As such cases are
 %rare, developing these approaches, orthogonal to our current analysis,
 %is also left to future work.
+
+Moreover, our analysis searches for communication that affects the
+application GUI in a direct manner rather than transitively, through other resources. 
+Extending the analysis to cover such cases, while maintaining its scalability and precision, 
+is another subject for possible future work.
  
 Some of the covert connections that we identified statically might never be triggered dynamically. 
 %In fact, our empirical study shows that only a small fraction of the connection statements in the analyzed applications were indeed triggered.
@@ -81,3 +66,4 @@ A large percentage of these connections originate in
 third-party libraries that are included in the application but only partially used. 
 As such, analyzing them is still beneficial as this code might be used in other applications.
 %Nevertheless, our approach could be combined with techniques for detecting dead code, to prevent false-positive results. 
+
