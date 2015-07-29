@@ -126,14 +126,14 @@ the last column of table Table~\ref{tbl:eval}.
 
 \subsubsection{Usability Assessment}
 To check whether our technique is able to provide actionable results, we further select 100 applications that persisted in the list of the 500 most popular free applications on Google Play in November 2014 and May 2015 samples. 
-We used two Nexus devices running Android v4.4.4, installing the original version of an applications on one. On the other, we installed a modified version that was produced by employing the \emph{blocking transformation} (see Section~\ref{sec:study}) to disable all calls identified as covert by the static analysis. 
+We used two Nexus devices running Android v4.4.4, installing the original version of an application on one. On the other, we installed a modified version that was produced by employing the \emph{blocking transformation} (see Section~\ref{sec:study}) to disable all calls identified as covert by the static analysis. 
 
 We recruited two human subjects, both experienced software developers, and paired each with an author of this paper.
 Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for around 10 minutes, and to record all differences observed during the execution.
 Similar to the experiment described in Section~\ref{sec:study}, our goal was to ensure sufficient coverage and manifestation of background data fetch processes in the application's GUI.
 We asked the participants to avoid signing in with a Google Plus account or performing in-app purchases from the Google Play store, as these features are not supported in resigned applications, as discussed in Section~\ref{sec:study}.
 
-To analyze the results of that experiment in a reliable manner, we exclude 14 applications that were non-operational (either did not run, in both versions, or required payment to continue running);
+To analyze the results of that experiment in a reliable manner, we exclude 14 applications that were non-operational (either did not run in both versions, or required payment to continue running);
  17 applications for which asm-based instrumentation failed or the instrumented version did not run due to the issues related to the resigning process;
  2 Google Play applications that we could not re-install on a device;
 5 chat applications;
@@ -187,10 +187,10 @@ We believe that a low number of such cases, together with the high availability 
 %\end{itemize}
 
 
-On average, 2.6 covert call statement per an application were triggered at runtime  (min: 1, max: 9, mdn: 2). 
+On average, 2.6 covert call statements per an application were triggered at runtime  (min: 1, max: 9, mdn: 2). 
 As each statement can be executed multiple times, we also counted all dynamic call instances of these statements, obtaining the average of 
-299 covert call instances per an application (min: 1, max: 4011, mdn: 11). 
-High average numbers are due to applications that, once installed, are constantly executed in the background,
+299 covert call instances per application (min: 1, max: 4011, mdn: 11). 
+The high average numbers are due to applications that, once installed, are constantly executed in the background,
 and, as it turns out, attempt to communicate with the net. Examples of such applications are  \emph{com.cleanmaster.mguard} and \emph{com.ijinshan.kbatterydoctor\_en}.
 %A detailed summary of the applications that we exercised  and statistics about there execution is available in~\cite{Appendix}. 
 
@@ -237,8 +237,7 @@ and, as it turns out, attempt to communicate with the net. Examples of such appl
 
 
 \subsection{Covert Communication in the Wild}
-
-We next apply our technique on the 500 most popular Android application
+We next apply our technique to the 500 most popular Android application
 downloaded from the Google Play store. By considering such a large data set, our goal is to
 investigate how often covert communication occurs and what its most common sources are.
 
@@ -297,7 +296,7 @@ investigate how often covert communication occurs and what its most common sourc
 \end{table}
 
 
-Our analysis reveals that 46.2\% of all connection statements in these application can be considered covert (8,539 connection out of 18,480 in total).
+Our analysis reveals that 46.2\% of all connection statements in these application can be considered covert (8,539 connections out of 18,480 in total).
 These results are consistent with the observation of our empirical study described in Section~\ref{sec:study}.
 %, showing that a large percent of connections
 %made by applications can be considered covert.  In fact, even
@@ -313,13 +312,13 @@ These results are consistent with the observation of our empirical study describ
 
 Table~\ref{tbl:callers} presents the top 10 packages in which
 covert connections occur. 
-As we analyzed free applications that frequently use open-source packages and then aggregated numbers for
+As we analyzed free applications that frequently use open-source packages and then aggregated the numbers for
 500 such applications, it is no surprise that Google services, gaming, and A\&A services are at the top of the
 list; the number of applications that use each of these packages is shown in the third
 column of Table~\ref{tbl:callers}.
 More surprising is the \emph{com.gameloft} package (row 2 of Table~\ref{tbl:callers}) that is part of only 17 different mobile applications by the same company. Yet, the number of covert connection statements these game applications contain is notable. 
 
-The last column of Table~\ref{tbl:callers} shows the percentage of covert connections out of all connection statements in the corresponding package. This number varies between 24\% and 87\%, confirming, again, our initial observation in Section~\ref{sec:study} that the source of a connection cannot be use to determine its impact on the application behavior. 
+The last column of Table~\ref{tbl:callers} shows the percentage of covert connections out of all connection statements in the corresponding package. This number varies between 24\% and 87\%, confirming, again, our initial observation in Section~\ref{sec:study} that the source of a connection cannot be used to determine its impact on the application behavior. 
 
 %By manually investigating some of
 %the most-popular connections in reverse-engineered versions of the
@@ -345,7 +344,7 @@ The last column of Table~\ref{tbl:callers} shows the percentage of covert connec
 
 
 \conclusion{To answer RQ4, we conclude that covert communication is common in real-life applications. 
-Such communication is not exclusive to the A\&A packages, and not all communication stemming from these packages is covert.}
+Such communication is not exclusive to A\&A packages, and not all communication stemming from these packages is covert.}
 % and   packaged performed with various mobile services that are designed to be ``best-effort only'', i.e., communication failures do not prevent 
 %successful application execution. Designing mobile services that allow the user to select the preferred level of support instead of relying merely on connectivity would be beneficial.}
 

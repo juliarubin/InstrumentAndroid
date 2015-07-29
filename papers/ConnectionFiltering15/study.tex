@@ -141,7 +141,7 @@ Total        &   & 330  & 75 & 52 (69.3\%)   & 25 (48.1\%)  \\ % & 1.8 (30.7\%) 
 %}% resizebox
 %\end{table}
 
-When a connection failure occurs, e.g., when the desired server is unavailable, or when a device is put in disconnected or airplane mode, each of these methods throws \texttt{java.io.IOException} exception. 
+When a connection failure occurs, e.g., when the desired server is unavailable, or when a device is put in disconnected or airplane mode, each of these methods throws a \texttt{java.io.IOException} exception. 
 Thus, for investigating the significance of a connection for the overall behavior of an analyzed application, we inject a connection failure by replacing the connection statement with a statement that throws such an exception. 
 This approach was chosen as it leverages the applications' native mechanism for dealing with failures, thus reducing side-effects introduced by our instrumentation to a minimum.
 
@@ -157,7 +157,7 @@ We then use the asm framework~\cite{asm} to implement two types of transformatio
 \item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions.
 % of the corresponding type, as specified in Table~\ref{tbl:connections}.
 \end{enumerate}
-The jar file of the transformed application is then converted back to apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK.
+The jar file of the transformed application is then converted back to an apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK.
  
 As a known side effect of resigning applications, their authentication when communicating with services such as Google Plus APIs might be broken~\cite{googleAPI}, preventing the users from signing in with their Google Plus account or performing in-app purchases from the Google Play store. For that reason, we refrain from executing such scenarios in our analysis, as discussed below. 
 
@@ -250,7 +250,7 @@ application that logs information about all existing and triggered connection st
 
 In the third phase, we iterated over all \emph{triggered} connection statements, disabling them one by one, in order to assess
 the necessity of each connection for preserving the user-observable behavior of the application. 
-That is, we arranged all triggered connection statements in a list, in a lexical order and then applied the Blocking Transformation to disable the first connection statement in the list.   
+That is, we arranged all triggered connection statements in a list, in a lexical order and then applied the blocking Transformation to disable the first connection statement in the list.   
 We ran the produced version of the application using the recorded execution script and compared the obtained screenshots to the baseline application execution. If disabling the connection statement did not affect the behavior of the application, we marked it as \emph{covert}, kept it disabled for the subsequent iterations and proceed to the next connection in the list.
 Otherwise, we marked the exercised connection as \emph{overt} and kept it enabled in the subsequent iterations.
 We continued with this process until all connections in the list were explored.
@@ -337,7 +337,7 @@ The last column of Table~\ref{tbl:applications}
 %correspond to external communication and the remainder -- to the internal communication with services installed on the same device, as shown in the third row of Table~\ref{tbl:statementTypes}.
 %
 %The last row of the table
-presents statistic considering the communication with known A\&A services. 
+presents statistics considering the communication with known A\&A services. 
 It turns out that only 48\% of all covert connections target such libraries. 
 That is, more than half of covert connections originate from application-specific libraries and their purpose is unknown to us.
 
@@ -360,7 +360,7 @@ Moreover, some malicious applications deliberately hide their payloads by using 
 technique for identifying the covert communication performed by the applications is required. 
 
 We manually investigated binaries of several analyzed applications, to gain more insights into the way applications treat non-necessary connections. % of each of the identified type and communication target. 
-We noticed that, in a large number of cases, connection successes do not trigger any notifications in the application's user interface and, at the same time, connection failures are also silently ignored by the applications without producing any visual indication to the user. 
+We noticed that, in a large number of cases, connection successes do not trigger any visual indication  in the application's user interface and, at the same time, connection failures are also silently ignored by the applications without producing any notifications to the user. 
 For the failures, the exception triggered by a covert connection is either caught and ignored locally in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by  application developers and is rarely accessed by the end-user.
 
 \conclusion{To answer RQ2, we conjecture that covert connections can be detected by inspecting updates to GUI elements on both the success and the failure path of a connection statement. 

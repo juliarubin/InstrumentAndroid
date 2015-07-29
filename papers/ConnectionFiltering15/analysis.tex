@@ -194,7 +194,7 @@ To achieve this in general, we add to the call graph edges of the type
 call of \lstinline!api-method! is passed a value that is a reference
 to an application class, and \lstinline!api-method! calls method $n$
 on the passed application class value.  This strategy adds to our
-callgraph the edges for the \lstinline!Thread.start()! to the
+call graph the edges for the \lstinline!Thread.start()! to the
 \lstinline!Thread.run()! discussed above.
 
 Furthermore, the call graph is augmented to account for reflected
@@ -485,7 +485,7 @@ uses the local def-use information to calculate the types of the
 exception.  In lines ~\ref{alg:found-throws-start} through
 \ref{alg:calc-rethrow-types-end} the analysis considers all local
 reaching definitions of the thrown value.  If an allocation statement
-reaches, then add the allocated types to the possible types of
+reaches {\bf JR: a word seems to be missing.}, then add the allocated types to the possible types of
 rethrown exceptions. If a caught exception statement\footnote{A caught
   exception statement is a statement that defines that start of a
   \lstinline!catch! block and assigns a local variable to the
