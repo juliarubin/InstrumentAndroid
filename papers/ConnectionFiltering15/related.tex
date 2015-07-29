@@ -18,9 +18,7 @@ In our work, we do not assume that all operations are triggered by the GUI
 and do not rely on textual descriptions of GUI elements.
 
 Ko and Zhang~\cite{Ko:Zhang:CHI11} propose a system, FeedLack, for identifying usability problems in web applications. The system looks for control flow paths that originate from user input but lack GUI-affecting code. Our work is similar as it relies on the same underlying principle 
-of user feedback necessity and also searches for code affecting the GUI. Yet, our goal is different: we look for any hidden behavior rather than missing feedback loops for user-triggered operations. Also, our analysis is tailored for mobile rather than web publications and, unlike FeedLack, focuses not only on success paths but takes failure paths into account as well.   
-{\bf JR: Michael, do you want to be more precise about their analysis?}
-
+of user feedback necessity and also searches for code affecting the GUI. Yet, our goal is different: we look for any hidden behavior rather than missing feedback loops for user-triggered operations. Also, our analysis is tailored for mobile rather than web applications and, unlike FeedLack, focuses not only on success paths but takes failure paths into account as well.   
 
 CHABADA~\cite{Gorla:Tavecchia:Gross:Zeller:ICSE14} compares natural language descriptions of applications, clusters them by description topics, and then identifies outliers by observing API usage within each cluster. Essentially, this system identifies applications whose behavior would be unexpected given their description. Instead, our approach focuses on identifying unexpected behaviors given the actual user experience, not just the description of the application.
 

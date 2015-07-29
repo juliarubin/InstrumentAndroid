@@ -1,3 +1,4 @@
+
 @book{Aho2006,
 author = {Aho, Alfred and Lam, Monica and Sethi, Ravi and Ullman, Jeffrey},
 edition = {2},
@@ -8,96 +9,75 @@ year = {2006}
 @inproceedings{Byeong-MoChang2002,
 abstract = {We first present a static analysis based on a set-based framework, which estimates exception propagation paths of Java programs. We construct an exception propagation graph from the static analysis information, which includes the origin of exceptions, handler of exceptions, and propagation paths of exceptions. We have implemented the exception propagation analysis and a visualization tool which visualizes propagation paths of exceptions using the exception propagation graph. This propagation information can guide programmers to detect uncaught exceptions, handle exceptions more specifically, and put exception handlers at appropriate places by tracing exception propagation.},
 author = {{Byeong-Mo Chang} and {Jang-Wu Jo} and {Soon Hee Her}},
-booktitle = {Proceedings. Second IEEE International Workshop on Source Code Analysis and Manipulation},
-doi = {10.1109/SCAM.2002.1134117},
+booktitle = {Proc. of the 2nd IEEE International Workshop on Source Code Analysis and Manipulation},
 file = {:Users/mgordon/Google Drive/research/references/Byeong-Mo Chang, Jang-Wu Jo, Soon Hee Her/Visualization of exception propagation for Java using static analysis/Byeong-Mo Chang, Jang-Wu Jo, Soon Hee Her - 2002 - Visualization of exception propagation for Java using static analysis.pdf:pdf},
-isbn = {0-7695-1793-5},
 keywords = {Computer science,Displays,Flow graphs,Information analysis,Java,Program processors,Programming profession,Runtime,Time factors,Visualization,exception handling,exception propagation graph,exception propagation visualization,graph theory,object oriented programming,object-oriented programming,program diagnostics,program visualisation,set theory,set-based framework,static analysis},
 pages = {173--182},
-publisher = {IEEE Comput. Soc},
-shorttitle = {Source Code Analysis and Manipulation, 2002. Proce},
-title = {{Visualization of exception propagation for Java using static analysis}},
-url = {http://ieeexplore.ieee.org/lpdocs/epic03/wrapper.htm?arnumber=1134117},
+title = {{Visualization of Exception Propagation for Java Using Static Analysis}},
 year = {2002}
 }
 @inproceedings{Chang2001,
 address = {New York, New York, USA},
 author = {Chang, Byeong-Mo and Jo, Jang-Wu and Yi, Kwangkeun and Choe, Kwang-Moo},
-booktitle = {Proceedings of the 2001 ACM symposium on Applied computing - SAC '01},
-doi = {10.1145/372202.372786},
+booktitle = {Proc. of the 2001 ACM symposium on Applied computing (SAC'01)},
 file = {:Users/mgordon/Google Drive/research/references/Chang et al/Interprocedural exception analysis for Java/Chang et al. - 2001 - Interprocedural exception analysis for Java.pdf:pdf},
-isbn = {1581132875},
 keywords = {Java,class analysis,set-based analysis,uncaught exception analysis},
-month = mar,
 pages = {620--625},
-publisher = {ACM Press},
-title = {{Interprocedural exception analysis for Java}},
-url = {http://dl.acm.org/citation.cfm?id=372202.372786},
+title = {{Interprocedural Exception Analysis for Java}},
 year = {2001}
 }
 @inproceedings{Dean1995,
 author = {Dean, Jeffrey and Grove, David and Chambers, Craig},
-booktitle = {Proceedings of the 9th European Conference on Object-Oriented Programming (ECOOP 95)},
+booktitle = {Proc. of the 9th European Conference on Object-Oriented Programming (ECOOP'95)},
 title = {{Optimization of Object-Oriented Programs Using Static Class Hierarchy Analysis}},
 year = {1995}
 }
+
 @article{Fu2005,
 abstract = {This paper presents a new compile-time analysis that enables a testing methodology for white-box coverage testing of error recovery code (i.e., exception handlers) of server applications written in Java, using compiler-directed fault injection. The analysis allows compiler-generated instrumentation to guide the fault injection and to record the recovery code exercised. (An injected fault is experienced as a Java exception.) The analysis 1) identifies the exception-flow "def-uses" to be tested in this manner, 2) determines the kind of fault to be requested at a program point, and 3) finds appropriate locations for code instrumentation. The analysis incorporates refinements that establish sufficient context sensitivity to ensure relatively precise def-use links and to eliminate some spurious def-uses due to demonstrably infeasible control flow. A runtime test harness calculates test coverage of these links using an exception def-catch metric. Experiments with the methodology demonstrate the utility of the increased precision in obtaining good test coverage on a set of moderately sized server benchmarks.},
 author = {Fu, Chen and Milanova, Ana and Ryder, Barbara Gershon and Wonnacott, David G.},
-doi = {10.1109/TSE.2005.51},
-file = {:Users/mgordon/Google Drive/research/references/Fu et al/Robustness testing of Java server applications/Fu et al. - 2005 - Robustness testing of Java server applications.pdf:pdf},
-issn = {00985589},
 journal = {IEEE Transactions on Software Engineering},
 keywords = {Def-use testing,Exceptions,Java,Reliability,Test coverage metrics},
 pages = {292--311},
-title = {{Robustness testing of Java server applications}},
+title = {{Robustness Testing of Java Server Applications}},
 volume = {31},
 year = {2005}
 }
 @inproceedings{Fu2007,
 abstract = {Although it is common in large Java programs to rethrow exceptions, existing exception-flow analyses find only single exception-flow links, thus are unable to identify multiple-link exception propagation paths. This paper presents a new static analysis that, when combined with previous exception-flow analyses, computes chains of semantically-related exception-flow links, and thus reports entire exception propagation paths, instead of just discrete segments of them. These chains can be used 1) to show the error handling architecture of a system, 2) to assess the vulnerability of a single component and the whole system, 3) to support better testing of error recovery code, and 4) to facilitate the tracing of the root cause of a logged problem. Empirical findings and a case history for Tomcat show that a significant portion of the chains found in our benchmarks span multiple components, and thus are hard to find manually.},
 author = {Fu, Chen and Ryder, Barbara G.},
-booktitle = {Proceedings - International Conference on Software Engineering},
-doi = {10.1109/ICSE.2007.35},
-file = {:Users/mgordon/Google Drive/research/references/Fu, Ryder/Exception-chain analysis Revealing exception handling architecture in Java server applications/Fu, Ryder - 2007 - Exception-chain analysis Revealing exception handling architecture in Java server applications.pdf:pdf},
-isbn = {0769528287},
-issn = {02705257},
+booktitle = {Proc. of International Conference on Software Engineering (ICSE'07)},
 pages = {230--239},
-title = {{Exception-chain analysis: Revealing exception handling architecture in Java server applications}},
+title = {{Exception-Chain Analysis: Revealing Exception Handling Architecture in Java Server Applications}},
 year = {2007}
 }
+
 @article{Jo2004,
 abstract = {Current JDK Java compiler relies on programmer's declarations (by throws clauses) for checking against uncaught exceptions of the input program. It is not elaborate enough to remove programmer's unnecessary handlers nor suggest to programmers for specialized handlings (when programmer's declarations are too broad). We propose a static analysis of Java programs that estimates their uncaught exceptions independently of the programmer's declarations. This analysis is designed and implemented based on set-based framework. Its cost-effectiveness is suggested by sparsely analyzing the program at method level (hence reducing the number of unknowns in the flow equations). We have shown that our interprocedural exception analysis is more precise than JDK-style intraprocedural analysis, and also that our analysis can effectively detect uncaught exceptions for realistic Java programs. © 2003 Elsevier Inc. All rights reserved.},
 author = {Jo, Jang Wu and Chang, Byeong Mo and Yi, Kwangkeun and Choe, Kwang Moo},
-doi = {10.1016/S0164-1212(03)00057-8},
-file = {:Users/mgordon/Google Drive/research/references/Jo et al/An uncaught exception analysis for Java/Jo et al. - 2004 - An uncaught exception analysis for Java.pdf:pdf},
-isbn = {2001303000092},
-issn = {01641212},
 journal = {Journal of Systems and Software},
 keywords = {Class analysis,Java,Set-based analysis,Static analysis,Uncaught exception analysis},
 pages = {59--69},
-title = {{An uncaught exception analysis for Java}},
+title = {{An Uncaught Exception Analysis for Java}},
 volume = {72},
 year = {2004}
 }
+
+
 @inproceedings{Kastrinis2013,
-author = {Kastrinis, George and Smaragdakis, Yannis},
-booktitle = {Compiler Construction},
-file = {:Users/mgordon/Google Drive/research/references/Kastrinis, Smaragdakis/Efficient and effective handling of exceptions in java points-to analysis/Kastrinis, Smaragdakis - 2013 - Efficient and effective handling of exceptions in java points-to analysis.pdf:pdf},
-title = {{Efficient and effective handling of exceptions in java points-to analysis}},
-url = {http://link.springer.com/chapter/10.1007/978-3-642-37051-9\_3},
-year = {2013}
+  author    = {George Kastrinis and Yannis Smaragdakis},
+  title     = {{Efficient and Effective Handling of Exceptions in Java Points-to Analysis}},
+  booktitle = {Proc. of the 22nd International Conference on Compiler Construction (CC'13)},
+  pages     = {41--60},
+  year      = {2013},
 }
+
 @inproceedings{Qiu2010,
 abstract = {Exception handling mechanism in modern programming languages is frequently used to build robust systems. However, it presents more daze for software developers because of exception propagation. Centering on the question: \&\#x201C;For raising exception, how to identify where handles the exception?\&\#x201D; we analyze the dependency between exception propagation and method call. Then associating the method with exception types by the relationship of throw (declared explicitly in method signature) or catch, this paper builds the Software Extended Dependency Graph and proposes a static exception propagation path extraction algorithm, so we can analyze exception propagation hops, the exception hierarchy and exception propagation boundary.},
 author = {Qiu, Xiang and Zhang, Li and Lian, Xiaoli},
-booktitle = {Proceedings of the 2010 IEEE International Conference on Progress in Informatics and Computing, PIC 2010},
-doi = {10.1109/PIC.2010.5688009},
-file = {:Users/mgordon/Google Drive/research/references/Qiu, Zhang, Lian/Static analysis for java exception propagation structure/Qiu, Zhang, Lian - 2010 - Static analysis for java exception propagation structure.pdf:pdf},
-isbn = {9781424467860},
-keywords = {Exception handling,Exception propagation,Paths extraction},
+booktitle = {Proc. of the 2010 IEEE International Conference on Progress in Informatics and Computing (PIC'10)},
 pages = {1040--1046},
-title = {{Static analysis for java exception propagation structure}},
+title = {{Static Analysis for Java Exception Propagation Structure}},
 volume = {2},
 year = {2010}
 }
@@ -121,6 +101,7 @@ journal = {Proceedings. International Conference on Software Maintenance (Cat. N
 title = {{Analysis of programs with exception-handling constructs}},
 year = {1998}
 }
+
 @inproceedings{Smaragdakis2011,
 abstract = {Object-sensitivity has emerged as an excellent context abstraction for points-to analysis in object-oriented languages. Despite its practical success, however, object-sensitivity is poorly understood. For instance, for a context depth of 2 or higher, past scalable implementations deviate significantly from the original definition of an object-sensitive analysis. The reason is that the analysis has many degrees of freedom, relating to which context elements are picked at every method call and object creation. We offer a clean model for the analysis design space, and discuss a formal and informal understanding of object-sensitivity and of how to create good object-sensitive analyses. The results are surprising in their extent. We find that past implementations have made a sub-optimal choice of contexts, to the severe detriment of precision and performance. We define a "full-object-sensitive" analysis that results in significantly higher precision, and often performance, for the exact same context depth. We also introduce "type-sensitivity" as an explicit approximation of object-sensitivity that preserves high context quality at substantially reduced cost. A type-sensitive points-to analysis makes an unconventional use of types as context: the context types are not dynamic types of objects involved in the analysis, but instead upper bounds on the dynamic types of their allocator objects. Our results expose the influence of context choice on the quality of points-to analysis and demonstrate type-sensitivity to be an idea with major impact: It decisively advances the state-of-the-art with a spectrum of analyses that simultaneously enjoy speed (several times faster than an analogous object-sensitive analysis), scalability (comparable to analyses with much less context-sensitivity), and precision (comparable to the best object-sensitive analysis with the same context depth).},
 author = {Smaragdakis, Yannis and Bravenboer, Martin and Lhot\'{a}k, Ondrej},
@@ -133,13 +114,20 @@ mendeley-tags = {PTA},
 title = {{Pick Your Contexts Well: Understanding Object-Sensitivity}},
 year = {2011}
 }
-@article{Vallee-Rai2000,
-author = {Vall\'{e}e-Rai, R and Gagnon, Etienne and Hendren, Laurie},
-file = {:Users/mgordon/Google Drive/research/references/Vall\'{e}e-Rai, Gagnon, Hendren/Optimizing Java bytecode using the Soot framework Is it feasible/Vall\'{e}e-Rai, Gagnon, Hendren - 2000 - Optimizing Java bytecode using the Soot framework Is it feasible.pdf:pdf},
-journal = {CC},
-title = {{Optimizing Java bytecode using the Soot framework: Is it feasible?}},
-year = {2000}
+
+@inproceedings{Vallee-Rai2000,
+  author    = {Raja Vall{\'{e}}e{-}Rai and
+               Etienne Gagnon and
+               Laurie J. Hendren and
+               Patrick Lam and
+               Patrice Pominville and
+               Vijay Sundaresan},
+  title     = {{Optimizing Java Bytecode Using the Soot Framework: Is It Feasible?}},
+  booktitle = {Proc. of the 9th International Conference on Compiler Construction (CC'00)},
+  pages     = {18--34},
+  year      = {2000},
 }
+
 @inproceedings{Yi1999,
 abstract = {Current JDK Java compiler relies too much on programmer's specification for checking against uncaught exceptions of the input program. It is not elaborate enough to remove programmer's unnecessary handlers (when programmer's specifications are too many) nor suggest to programmers for specialized handlings (when programmer's specifications are too general). We propose a static analysis of Java programs that estimates their exception flows independently of the programmer's specifications. This analysis is an extension of a class analysis to Java's exception mechanism. Its cost-effectiveness balance is suggested by sparsely analyzing the program at method-level (hence reducing the number of unknowns in the flow equations).},
 author = {Yi, Kwangkeun and Chang, Byeong-Mo},

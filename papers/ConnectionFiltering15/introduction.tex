@@ -1,4 +1,4 @@
-\vspace{-0.05in}
+%\vspace{-0.05in}
 \section{Introduction}
 \label{sec:intro} 
 %Mobile applications enjoy almost permanent connectivity and the
@@ -54,7 +54,7 @@ potential privacy breaches,
 bandwidth charges, power consumption on the device,  
 and the unsuspected presence of continued
 communication between the device and remote organizations. In fact, we
-observed that several applications silently spawn services that
+observed that several popular applications, e.g., Walmart, silently spawn services that
 communicate with third-party servers even when the application itself
 is no longer active, with the user completely unaware that the spawned
 services are still running in the background. 
@@ -72,7 +72,7 @@ This paper takes the first steps towards distinguishing between
 We start by
 analyzing communication patterns of
 %in widely used mobile applications such as ten of the top fifteen most
-popular applications in the Google Play App Store (twitter, Walmart,
+popular applications in the Google Play app store (twitter, Walmart,
 Spotify, Pandora, etc.). Motivated by the significant
 amount of covert communication we found in these applications, 
 we develop a highly precise and scalable static analysis that can identify 
@@ -113,7 +113,7 @@ applications, e.g., twitter.
 %advertisement content, if the analyzed application has any.
 %\vspace{0.05in}
 %\noindent\emph{Result Summary:} 
-Our study reveals that around 70\% of
+Our study reveals that almost 70\% of
 the \emph{exercised} connection statements are covert~--- disabling
 them has no noticeable effect on the observable application
 functionality. Interestingly, only less than half of such covert connections correspond to communication initiated from known advertisement and analytics (A\&A) packages included in the application; other statements are triggered by the ``core'' application itself. 
@@ -247,7 +247,7 @@ application functionality hidden from the user.
 This paper studies the extent of that problem in benign
 applications downloaded from popular application stores
 and installed by millions of users.
-We believe that our findings help focusing the effort of improving
+We believe that our findings help focus the effort of improving
 transparency and trust in the mobile application domain. 
 
 

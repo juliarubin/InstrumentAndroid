@@ -1,6 +1,6 @@
 \begin{table}[t]
 \vspace{-0.15in}
-\caption{Comparison with the Manually Established Results.}
+\caption{Comparison With The Manually Established Results.}
 \label{tbl:eval}
 \centering
 \tabcolsep=2.0pt
@@ -182,16 +182,17 @@ The participants observed the absence of features that they perceived as minor: 
 \\
 \noindent{\bf Missing essential functionality: 5 (10.6\%)}.
 Only 5 applications were missing essential functionality: %or seriously broken: 
-Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might me related to resigning issues, but we could not verify that. Other cases stem from the limitations of our static analysis techniques: performing intra-application analysis, ignoring stateful communication and restricting the search for GUI updates only to statements that occur before the success and failure paths unify.
-We believe that a low number of such cases, together with the high availability and scalability of our analysis, justifies these choices.   
+Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case might be related to resigning issues. %, but we could not verify that.
+Other cases stem from the limitations of our static analysis techniques: performing intra-application analysis, ignoring stateful communication and restricting the search for GUI updates only to statements that occur before the success and failure paths unify.
+We believe that the low number of such cases, together with the high availability and scalability of our analysis, justifies these choices.   
 %\end{itemize}
 
 
-On average, 2.6 covert call statements per an application were triggered at runtime  (min: 1, max: 9, mdn: 2). 
+On average, 2.6 covert call statements per application were triggered at runtime  (min: 1, max: 9, mdn: 2). 
 As each statement can be executed multiple times, we also counted all dynamic call instances of these statements, obtaining the average of 
 299 covert call instances per application (min: 1, max: 4011, mdn: 11). 
 The high average numbers are due to applications that, once installed, are constantly executed in the background,
-and, as it turns out, attempt to communicate with the net. Examples of such applications are  \emph{com.cleanmaster.mguard} and \emph{com.ijinshan.kbatterydoctor\_en}.
+and, as it turns out, attempt network communication. Examples of such applications are  \emph{com.cleanmaster.mguard} and \emph{com.ijinshan.kbatterydoctor\_en}.
 %A detailed summary of the applications that we exercised  and statistics about there execution is available in~\cite{Appendix}. 
 
 %Overall, these results are very encouraging and demonstrate that, in a vast majority of cases, the results of our static analysis can be directly applied to disable covert communication. 
@@ -264,7 +265,7 @@ investigate how often covert communication occurs and what its most common sourc
 \begin{table}[t]
 \renewcommand*{\arraystretch}{1.3}
 \vspace{-0.15in}
-\caption{Top 10 covert Communication Callers.}
+\caption{Top 10 Covert Communication Callers.}
 \label{tbl:callers}
 \centering
 \tabcolsep=1.5pt

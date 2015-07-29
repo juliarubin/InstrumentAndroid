@@ -1,17 +1,13 @@
-% This is "sig-alternate.tex" V2.0 May 2012
-% This file should be compiled with V2.5 of "sig-alternate.cls" May 2012
-%\documentclass[preprint]{sig-alternate}
+
 \documentclass[conference]{IEEEtran}
 
 % http://hughanchor.blogspot.com/2006/01/pdflatex-and-letter-paper.html
 %\setlength{\pdfpagewidth}{8.5in}
 %\setlength{\pdfpageheight}{11in}
 
-\pagestyle{plain}
-\pagenumbering{arabic}
+%\pagestyle{plain}
+%\pagenumbering{arabic}
 
-
-%\documentclass[10pt, letterpaper, conference, compsocconf, nofonttune]{IEEEtran}
 \usepackage{hyperref}
 \usepackage{boxedminipage}
 %\usepackage{algorithmic}
@@ -56,14 +52,13 @@
 \newcolumntype{C}[1]{>{\centering\arraybackslash\hspace{0pt}}p{#1}}
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
 
-\pagestyle{plain}
-\pagenumbering{arabic}
-
 %\fontdimen4=0
 
 % *** SUBFIGURE PACKAGES ***
-\usepackage[font=small]{caption}
-\usepackage[tight,footnotesize]{subfigure}
+%\usepackage[font=small]{caption}
+\usepackage[tight,small]{subfigure}
+%\usepackage[tight,footnotesize]{subfigure}
+
 % subfigure.sty was written by Steven Douglas Cochran. This package makes it
 % easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
 % work, it is a good idea to load it with the tight package option to reduce
@@ -192,8 +187,8 @@
 Michael I. Gordon\IEEEauthorrefmark{1},
 Nguyen Nguyen\IEEEauthorrefmark{4}
 and Martin Rinard\IEEEauthorrefmark{1}}
-\IEEEauthorblockA{\IEEEauthorrefmark{1}Massachusetts Institute of Technology, USA}
-\IEEEauthorblockA{\IEEEauthorrefmark{4}Global InfoTek, Inc, USA}
+\IEEEauthorblockA{\IEEEauthorrefmark{1}Massachusetts Institute of Technology, USA, 
+\IEEEauthorrefmark{4}Global InfoTek, Inc, USA}
 \IEEEauthorblockN{mjulia@mit.edu, mgordon@mit.edu, nguyen@uwinsoftware.com, rinard@mit.edu}
 }
 
@@ -240,7 +235,7 @@ We conclude that our technique is effective for identifying and disabling covert
 \input{related}
 \input{conclusions}
 
-\newpage
+%\newpage
 %\vspace{-0.05in}
 %\bibliographystyle{latex8}
 %bibliographystyle{abbrv}
