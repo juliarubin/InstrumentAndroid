@@ -124,7 +124,7 @@ overt and covert communication.
 %services installed on the device: notably, but not exclusively, Google
 %advertising and analytics, which further communicate with external
 %services.  Moreover, in applications that present advertisement
-%material, about 60\% of the connections that do affect the observable
+%material, about 61\% of the connections that do affect the observable
 %application behavior are used for advertising purposes only.
 %{\bf JR: update.}
 
@@ -200,7 +200,7 @@ We perform intra-application analysis only, i.e., ignoring effects of RPC commun
 \noindent 
 {\bf RQ3: How well does static detection perform?}
 To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth dynamic study described above. %of thirteen popular applications from Google Play.
-The results show that our static analysis features a high precision -- 93\% of the covert connection calls identified by the static analysis are indeed classified as covert during the manual analysis. Even though it is designed to be conservative, it is still able to identify 60\% of all covert connections in the studied application.
+The results show that our static analysis features a high precision -- 93\% of the covert connection calls identified by the static analysis are indeed classified as covert during the manual analysis. Even though it is designed to be conservative, it is still able to identify 61\% of all covert connections in the studied application.
 Only two connections in total are misclassified as covert: one is responsible for presenting advertisement material via the Google Ads component installed on the device, and another -- for presenting icons of additional apps that can be downloaded from Google Play. 
 
 To gain further insights on the quality of our technique, we apply it to additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed covert by our analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the two versions of the application. 
@@ -272,7 +272,7 @@ The approach relies on interactive injection of connection failures
 and identification of cases in which the injected failures do not
 affect the observable application functionality.
 
-\item It provides \emph{empirical evidence} for the prevalence of such covert connections in real-life applications. Specifically, it shows that 69\% of the connections attempted by thirteen top-popular free applications on Google Play fall into that category.    
+\item It provides \emph{empirical evidence} for the prevalence of such covert connections in real-life applications. Specifically, it shows that 68\% of the connections attempted by thirteen top-popular free applications on Google Play fall into that category.    
 
 \item It proposes \emph{a static technique} that operates on
 application binaries and identifies covert connections. 
@@ -284,7 +284,7 @@ applications on Google Play, 63.8\% worked without any interference
 and further 25.6\% worked with only insignificant interference when
 disabling all covert connections identified by the technique.
 
-% precision and recall of the technique is 93\% and 60\%, respectively, when evaluated against the empirically established truth set.       
+% precision and recall of the technique is 93\% and 61\%, respectively, when evaluated against the empirically established truth set.       
 
 \item It provides \emph{quantitative evidence} for the prevalence of covert connections in the 500 top-popular free applications on Google Play and identifies common patterns of such communication. 
 

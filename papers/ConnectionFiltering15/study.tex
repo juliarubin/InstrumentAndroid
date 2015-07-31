@@ -86,17 +86,17 @@ com.crimsonpine.stayinline   & 3.2  & 15  & 2  & 2 (100.0\%)  & 2 (100.0\%)  \\ 
 com.devuni.flashlight    & 1.4  & 16  & 3  & 1 (33.3\%)  & 1 (100.0\%)  \\ % & 2 (66.7\%)  & -
 com.emoji.Smart.Keyboard   & 0.8  & 3   & 3  & 2 (66.7\%)  & 0 (0.0\%)   \\ % & 1 (33.3\%)  & -
 com.facebook.katana     & 0.6  & 3   & 0  & -     & -     \\ % & 0 (0.0\%)   & -
-com.grillgames.guitarrockhero  & 6.2  & 51  & 14 & 14 (100.0\%)  & 8 (57.1\%)  \\ % & 0 (0.0\%)   & -
+com.grillgames.guitarrockhero  & 6.2  & 51  & 14 & 14 (100.0\%)  & 6 (42.8\%)  \\ % & 0 (0.0\%)   & -
 com.jb.emoji.gokeyboard    & 5.2  & 42  & 10 & 7 (70.0\%)  & 0 (0.0\%)   \\ % & 3 (30.0\%)  & -
 com.king.candycrushsaga    & 2.6  & 15  & 1  & 0 (0.0\%)   & -          \\ % & 1 (100.0\%)  & -
-com.pandora.android     & 5.7  & 57  & 12 & 9 (75.0\%)  & 4 (44.4\%)  \\ % & 3 (25.0\%)  & -
-com.spotify.music     & 5.4  & 20  & 7  & 3 (42.9\%)  & 1 (33.3\%)  \\ % & 4 (57.1\%)  & -
+com.pandora.android     & 5.7  & 57  & 12 & 9 (75.0\%)  & 3 (33.3\%)  \\ % & 3 (25.0\%)  & -
+com.spotify.music     & 5.4  & 20  & 7  & 2 (26.6\%)  & 1 (50.0\%)  \\ % & 4 (57.1\%)  & -
 com.twitter.android     & 5.9  & 21  & 4  & 3 (75.0\%)  & 1 (33.3\%)  \\ % & 1 (25.0\%)  & -
 com.walmart.android     & 5.8  & 33  & 8  & 5 (62.5\%)  & 3 (60.0\%)  \\ % & 3 (37.5\%)  & -
 net.zedge.android     & 6.5  & 37  & 8  & 4 (50.0\%)  & 4 (100.0\%)  \\ % & 4 (50.0\%)  & -
 \hline
 %--------------------------------------------------------------------
-Total        &   & 330  & 75 & 52 (69.3\%)   & 25 (48.1\%)  \\ % & 1.8 (30.7\%)  & -
+Total        &   & 330  & 75 & 51 (68.0\%)   & 22 (43.1\%)  \\ % & 1.8 (30.7\%)  & -
 \hline
 %--------------------------------------------------------------------
 \end{tabular}
@@ -278,7 +278,7 @@ The quantitative results of the study are presented in %columns~3--7 of
 Table~\ref{tbl:applications}. 
 Column 3 and 4 of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
 While some of the non-triggered statements can correspond to execution paths that were not explored during our dynamic application traversal, the vast majority of the statements originate in  
-third-party libraries included in the application, e.g., Google and Facebook services for mobile developers and A\&A libraries. 
+third-party libraries included in the application, e.g., Google and Facebook services for mobile developers and various A\&A libraries. 
 Such libraries are often only partially used by an application, which could explain the incomplete coverage.  
 %In fact, we identified 14 different A\&A libraries used by the 13 applications that we analyzed, 
 %and many times a single applications uses multiple such libraries.
@@ -318,7 +318,7 @@ Our analysis was unable to traverse this dynamically loaded code, and we thus ex
 %{\bf Classification of the Triggered Statements.}
 \subsubsection{Classification of the Triggered Statements}
 Column 5 of Table~\ref{tbl:applications} shows the number of connection statements that we determined as covert during our study. 
-Averaged for all applications, 69\% of the connections fall in that category. 
+Averaged for all applications, 68\% of the connections fall in that category. 
 This means that only 31\% of the connection statements triggered by an application affect its observable behavior, 
 when executed for the exact same scenario with the connection being either enabled or disabled.
 % (see column 6 of Table~\ref{tbl:applications}). 
@@ -326,7 +326,7 @@ when executed for the exact same scenario with the connection being either enabl
 %Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  overt were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
 
 \conclusion{To answer RQ1, we conclude that covert communication often occur in real-world applications: 
-69\% of the triggered connection statements can be deemed covert.}
+68\% of the triggered connection statements can be deemed covert.}
 
 The last column of Table~\ref{tbl:applications} 
 %Table~\ref{tbl:statementTypes} shows the distribution of the triggered connection statements 
@@ -338,7 +338,7 @@ The last column of Table~\ref{tbl:applications}
 %
 %The last row of the table
 presents statistics considering the communication with known A\&A services. 
-It turns out that only 48\% of all covert connections target such libraries. 
+It turns out that only 43\% of all covert connections target such libraries. 
 That is, more than half of covert connections originate from application-specific libraries and their purpose is unknown to us.
 
 %almost 18\% of the covert connections used for these purpose flow to the external services and 82\% -- to internal ones, which further communicate with external services to deliver the required content. 
