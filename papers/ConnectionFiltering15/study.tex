@@ -22,12 +22,13 @@
 
 
 
-%\vspace{-0.1in}
+\vspace{-0.05in}
 \section{Communication in Android}
 \label{sec:study} 
 
 In this section, we describe the design of the study that we conducted to gain more insights into the nature of communication performed by Android applications. We then discuss the study results. 
 
+\vspace{-0.05in}
 \subsection{Design of the Study}
 
 %\vspace{0.05in}
@@ -65,43 +66,7 @@ We also include all sub-classes of those listed in the table.
 %
 %\end{wraptable}
 
-\begin{table}[t]
-\caption{Analyzed Applications.}
-\label{tbl:applications}
-\centering
-\tabcolsep=1.5pt
-\resizebox{1\columnwidth}{!}{%
-\begin{tabular}{|l|C{0.7cm}|C{1.5cm}|C{1.5cm}|C{1.6cm}|C{1.9cm}|}
-\hline
-\textbf{Applications} &
-\textbf{jar size (MB)} &
-\textbf{Total \# of connection statements} &
-\textbf{\# of triggered connection statements} &
-\textbf{\# of covert\newline(\% of trig.)} &
-\textbf{\# of covert in known A\&A\newline(\% of total covert)} \\
-\hline
-%--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp   & 2.7  & 17  & 3  & 2 (66.7\%)  & 1 (50.0\%)  \\ % & 1 (33.3\%)  & -
-com.crimsonpine.stayinline   & 3.2  & 15  & 2  & 2 (100.0\%)  & 2 (100.0\%)  \\ % & 0 (0.0\%)   & -
-com.devuni.flashlight    & 1.4  & 16  & 3  & 1 (33.3\%)  & 1 (100.0\%)  \\ % & 2 (66.7\%)  & -
-com.emoji.Smart.Keyboard   & 0.8  & 3   & 3  & 2 (66.7\%)  & 0 (0.0\%)   \\ % & 1 (33.3\%)  & -
-com.facebook.katana     & 0.6  & 3   & 0  & -     & -     \\ % & 0 (0.0\%)   & -
-com.grillgames.guitarrockhero  & 6.2  & 51  & 14 & 14 (100.0\%)  & 6 (42.8\%)  \\ % & 0 (0.0\%)   & -
-com.jb.emoji.gokeyboard    & 5.2  & 42  & 10 & 7 (70.0\%)  & 0 (0.0\%)   \\ % & 3 (30.0\%)  & -
-com.king.candycrushsaga    & 2.6  & 15  & 1  & 0 (0.0\%)   & -          \\ % & 1 (100.0\%)  & -
-com.pandora.android     & 5.7  & 57  & 12 & 9 (75.0\%)  & 3 (33.3\%)  \\ % & 3 (25.0\%)  & -
-com.spotify.music     & 5.4  & 20  & 7  & 2 (26.6\%)  & 1 (50.0\%)  \\ % & 4 (57.1\%)  & -
-com.twitter.android     & 5.9  & 21  & 10  & 3 (30.0\%)  & 1 (33.3\%)  \\ % & 1 (25.0\%)  & -
-com.walmart.android     & 5.8  & 33  & 8  & 5 (62.5\%)  & 3 (60.0\%)  \\ % & 3 (37.5\%)  & -
-net.zedge.android     & 6.5  & 37  & 8  & 4 (50.0\%)  & 4 (100.0\%)  \\ % & 4 (50.0\%)  & -
-\hline
-%--------------------------------------------------------------------
-Total        &   & 330  & 81 & 51 (62.9\%)   & 22 (43.1\%)  \\ % & 1.8 (30.7\%)  & -
-\hline
-%--------------------------------------------------------------------
-\end{tabular}
-}% resizebox
-\end{table}
+
 
 %\begin{table}[t]
 %\caption{Analyzed Applications.}
@@ -152,14 +117,15 @@ This approach was chosen as it leverages the applications' native mechanism for 
 As input to our study, we assume an Android application given as an apk file. 
 We use the dex2jar tool suite~\cite{dex2jar} to extract the jar file from the apk.
 We then use the asm framework~\cite{asm} to implement two types of transformations: 
-\begin{enumerate}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
+\vspace{-0.05in}
+\begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
 \item \emph{A monitoring transformation} which produces a version of the original application that logs all executions of the connection statements in Table~\ref{tbl:connections}. 
 \item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions.
 % of the corresponding type, as specified in Table~\ref{tbl:connections}.
-\end{enumerate}
+\end{itemize}
 The jar file of the transformed application is then converted back to an apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK.
  
-As a known side effect of resigning applications, their authentication when communicating with services such as Google Plus APIs might be broken~\cite{googleAPI}, preventing the users from signing in with their Google Plus account or performing in-app purchases from the Google Play store. For that reason, we refrain from executing such scenarios in our analysis, as discussed below. 
+As a known side effect of resigning applications, their authentication for services such as Google Plus APIs might be broken~\cite{googleAPI}. As a result, users might be unable to sign in with their Google Plus account or perform in-app purchases from the Google Play store. For that reason, we refrain from executing such scenarios in our analysis. %, as discussed below. 
 
 %\vspace{0.1in}
 %\noindent 
@@ -224,9 +190,9 @@ to produce the visual diff images automatically.
 We then manually scanned the produced output while ignoring differences in \emph{content} of 
 widgets that are populated by applications in a dynamic manner because such widgets are \emph{expected} to differ between applications runs.
 That is, we ignored differences in the exact \emph{content} of the advertisement messages (but not their overall presence/absence and position), 
-\emph{content} of social network messages, e.g., tweets, and the status of the device, e.g., the exact time. As such, the screenshots in Figs~\ref{fig:screenshots}(a) and (b) were deemed similar, as they differ only in the content of the advertisement information and the information in the status bar.
+\emph{content} of social network messages, e.g., tweets, and the status of the device, e.g., the exact time. As such, the screenshots in Figs~\ref{fig:screenshots}(a) and (b) were deemed similar: they differ only in the content of the advertisement information and the information in the status bar.
 
-In one out of the analyzed cases, we had to revert to manual execution and comparison of the application runs.
+In one of the analyzed cases, we had to revert to manual execution and comparison of the application runs.
 That case involved interactions with a visual game that required rapid response time, 
 thus the automated application execution was unable to provide reliable results. 
 
@@ -239,14 +205,13 @@ We performed our study in three phases. In the first phase,
 we installed the original version of each analyzed 
 application on a Nexus 4 mobile device running Android version 4.4.4.
 We manually exercised the application for around 10 minutes, exploring all its functionality visible to us. Our goal was to (a) achieve sufficient coverage and (b) keep the application active long enough to allow any background data fetch processes to manifest themselves in the application's GUI. 
- 
-We refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases, due to the resign-related limitations mentioned above.
-During that execution, we recorded the execution script that captured all triggered actions. 
+Yet, we refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases, due to the resign-related limitations mentioned above.
+We recorded the execution script that captured all triggered actions. 
 We then re-installed the application %to recreate a ``clean'' state 
 and re-ran the script to collect schreenshots that were used as the baseline for further comparisons. 
 
 In the second phase, we used the monitoring transformation to produce a version of the %original 
-application that logs information about all existing and triggered connection statements. We ran the produced version using the execution script and collected the statistics about its communication patterns.  
+application that logs information about all existing and triggered connection statements. We ran the produced version using the execution script and collected the statistics about its communication statements.  
 
 In the third phase, we iterated over all \emph{triggered} connection statements, disabling them one by one, in order to assess
 the necessity of each connection for preserving the user-observable behavior of the application. 
@@ -268,11 +233,51 @@ were blocked, to detect any  possible issues missed by the automated analysis.
 As the subjects of our study, we downloaded the 20 top-popular applications available on the Google Play store in November 2014. 
 We excluded from this list chat applications, as our evaluation methodology does not allow assessing the usability of a chat application without a predictably available chat partner. 
 We also excluded applications whose asm-based instrumentation failed, most probably because they use language constructs that are not supported by that framework.
-
 The remaining thirteen applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding sizes are given in the second column of the table. 
-We did not extend our dynamic analysis beyond these thirteen applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. 
+
+%We did not extend our dynamic analysis beyond these thirteen applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. 
 %As such, inclusion of additional ones was not expected to provide substantially new insights. 
 
+\begin{table}[t]
+\caption{Analyzed Applications.}
+\label{tbl:applications}
+\centering
+\tabcolsep=1.5pt
+\resizebox{1\columnwidth}{!}{%
+\begin{tabular}{|l|C{0.7cm}|C{1.5cm}|C{1.5cm}|C{1.6cm}|C{1.9cm}|}
+\hline
+\textbf{Applications} &
+\textbf{jar size (MB)} &
+\textbf{Total \# of connection statements} &
+\textbf{\# of triggered connection statements} &
+\textbf{\# of covert\newline(\% of trig.)} &
+\textbf{\# of covert in known A\&A\newline(\% of total covert)} \\
+\hline
+%--------------------------------------------------------------------
+air.com.sgn.cookiejam.gp   & 2.7  & 17  & 3  & 2 (66.7\%)  & 1 (50.0\%)  \\ % & 1 (33.3\%)  & -
+com.crimsonpine.stayinline   & 3.2  & 15  & 2  & 2 (100.0\%)  & 2 (100.0\%)  \\ % & 0 (0.0\%)   & -
+com.devuni.flashlight    & 1.4  & 16  & 3  & 1 (33.3\%)  & 1 (100.0\%)  \\ % & 2 (66.7\%)  & -
+com.emoji.Smart.Keyboard   & 0.8  & 3   & 3  & 2 (66.7\%)  & 0 (0.0\%)   \\ % & 1 (33.3\%)  & -
+com.facebook.katana     & 0.6  & 3   & 0  & -     & -     \\ % & 0 (0.0\%)   & -
+com.grillgames.guitarrockhero  & 6.2  & 51  & 14 & 14 (100.0\%)  & 6 (42.8\%)  \\ % & 0 (0.0\%)   & -
+com.jb.emoji.gokeyboard    & 5.2  & 42  & 10 & 7 (70.0\%)  & 0 (0.0\%)   \\ % & 3 (30.0\%)  & -
+com.king.candycrushsaga    & 2.6  & 15  & 1  & 0 (0.0\%)   & -          \\ % & 1 (100.0\%)  & -
+com.pandora.android     & 5.7  & 57  & 12 & 9 (75.0\%)  & 3 (33.3\%)  \\ % & 3 (25.0\%)  & -
+com.spotify.music     & 5.4  & 20  & 7  & 2 (26.6\%)  & 1 (50.0\%)  \\ % & 4 (57.1\%)  & -
+com.twitter.android     & 5.9  & 21  & 10  & 3 (30.0\%)  & 1 (33.3\%)  \\ % & 1 (25.0\%)  & -
+com.walmart.android     & 5.8  & 33  & 8  & 5 (62.5\%)  & 3 (60.0\%)  \\ % & 3 (37.5\%)  & -
+net.zedge.android     & 6.5  & 37  & 8  & 4 (50.0\%)  & 4 (100.0\%)  \\ % & 4 (50.0\%)  & -
+\hline
+%--------------------------------------------------------------------
+Total        &   & 330  & 81 & 51 (62.9\%)   & 22 (43.1\%)  \\ % & 1.8 (30.7\%)  & -
+\hline
+%--------------------------------------------------------------------
+\end{tabular}
+}% resizebox
+\vspace{-0.1in}
+\end{table}
+
+\vspace{-0.3in}
 \subsection{Results}
 The quantitative results of the study are presented in %columns~3--7 of 
 Table~\ref{tbl:applications}. 
@@ -325,7 +330,7 @@ when executed for the exact same scenario with the connection being either enabl
 
 %Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  overt were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
 
-\conclusion{To answer RQ1, we conclude that covert communication often occur in real-world applications: 
+\conclusion{To answer RQ1, we conclude that covert communication often occurs in real-world applications: 
 63\% of the triggered connection statements can be deemed covert.}
 
 
@@ -343,14 +348,14 @@ However, they come either from application-specific packages or from libraries t
 For example, the Walmart application triggers a covert connection from the \emph{com/walmartlabs/analytics/} package, which appears to be a proprietary analytics service. % implemented by Walmart. 
 That application also actively uses another three popular A\&A libraries. 
 
-Analytics services collect information about applications' performance, crash and usage data, as well as the exact actions the user performs within the app. 
+Analytics services collect information about application performance, crash and usage data, as well as the exact actions the user performs within the app. 
 While this information has a clear value to the developer, no comprehensive consent specifying the  nature and frequency of such data collection is presented to the user.
 In fact, some applications start collecting analytics information even before they get activated. 
 For example, twitter, Walmart and Pandora start their data collection as soon as the phone is booted and continue, periodically, during the phone's entire up time, even if the applications themselves were never used. 
 
-Beyond A\&A, several applications release information to their own proprietary and third-party services, which does not seem to have any effect on the applications' observable behavior. 
-For example, twitter collects information about videos and other rich media attachments followed by the users in tweets. 
-The GO Keyboard application sends a set of ids to the \emph{launchermsg.3g.cn} server; it also sends some encrypted data, which we could not decode, to \emph{nextbrowser.goforandroid.com}. 
+Beyond A\&A, several applications release information to their own and/or third-party services, without  causing any effect on the applications' observable behavior. 
+For example, twitter uses covert connections to collect information about videos and other rich media attachments followed by the users from tweets. 
+The GO Keyboard application sends, via a covert connection, a set of ids to the \emph{launchermsg.3g.cn} server; it also sends some encrypted data, which we could not decode, to \emph{nextbrowser.goforandroid.com}. 
 Both Pandora and Spotify music players use Facebook's social graph services~\cite{facebookSG}, sending out information about the application usage.
 As another example, the Walmart application incorporates the barcode scanner library provided by 
 Red Laser~\cite{redLaser} --
@@ -375,16 +380,17 @@ Yet, blocking that release of information does not harm the scanning capabilitie
 %\noindent 
 %{\bf Lessons Learned.}
 \subsubsection{Lessons Learned}
-As can be seen in the last column of Table~\ref{tbl:applications}, distinguishing between overt and covert connections cannot be made just by considering their package name schema.  
+As can be seen in the last column of Table~\ref{tbl:applications}, distinguishing between overt and covert connections only by considering their package name schema is impractical.  
 %connection types and their destinations. 
 That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where the authors 
 show that blocking all messages to A\&A services made more than 60\% of the applications either less functional or completely dysfunctional. 
 Moreover, some malicious applications deliberately hide their payloads by using package names which look legitimate and benign~\cite{Zhou:Jiang:SP2012}. We conclude that a more sophisticated 
 technique for identifying the covert communication performed by the applications is required. 
 
-We manually investigated binaries of several analyzed applications, to gain more insights into the way applications treat non-necessary connections. % of each of the identified type and communication target. 
-We noticed that, in a large number of cases, connection successes do not trigger any visual indication  in the application's user interface and, at the same time, connection failures are also silently ignored by the applications without producing any notifications to the user. 
-For the failures, the exception triggered by a covert connection is either caught and ignored locally in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by  application developers and is rarely accessed by the end-user.
+We manually investigated binaries of the analyzed applications, to gain more insights into the way applications treat covert connections. % of each of the identified type and communication target. 
+We noticed that, in a large number of cases, neither successes nor failures of such connections trigger visual notifications to the user. 
+%Connection failures are silently ignored by the applications without producing any . 
+For the failures, the triggered exception is often either caught and silently ignored in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by developers rather than end-user.
 
 \conclusion{To answer RQ2, we conjecture that covert connections can be detected by inspecting updates to GUI elements on both the success and the failure path of a connection statement. 
 Lack of such GUI updates is indicative for a connection being covert for the application execution as the user is unaware of both the success and the failure of the communication.}
