@@ -9,9 +9,9 @@ automatically classify connections.  Android applications are
 developed in Java as a series of external event handler routines,
 e.g., button click and application exit.  Given an Android
 application, the static analysis classifies each statement that may
-invoke a connection call as either {\it overt} or {\it
-  covert}.  We begin with machinery that allows us to define
-overt and covert connection statements with precision.
+invoke a connection call as either {\it overt} or {\it covert}.  We
+begin by defining failure handling, overt and covert connection
+statements with precision.
 
 
 %% In an Android application, each
@@ -62,26 +62,25 @@ overt and covert connection statements with precision.
 %% \end{figure}
 
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
-\item \textsc{\bfseries{Definition (Rethrown Exception)}}.  A
-rethrown exception occurs when a \lstinline!catch! block catches an
-exception, but before the block is exited, a statement reachable from
-the block explicitly throws the same exception object, or throws a new
-exception object.  The process of searching the stack for a handler
-begins anew.
 
+\item \textsc{\bfseries{Definition (Rethrown Exception)}}.  A rethrown
+  exception occurs when a \lstinline!catch! block catches an
+  exception, but before the block is exited, a reachable statement
+  throws a new or the same exception.
+  
 \item \textsc{\bfseries{Definition (Failure Handling)}}. The failure
   handling of a connection call $s$ for exception type $e$ is defined
-  as the execution path that starts when an exception of type $e$
-  propagates to connection call $s$ and ends when the {\it last}
-  \lstinline!catch! block is exited that handles $e$ or a rethrown
-  exceptions of $e$.
+  as the execution paths that start when an exception of type $e$
+  propagates to connection call $s$ and end on each path when a
+  \lstinline!catch! block is exited such that $e$ and all exceptions
+  that could be rethrown on the path from $s$ are caught.
 \end{description}
 
-Intuitively, the failure handling of $s$ on $e$ is the computation
-that handles $e$ and any failure triggered by the handling of $e$
-(through rethrown exceptions).  Failure handling is finished when all
-exceptions triggered by $e$ are handled and flow returns to normal
-execution.  
+Intuitively, the failure handling of $s$ on $e$ are the computation
+paths that handle $e$ and any failures triggered by the handling of
+$e$ (through rethrown exceptions).  Failure handling is finished when
+all exceptions triggered by $e$ are handled and flow returns to normal
+execution.
 
 %% Figure~\ref{fig:failure-handling} give a simplified representation of
 %% failure handling pattern that we observed in the twitter application.
@@ -108,8 +107,8 @@ execution.
   during failure handling.
 
 \item {\bf Program Exit on Failure}: When $s$ triggers an exception, the
-  program may stop executing due to a failure handling path not
-  terminating at an application event handler method.
+  program may stop executing due to a failure handling path that
+  propagates that exception back up to the Android runtime.
 
 \item {\bf User-Interface Cue on Success}: When $s$ succeeds, there
   exists a possible modification to the user interface {\it before}
@@ -152,29 +151,27 @@ because of the complexity and dynamic nature of the Android runtime
 and API; precise, whole-program analysis runs the high-risk of missing
 dynamic program behavior and not scaling to real-world Android
 applications~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
-Static analysis must either model the Android application execution
-environment, or account for possible dynamic program behaviors with
+Static analysis must either model the Android execution
+environment or account for possible dynamic program behaviors with
 conservative analysis choices; otherwise some runtime behaviors could
 be unconsidered.  Our static analysis over-approximates the runtime
 behaviors of the applications, and under-approximates the connection
 calls that could be covert.
  
-Our analysis is implemented in the Soot Java
-Analysis Framework~\cite{Vallee-Rai2000} and utilizes libraries and
-the Android API model provided by
+Our analysis prioritizes high precision over high recall because we do
+not want to block connection calls that perform overt
+communication. Our analysis employs a class hierarchy analysis
+(CHA)~\cite{Dean1995} to build a call graph with refinement achieved
+by intra-procedural data-flow analysis.  After much experimentation
+with higher precision, though brittle, points-to analysis techniques,
+this analysis combination gave us the best performance for the
+classification task.  Our analysis is implemented in the Soot Analysis
+Framework~\cite{Vallee-Rai2000} and utilizes the Android API model
+provided by
 DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
 presentation of the analysis below assumes the application is
 represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 
-The design of our analysis prioritizes high precision over high recall
-because we do not want to block connection calls that perform
-overt communication. Our analysis employs a class hierarchy
-analysis (CHA)~\cite{Dean1995} to build a call graph with refinement
-achieved by intra-procedural data-flow analysis.  After much
-experimentation with higher precision, though brittle, points-to
-analysis techniques, this analysis combination gave us the best
-performance for the classification task.
-   
 To compute a call graph, we augment the application code with the
 DroidSafe Android Device Implementation
 (ADI)~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.  The ADI
@@ -182,23 +179,26 @@ is a Java-based model of the Android runtime and API that attempts to
 present full runtime semantics for commonly-used classes of the
 runtime and API.  Our call graph construction does not traverse into
 Android API methods.  However, we found it necessary to account for
-API calls that immediately jump back into the application.  For
-example, if an application method, $m$ calls
-\lstinline!Thread.start()! on a receiver that is an application class,
-$t$, we found it necessary to add the edge to the call graph ($m$,
-$t$.\lstinline!run()!).  This includes the started thread $t$ in
-failure handler if $m$ is encountered.
+API calls that directly call back into the application, e.g.,
+\lstinline!Thread.start()!, by replacing the API call with a direct
+call to the application method(s) that the API call could invoke.
 
-To achieve this in general, we add to the call graph edges of the type
-($m$, $n$) where there is an edge ($m$, \lstinline!api-method!), the
-call of \lstinline!api-method! is passed a value that is a reference
-to an application class, and \lstinline!api-method! calls method $n$
-on the passed application class value.  This strategy adds to our
-call graph the edges for the \lstinline!Thread.start()! to the
-\lstinline!Thread.run()! discussed above.
+%% For example, if an application method, $m$ calls
+%% \lstinline!Thread.start()! on a receiver that is an application class,
+%% $t$, we found it necessary to add the edge to the call graph ($m$,
+%% $t$.\lstinline!run()!).  This includes the started thread $t$ in
+%% failure handler if $m$ is encountered.
 
-Furthermore, the call graph is augmented to account for reflected
-method calls in the application using the following policy.  When a
+%% To achieve this in general, we add to the call graph edges of the type
+%% ($m$, $n$) where there is an edge ($m$, \lstinline!api-method!), the
+%% call of \lstinline!api-method! is passed a value that is a reference
+%% to an application class, and \lstinline!api-method! calls method $n$
+%% on the passed application class value.  This strategy adds to our
+%% call graph the edges for the \lstinline!Thread.start()! to the
+%% \lstinline!Thread.run()! discussed above.
+
+The call graph is augmented to account for reflected
+method calls using the following policy.  When a
 reflected call is found, we add edges to the graph that target all
 methods of the same package domain as the caller (e.g.,
 \lstinline!com.google!, \lstinline!com.facebook!).  The edges are pruned by the
@@ -248,17 +248,16 @@ connection is considered covert.
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=false]+
 
 Table~\ref{tbl:connections} lists the target methods that we consider
-connection calls and each method's associated failure exception.
-The set of target methods that are considered as affecting the user
-interface are listed in Table~\ref{tbl:ui}.  We also define all
-overriding methods of the methods listed in the table as UI methods.
+connection calls.  The set of target methods that are considered as
+affecting the user interface are listed in Table~\ref{tbl:ui} (also
+included are all overriding methods).
 
 \subsection{Failure Handler Analysis}
 
-Failure analysis determines if a connection call modifies the user
-interface or could exit the application on exception.  We organize the
-static failure-handling analysis as a recursive traversal on the call
-graph for ease of understanding.  An iterator over all application
+Failure analysis determines if a connection call modifies the UI or
+could exit the application on exception.  We organize the static
+failure-handling analysis as a recursive traversal on the call graph
+for ease of understanding.  An iterator over all application
 statements calls the analysis separately for the combination of each
 statement in the application that could target a connection call and
 an exception that indicates communication failure.
@@ -272,9 +271,8 @@ an exception that indicates communication failure.
 {\textbf{Input}: #1}[1]{\textbf{Output}: #1}
 \Procedure{FindCatches}{meth, stmt, ex, visiting, stack, cg}
 
-\If {(stmt, ex) $\in$ visiting || (stmt, ex) $\in$ overt}
-    \State \textbf{return}
-\EndIf
+\IIf {(stmt, ex) $\in$ visiting \textbf{or} (stmt, ex) $\in$ overt}
+\textbf{return} \EndIIf
 
 \State visiting $\gets$ visiting $\cup$ (stmt, ex)
 
@@ -322,13 +320,13 @@ an exception that indicates communication failure.
 \vspace{-0.1in}
 \end{figure}
 
-The analysis starts with the \textsc{FindCatches} procedure listed in
+Analysis starts with the \textsc{FindCatches} procedure listed in
 Fig.~\ref{alg:findcatches}.  For each statement and exception pair,
 $s$ and $e$, respectively, the procedure first consults $s$'s
 containing method to find an appropriate \lstinline!catch!; if $e$ is
 not caught locally, the analysis recursively visits all direct
-predecessors of the method to find \lstinline!catch! blocks that trap
-the call statement edge (lines
+caller methods to find \lstinline!catch! blocks that trap
+the call graph edge (lines
 \ref{alg:no-local-hander-start}-\ref{alg:no-local-hander-end}).  For
 each predecessor, $p$, if a catch is not found that wraps the call
 edge, then $p$'s direct predecessors are visited, and so on.
@@ -340,9 +338,9 @@ edge, then $p$'s direct predecessors are visited, and so on.
 {\textbf{Input}: #1}[1]{\textbf{Output}: #1}
 \Procedure{AnalyzeHandler}{meth, exceptStmt, stmts, 
   visiting, handledStmts, stack, cg}
-\If {stmts $\in$ handledStmts}
-\State \textbf{return}
-\EndIf
+
+\IIf {stmts $\in$ handledStmts} \textbf{return} \EndIIf
+
 \State handledStmts $\gets$ handledStmts $\cup$ stmts
 
 \For {each stmt $\in$ stmts}
@@ -380,8 +378,7 @@ edge, then $p$'s direct predecessors are visited, and so on.
 \For {defStmt $\in$ \textsc{GetLocalDefs}(\textsc{GetOp}(stmt))}
 
 \If {\textsc{IsAlloc}(defStmt)}
-\State rethrownTypes $\gets$ rethrownTypes $\cup$ 
-\State \hspace{2.5cm} \textsc{GetAllocType}(defStmt)
+\State rethrownTypes $\gets$ rethrownTypes $\cup$ \textsc{GetType}(defStmt)
 \ElsIf {\textsc{IsCaughtExceptionStmt}(defStmt)}
 \State rethrownTypes $\gets$ rethrownTypes $\cup$ 
 \State \hspace{0.5cm} \textsc{GetPossibleThrownTypes}(meth, defStmt)
@@ -412,8 +409,7 @@ cg)
 
 \EndProcedure
 \end{algorithmic}
-\caption{Analyze reachable statements during handling for UI
-  interaction or rethrown exceptions.}\label{alg:analyzehandler}
+\caption{Analyze reachable statements during failure handling.}\label{alg:analyzehandler}
 \vspace{-0.1in}
 \end{figure}
 
@@ -432,11 +428,13 @@ calls itself for the new method to analyze the new method's statements
 If analysis finds a \lstinline!throw!  statement, the handler analysis
 spawns a new \textsc{FindCatches} analysis to find all the possible
 handlers of each rethrown exception (lines
-\ref{alg:found-throws-start}-\ref{alg:found-throws-end}).  If analysis
-finds a call to a native method, we assume that it will throw all
-exceptions it is defined to throw, handler analysis spawns a
-\textsc{FindCatches} instance for each exception declared throws
-(line~\ref{alg:native-method-line}).  If a call is encountered that
+\ref{alg:found-throws-start}-\ref{alg:found-throws-end}).  
+%If analysis
+%finds a call to a native method, we assume that it will throw all
+%exceptions it is defined to throw, handler analysis spawns a
+%\textsc{FindCatches} instance for each exception declared throws
+%(line~\ref{alg:native-method-line}).  
+If a call is encountered that
 could target a UI method, then the statement that began the handler
 analysis is considered overt since the failure handling affects
 the user interface (line~\ref{alg:ui-method-found}).
@@ -448,17 +446,17 @@ the user interface (line~\ref{alg:ui-method-found}).
 %% considered covert.
 
 
-A stack of pairs of method call statement and method is maintained
-during the analysis.  The analysis uses the stack to focus the handler
-search in \textsc{FindCatches} after a method call has been performed
-by a handler further up the stack. When we initiate the analysis for
-a connection call, the stack is empty and the analysis in
+A stack of pairs of method call statement and target method is
+maintained.  The analysis uses the stack to focus the handler search
+in \textsc{FindCatches} after a method call has been performed by a
+handler further up the stack. When we initiate the analysis for a
+connection call, the stack is empty and the analysis in
 \textsc{FindCatches} has to search all possible stacks (predecessor of
 the containing method) for handlers of the connection statement's
 exception.  However, once a handler is found, and the handler calls a
 sequence of methods that ends in a possible rethrown exception, the
 sequence of methods defines the only stack that should be searched for
-a handler of the rethrown exception.  
+a handler of the rethrown exception.
 
 %% The stack is pushed on line
 %% \ref{alg-push-stack-lines} of \textsc{AnalyzeHandler} for each method
@@ -470,39 +468,36 @@ a handler of the rethrown exception.
 %% current method in \textsc{FindCatches} line~\ref{alg:stack-pop-line}.
 
 During handler search in \textsc{FindCatches}, if no handler is found
-locally, and the method is a possible entry point called from the
-Android runtime, then we conservatively calculate that the exception
+locally, and the method is an event handler (called from the
+Android runtime), then we conservatively calculate that the exception
 and excepting statement could cause application exit, so the pair is
 added to the overt set (line~\ref{alg:event-handler-line} of
 \textsc{FindCatches}). 
 
 During handler analysis, if a \lstinline!throw! statement is
-encountered in reachable code of a handler, the analysis needs to
-determine the possible type of the thrown value, and then start a new
-search for the handler.  The \textsc{AnalyzeHandler} procedure
-calculates local def-use chains for the method it is analyzing.  It
-uses the local def-use information to calculate the types of the
-exception.  In lines ~\ref{alg:found-throws-start} through
+encountered, the analysis needs to
+determine the possible type(s) of the thrown value, and then start a new
+search for the handler(s) of the type(s).  The \textsc{AnalyzeHandler} procedure
+calculates local def-use chains to calculate the types of the
+exception.  In lines~\ref{alg:found-throws-start} through
 \ref{alg:calc-rethrow-types-end} the analysis considers all local
-reaching definitions of the thrown value.  If an allocation statement
-reaches {\bf JR: a word seems to be missing.}, then add the allocated types to the possible types of
-rethrown exceptions. If a caught exception statement\footnote{A caught
-  exception statement is a statement that defines that start of a
-  \lstinline!catch! block and assigns a local variable to the
-  exception object caught by the block.}, $c$, reaches the
-\lstinline!throw! statement, then the \lstinline!try! block associated
-with \lstinline!catch! block of $c$ is analyzed for all checked
-exceptions that could be thrown.  This is performed in
+reaching defs of the thrown value.  If an allocation statement
+reaches the \lstinline!throw!, then the allocated type is added to the
+set of possible types of the rethrown exception. If a caught exception
+reference, $c$, reaches
+the \lstinline!throw! statement, then the \lstinline!try! block
+associated with \lstinline!catch! block of $c$ is analyzed for all
+checked exceptions that could be thrown.  This is performed in
 \textsc{GetPossibleThrownTypes} call on line
-\ref{alg:getpossiblethrowntypes} of \textsc{AnalyzeHandler}.
-
-If any other type of statement is a definition that reaches the thrown
-value, then the analysis cannot determine the exception type and the
-connection call (or rethrown exception statement) is considered
-overt (line \ref{alg:unknown-last-def-throw}).  If only
+\ref{alg:getpossiblethrowntypes} of \textsc{AnalyzeHandler}.  If only
 allocations and caught exception statements reach the thrown value,
 then the handler analysis spawns a new \textsc{FindCatches} instance
-to analyze the failure handling. 
+to analyze the failure handling.
+
+%% If any other type of statement is a definition that reaches the thrown
+%% value, then the analysis cannot determine the exception type and the
+%% connection call (or rethrown exception statement) is considered
+%% overt (line \ref{alg:unknown-last-def-throw}). 
 
 %% \begin{figure}[t]
 %% \begin{algorithmic}[1]
@@ -564,12 +559,10 @@ the failure handling analysis.
 
 \textsc{GetPossibleThrownTypes}($meth$,$stmt$): Calculate the
 possible exception types caught at the catch block that begins with
-$stmt$ of $meth$. The method calculates the
-+try+ block that associates with the +catch+ block
-that encloses $stmt$. The procedure examines +throw+
-and call statements of the +try+.  For a call statement, the
+$stmt$ of $meth$. The statements of the +try+ block that associates with the +catch+ block
+that encloses $stmt$:  (1) For a call statement, the
 procedure adds to the return list all exception types declared throws
-by all methods that the call can target.  For a +throw+
+by all methods that the call can target,  (2) For a +throw+
 statement, the reaching definitions of the thrown value are
 calculated.  If the reaching definition is an allocation, then add to
 the return list the type of the allocation.  If the reaching
@@ -584,12 +577,12 @@ thrown.
 \textsc{FindCompatCatch}($meth$,$stmt$,$ex$): Return the first
   statement of the +catch+ block that will handle an
   exception of type $ex$ thrown at statement stmt in method meth.
-\\
-\hline
-\textsc{IsEventHandler}($meth$): Return true if method $meth$
-  overrides a method defined in the Android API.  This method
-  over-approximates the methods that can be called by the Android
-  runtime to handle events.
+%% \\
+%% \hline
+%% \textsc{IsEventHandler}($meth$): Return true if method $meth$
+%%   overrides a method defined in the Android API.  This method
+%%   over-approximates the methods that can be called by the Android
+%%   runtime to handle events.
 \\
 \hline
 \textsc{GetCatchStmts}($stmt$,$meth$): Given the start of a
@@ -607,7 +600,7 @@ over-estimation of +catch+ block extents, e.g., it includes
 \\
 \hline
 \end{tabular}
-\caption{\label{fig:helper-funs}Failure analysis helper functions.}
+\caption{\label{fig:helper-funs}Failure handling analysis helper functions.}
 \vspace{-0.1in}
 \end{figure}
 
@@ -652,13 +645,13 @@ over-estimation of +catch+ block extents, e.g., it includes
  
 \subsection{Success Analysis}
 
-For connection statement $s$, if the failure analysis concludes that
-no user interface call could be invoked during failure handling and
-all stacks handle $s$'s exception, then our analysis continues with
-the success paths of $s$. The success analysis determines if there is
-any user interface modification after the connection succeeds but
-before control returns to the Android runtime and before control
-merges back to the failure handling paths.
+For connection statement $s$, if the failure handling analysis
+concludes that no UI call could be invoked during failure
+handling and all stacks handle $s$'s exception, then the analysis
+continues with the success paths of $s$. The success analysis
+determines if there is any UI modification after the
+connection succeeds but before control returns to the Android runtime
+and before control merges back to the failure handling paths.
 
 Here we summarize the success analysis of connection call $s$ enclosed
 in method $m$ by presenting a high-level description of two conceptual
@@ -668,9 +661,8 @@ phases:
   statement immediately after $s$ is searched for a connection call.
   This is accomplished by traversing all paths in the interprocedural
   control flow graph (CFG) starting at $s$ and following method invoke
-  expressions.  We follow both normal and exceptional control paths
-  when analyzing the CFG.  The analysis does not follow call graph
-  edges into the Android API.
+  expressions via the call graph.  We follow both normal and exceptional control paths
+  when analyzing the CFG.  
 
 \subsubsection{Success Backward Analysis} For all methods $f$ such
   that there is a path from $f$ to $m$ in the call graph and $f$ was
@@ -696,14 +688,14 @@ of processing, so our analysis reasons about event handlers to bound
 the success search to represent the direct processing of a connection
 call.
 
-Another insight gleaned from examination of the applications in the
-study in Section~\ref{sec:study} is that direct processing associated
-with a successful invocation of connection call $s$ in method $m$ ends
-when the successful control flow merges back with the exceptional
-control flow. This is the motivation for why the success backward
-analysis only examines methods that were analyzed by the failure
-analysis.  We assume that for all stacks of $m$, methods beyond the
-failure analysis do not contribute to processing of $s$.
+Another insight gleaned from the study in Section~\ref{sec:study} is
+that direct processing associated with a successful invocation of
+connection call $s$ in method $m$ ends when the successful control
+flow merges back with the exceptional control flow. This is the
+motivation for why the success backward analysis only examines methods
+that were analyzed by the failure analysis.  We assume that for all
+stacks of $m$, methods beyond the failure handling do not contribute
+to processing of $s$.
 
 The presented analysis has the following limitations. Dynamically
 loaded code is not considered.  The analysis considers only checked
