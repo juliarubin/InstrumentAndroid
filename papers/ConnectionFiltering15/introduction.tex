@@ -47,17 +47,16 @@
 Mobile applications enjoy almost permanent connectivity and the
 ability to exchange information with their own back-end and other
 third-party servers.  This paper shows that much of this communication
-does not deliver any tangible value to the application's user: 
+does not deliver any tangible value to the application's user:
 disabling it leaves the delivered application experience completely
-intact.  Yet, this covert communication comes with costs such as 
-potential privacy breaches,
-bandwidth charges, power consumption on the device,  
-and the unsuspected presence of continued
-communication between the device and remote organizations. In fact, we
-observed that several popular applications, e.g., Walmart and twitter, spawn services that
-communicate with third-party servers even when the application itself is
-inactive and the user is unaware that the spawned
-services are running in the background. 
+intact.  Yet, this covert communication comes with costs such as
+potential privacy breaches, bandwidth charges, power consumption on
+the device, and the unsuspected presence of continued communication
+between the device and remote organizations. In fact, we observed that
+several popular applications, e.g., Walmart and twitter, spawn
+services that communicate with third-party servers even when the
+application itself is inactive and the user is unaware that the
+spawned services are running in the background.
 
 
 
@@ -137,45 +136,35 @@ analysis is to look for cases when both connection success and failure are ``sil
 For a connection statement, we analyze the portion of the program's
 control flow graph that corresponds to the \emph{direct processing} of
 the connection.  This includes
-%\emph{forward stack processing} and \emph{failure handling}
-%executions.  The former is 
-(1) the non-exceptional execution reachable after the connection statement
-% but limited to processing of the
-%Android runtime events that trigger the connection statement.
-and 
-%The latter traverses methods 
-(2) executions up all possible call stacks from the
-connection statement until the point
-%but stops at points at 
-where the exceptions triggered by the connection statement 
-%and all related rethrown exceptions 
-are cleared.
-%that the processing associated with a covert
-%connection statements does not directly 
-%affect the user experience, i.e, no GIU elements are found 
-% %on success
-%%or failure, and a covert connection call will not cause
-%%application exit on failure. 
-%The static analysis first calculates all possible flows of control of
-%the application during {\it failure handling} of the connection
-%call. 
-%Failure handling begins when the exception is caught 
-%
-%%For an exception $e$ of connection statement $s$ in method $m$,
-%%failure handling is the set of methods on all possible call stacks for
-%%$m$ that either pass the exception $e$ up the stack or handle $e$.
-%Next, the static analysis calculates the set of methods that are
-%reachable on successful forward processing of $s$ during the Android
-%events that could trigger $s$.  
-%The union of these two sets define our notion of {\it direct} success
-%and failure processing of connection statement $s$.  
-The direct processing of the connection is searched for method
-call invocations that %could target a predefined set of API calls that
+\emph{forward stack processing} and \emph{failure handling}
+executions.  The former is the non-exceptional execution reachable
+after the connection statement but limited to processing of the
+Android runtime events that trigger the connection statement.
+The latter traverses methods up all possible call stacks from the
+connection statement but stops at points at which the
+exception raised by the connection statement and all related rethrown
+exceptions are cleared.
+
+The direct processing of the connection call is searched for method
+call invocations that could target a predefined set of API calls that
 affect the user interface.  If such a call is found, the connection
 call statement is deemed overt.  Furthermore, if the exception
 could be propagated back to the Android runtime (causing the
 application to exit), the connection call is deemed overt.
 Otherwise, it is deemed covert.
+
+%% For a connection statement, we analyze the portion of the program's
+%% control flow graph that corresponds to the \emph{direct processing} of
+%% the connection.  This includes (1) the non-exceptional execution
+%% reachable after the connection statement and (2) executions up all
+%% possible call stacks from the connection statement until the point
+%% where the exceptions triggered by the connection statement are
+%% cleared.  The direct processing of the connection is searched for
+%% method call invocations that affect the user interface.  If such a
+%% call is found, the connection call statement is deemed overt.
+%% Furthermore, if the exception could be propagated back to the Android
+%% runtime (causing the application to exit), the connection call is
+%% deemed overt.  Otherwise, it is deemed covert.
 
 %includes  exception is 
 %a failure
