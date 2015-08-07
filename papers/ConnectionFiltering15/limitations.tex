@@ -29,6 +29,41 @@ albeit possibly over-approximate results.
 Finally, our study only includes a limited number of subjects, so the results might not generalize to other applications.
 We tried to mitigate this problem by not biasing our application selection but rather selecting top-popular applications from the Google Play store, and by ensuring that we observe similar communication patterns in all analyzed applications.
 
+\begin{table}[t]
+\renewcommand*{\arraystretch}{1.3}
+\vspace{-0.1in}
+\caption{Top 10 Covert Communication Callers.}
+\label{tbl:callers}
+\centering
+\tabcolsep=1.5pt
+\resizebox{1.0\columnwidth}{!}{%
+\begin{tabular}{|c|P{2.6cm}|P{3.6cm}|C{1.9cm}|C{2.4cm}|}
+\hline
+%--------------------------------------------------------------------
+ &
+ \textbf{Package} &
+ \textbf{Description} &
+ \textbf{Used in \#~(\%)~of~Apps} &
+ \textbf{covert~calls (\%~of~total~calls)} \\
+\hline
+1.  & com.google.android    & Google services          & 382 (76.4\%)  & 1913 (49.9\%) \\
+2.  & com.gameloft      & Mobile games          & 17 (3.4\%)  & 784 (87.4\%) \\
+3.  & com.inmobi      & A\&A services  & 61 (12.2\%)  & 615 (67.6\%) \\
+4.  & com.millennialmedia.\newline{}android  & A\&A services  & 78 (15.6\%)  & 447 (58.8\%) \\
+5.  & com.mopub.mobileads    & A\&A services  & 72 (14.4\%)  & 320 (56.9\%) \\
+6.  & com.tapjoy      & A\&A services  & 49 (9.8\%)  & 277 (43.8\%) \\
+7.  & com.facebook      & Facebook services          & 112 (22.4\%)  & 222 (24.3\%) \\
+8.  & com.unity3d      & Gaming services          & 77 (15.4\%)  & 203 (41.8\%) \\
+9.  & (default)       & Default package of an application      & 23 (4.6\%)  & 178 (48\%) \\
+10.  & com.flurry      & A\&A services  & 95 (19\%)   & 175 (35.3\%) \\
+
+\hline
+%--------------------------------------------------------------------
+\end{tabular}
+}% resizebox
+\vspace{-0.1in}
+\end{table}
+
 %\vspace{0.05in}
 %\noindent 
 \subsubsection{A Static Technique For Detecting Covert Connections}
