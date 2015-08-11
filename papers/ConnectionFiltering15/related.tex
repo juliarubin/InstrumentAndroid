@@ -12,13 +12,13 @@ Work related to this paper falls into three categories:
 \subsubsection{User-Centric Analysis for Identifying Spurious Behaviors}
 Huang et al.~\cite{Huang:Zhang:Tan:Wang:Liang:ICSE14} propose a technique, AsDroid, for identifying contradictions between a user interaction function and the behavior that it performs. 
 This technique associates intents with certain sensitive APIs, such as HTTP access or SMS send operations, and tracks the propagation
-of these intents through the application call graph, thus establishing correspondence between APIs and the GUI elements they affect. 
+of these intents through the application call graph, thus establishing correspondence between APIs and the UI elements they affect. 
 It then uses the established correspondence to compare intents with the text related to the UI elements. Mismatches are treated as potentially stealthy behaviors. 
-In our work, we do not assume that all operations are triggered by the GUI
-and do not rely on textual descriptions of GUI elements.
+In our work, we do not assume that all operations are triggered by the UI
+and do not rely on textual descriptions of UI elements.
 
-Ko and Zhang~\cite{Ko:Zhang:CHI11} propose a system, FeedLack, for identifying usability problems in web applications. The system looks for control flow paths that originate from user input but lack GUI-affecting code. Our work is similar as it relies on the same underlying principle 
-of user feedback necessity and also searches for code affecting the GUI. Yet, our goal is different: we look for any hidden behavior rather than missing feedback loops for user-triggered operations. Also, our analysis is tailored for mobile rather than web applications and, unlike FeedLack, focuses not only on success paths but takes failure paths into account as well.   
+Ko and Zhang~\cite{Ko:Zhang:CHI11} propose a system, FeedLack, for identifying usability problems in web applications. The system looks for control flow paths that originate from user input but lack UI-affecting code. Our work is similar as it relies on the same underlying principle 
+of user feedback necessity and also searches for code affecting the UI. Yet, our goal is different: we look for any hidden behavior rather than missing feedback loops for user-triggered operations. Also, our analysis is tailored for mobile rather than web applications and, unlike FeedLack, focuses not only on success paths but takes failure paths into account as well.   
 
 CHABADA~\cite{Gorla:Tavecchia:Gross:Zeller:ICSE14} compares natural language descriptions of applications, clusters them by description topics, and then identifies outliers by observing API usage within each cluster. Essentially, this system identifies applications whose behavior would be unexpected given their description. Instead, our approach focuses on identifying unexpected behaviors given the actual user experience, not just the description of the application.
 
@@ -46,7 +46,7 @@ our focus is on distinguishing between overt and covert flows.
 The authors of AppFence~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11} build up on TaintDroid and explore approaches for either obfuscating or completely blocking the identified cases of sensitive information release.
 Their study shows that blocking all such cases renders more than 65\% of the application either less functional or completely dysfunctional, blocking cases when information flows to advertisement and analytics services ``hurts'' 10\% of the applications, and blocking the communication with the advertisement and analytics services altogether -- more than 60\% of the applications.
 Our work has a complementary nature as we rather attempt to identify cases when communication can be disabled without affecting the application functionality. 
-Our approach for assessing the user-observable effect of that operation is similar to the one they used though. 
+Our approach for assessing the user-observable effect of that operation is similar to the one they used. 
 
 Both MudFlow~\cite{Avdiienko:Kuznetsov:Gorla:Zeller:Arzt:Rasthofer:Bodden:ICSE15} and AppContext~\cite{Yang:Xiao:Andow:Li:Xie:Enck:ICSE15} build up on the FlowDroid static information flow analysis system~\cite{Arzt:Rasthofer:Fritz:Bodden:Bartel:Klein:Traon:Octeau:McDaniel:PLDI14} and propose approaches 
 for detecting malicious applications by learning ``normal'' application behavior patterns and then identifying outliers. 

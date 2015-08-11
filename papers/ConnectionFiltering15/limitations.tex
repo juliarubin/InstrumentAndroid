@@ -1,5 +1,4 @@
-\vspace{0.05in}
-\vspace{-0.1in}
+\vspace{-0.05in}
 \section{Limitations and Threats to \\Validity}
 \label{sec:limitations}
 %In this section we discuss the limitations of our empirical study and our static technique for detecting covert connections.
@@ -10,11 +9,11 @@
 Our empirical study has a dynamic nature and thus suffers from the well-known limitations of dynamic analysis: it does not provide an exhaustive exploration of an application's behavior.
 %, thus the findings apply only to the execution paths explored during the analysis. 
 Even though we made an effort to cover all application functionality visible to us, we might have missed some behaviors, e.g., those triggered under system settings different from ours. 
-We attempted to mitigate this problem by performing all our dynamic experiments on the same device, at the same location and temporally close to each other.  
+To minimize unexpected results, we performed all our dynamic experiments on the same device, at the same location and temporally close to each other.  
 We also automated our execution scripts in order to compare behaviors of different variants under the same scenario and settings. 
 We only report on the results comparing these similar runs.  
 
-Yet, due to these limitations of dynamic analysis, we could encounter false-positive results: a connection statement that we classified as covert could have an effect on an unexplored part of an application. 
+Yet, due to thelimitations of dynamic analysis, we could encounter false-positive results: a connection statement that we classified as covert could have an effect on an unexplored part of an application. 
 At the same time, we could also have false-negative results: changes in user interface could stem from the non-determinism in an application itself rather than the absence of communications. 
 Moreover, by focusing on individual connection statements, we cannot distinguish between multiple application behaviors
 that communicate via the same statement in code. We thus conservatively deem a connection as overt if it is overt for at least one of such behaviors. 
@@ -90,7 +89,7 @@ installed on the same device. We might explore that direction as part of future 
 %is also left to future work.
 
 Moreover, our analysis searches for communication that affects the
-application GUI in a direct manner rather than transitively, through other resources. 
+application UI in a direct manner rather than transitively, through other resources. 
 Extending the analysis to cover such cases, while maintaining its scalability and precision, 
 is another subject for possible future work.
  
