@@ -97,25 +97,29 @@ execution.
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 \item \textsc{\bfseries{Definition (Overt and Covert
     Connections)}}.  For connection statement $s$, $s$ is classified as
-  an {\it overt connection} if meets at least one of the following
+  an {\it overt connection} if it meets at least one of the following
   criteria:
   
-\begin{enumerate}[leftmargin=0.5cm]
+%\begin{enumerate}[leftmargin=0.5cm]
 
-\item{\bf User-Interface Cue on Failure}: When $s$ triggers an exception,
+%\item
+\noindent
+{\bf 1. User-Interface Cue on Failure}: When $s$ triggers an exception,
   the user may be notified of the failure via a user interface cue
   during failure handling.
 
-\item {\bf Program Exit on Failure}: When $s$ triggers an exception, the
+\noindent
+{\bf 2. Program Exit on Failure}: When $s$ triggers an exception, the
   program may stop executing due to a failure handling path that
   propagates that exception back up to the Android runtime.
 
-\item {\bf User-Interface Cue on Success}: When $s$ succeeds, there
+\noindent
+{\bf 3. User-Interface Cue on Success}: When $s$ succeeds, there
   exists a possible modification to the user interface {\it before}
   either (a) the next external event is handled by the application or
   (b) processing continues beyond the failure handling of $s$.
 
-\end{enumerate}
+%\end{enumerate}
 
 \noindent Conversely, a covert connection call does not meet
 any of the criteria.  

@@ -116,15 +116,14 @@ This approach was chosen as it leverages the applications' native mechanism for 
 \subsubsection{Application Instrumentation}
 As input to our study, we assume an Android application given as an apk file. 
 We use the dex2jar tool suite~\cite{dex2jar} to extract the jar file from the apk.
-We then use the asm framework~\cite{asm} to implement two types of transformations: 
+We then use the ASM framework~\cite{asm} to implement two types of transformations: 
 \vspace{-0.05in}
 \begin{itemize}[leftmargin=0.5cm]%\setlength{\itemsep}{-0.05in}
 \item \emph{A monitoring transformation} which produces a version of the original application that logs all executions of the connection statements in Table~\ref{tbl:connections}. 
 \item \emph{A blocking transformation} which obtains as additional input a configuration file that specifies the list of connection statements to disable. It then produces a version of the original application in which the specified connection statements are replaced by statements that throw exceptions.
 % of the corresponding type, as specified in Table~\ref{tbl:connections}.
 \end{itemize}
-The jar file of the transformed application is then converted back to an apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK.
- 
+The jar file of the transformed application is then converted back to an apk using the dex2jar tool suite and signed with our own signature, using the jarsigner tool distributed with the standard Java JDK. 
 As a known side effect of resigning applications, their authentication for services such as Google Plus APIs might be broken~\cite{googleAPI}. As a result, users might be unable to sign in with their Google Plus account or perform in-app purchases from the Google Play store. For that reason, we refrain from executing such scenarios in our analysis. %, as discussed below. 
 
 %\vspace{0.1in}
@@ -204,18 +203,18 @@ thus the automated application execution was unable to provide reliable results.
 We performed our study in three phases. In the first phase, 
 we installed the original version of each analyzed 
 application on a Nexus 4 mobile device running Android version 4.4.4.
-We manually exercised the application for around 10 minutes, exploring all its functionality visible to us. Our goal was to (a) achieve sufficient coverage and (b) keep the application active long enough to allow any background data fetch processes to manifest themselves in the application's GUI. 
+We manually exercised the application for around 10 minutes, exploring all its functionality visible to us. Our goal was to (a) achieve sufficient coverage and (b) keep the application active long enough to allow any background data fetch processes to manifest themselves in the application's UI. 
 Yet, we refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases, due to the resign-related limitations mentioned above.
 We recorded the execution script that captured all triggered actions. 
 We then re-installed the application %to recreate a ``clean'' state 
 and re-ran the script to collect schreenshots that were used as the baseline for further comparisons. 
 
 In the second phase, we used the monitoring transformation to produce a version of the %original 
-application that logs information about all existing and triggered connection statements. We ran the produced version using the execution script and collected the statistics about its communication statements.  
+application that logs information about all existing and triggered connection statements. We ran this version using the execution script and collected the statistics about its communication statements.  
 
 In the third phase, we iterated over all \emph{triggered} connection statements, disabling them one by one, in order to assess
 the necessity of each connection for preserving the user-observable behavior of the application. 
-That is, we arranged all triggered connection statements in a list, in a lexical order and then applied the blocking Transformation to disable the first connection statement in the list.   
+That is, we arranged all triggered connection statements in a list, in a lexical order and then applied the blocking transformation to disable the first connection statement in the list.   
 We ran the produced version of the application using the recorded execution script and compared the obtained screenshots to the baseline application execution. If disabling the connection statement did not affect the behavior of the application, we marked it as \emph{covert}, kept it disabled for the subsequent iterations and proceed to the next connection in the list.
 Otherwise, we marked the exercised connection as \emph{overt} and kept it enabled in the subsequent iterations.
 We continued with this process until all connections in the list were explored.
@@ -223,7 +222,7 @@ We continued with this process until all connections in the list were explored.
 %In all iterations, we also disabled all connections that were classified as non-triggered during the second phase. 
 %That was done to improve the accuracy 
 %of our analysis by proactively preventing applications from taking a new, previously unexplored, path when they detect connection failures. 
-As the final quality measure, we manually introspected the execution of the version in which all covert connections
+As the final quality measure, we manually inspected the execution of the version in which all covert connections
 were blocked, to detect any  possible issues missed by the automated analysis.
 
 %\vspace{0.1in}
@@ -232,8 +231,8 @@ were blocked, to detect any  possible issues missed by the automated analysis.
 \subsubsection{Subjects}
 As the subjects of our study, we downloaded the 20 top-popular applications available on the Google Play store in November 2014. 
 We excluded from this list chat applications, as our evaluation methodology does not allow assessing the usability of a chat application without a predictably available chat partner. 
-We also excluded applications whose asm-based instrumentation failed, most probably because they use language constructs that are not supported by that framework.
-The remaining thirteen applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding sizes are given in the second column of the table. 
+We also excluded applications whose ASM-based instrumentation failed, most probably because they use language constructs that are not supported by that framework.
+The remaining thirteen applications are listed in the first column of Table~\ref{tbl:applications}; their corresponding archived byte code sizes are given in the second column of the table. 
 
 %We did not extend our dynamic analysis beyond these thirteen applications because the inspection of our findings indicated that we reached saturation: while it is clearly infeasible to explore all possible scenarios, we observed similar trends in all analyzed applications. 
 %As such, inclusion of additional ones was not expected to provide substantially new insights. 
@@ -335,7 +334,7 @@ when executed for the exact same scenario with the connection being either enabl
 
 Determining the original purpose of these covert connections is a non-trivial task: 
 as implied by their nature, they do not exhibit any observable behavior. 
-Due to obfuscation, virtually no insights can be drawn from analyzing the reverse-engineered code of the applications either. 
+Due to obfuscation, virtually no ``semantic'' insights about the purpose of these connections can be drawn from the manual analysis of the application binaries either. 
 In an attempt to shed some light on the essence of these connections, 
 we inspected package and class names, 
 as well as execution stack traces, of the methods containing the covert connection statements.
@@ -343,14 +342,16 @@ We also inspected the data traffic that corresponds to these connections by rout
 
 We discovered that only 22 out of 51 connections (43\%) originate from the known A\&A libraries, as shown in the last column of Table~\ref{tbl:applications}. 
 Another 11 connections (21\%) appear to be responsible for the A\&A content as well. 
-However, they come either from application-specific packages or from libraries that cannot be immediately linked to A\&A. 
+However, they come either from application-specific packages or from third-party libraries that cannot be immediately linked to A\&A. 
 For example, the Walmart application triggers a covert connection from the \emph{com/walmartlabs/analytics/} package, which appears to be a proprietary analytics service. % implemented by Walmart. 
-That application also actively uses another three popular A\&A libraries. 
+%That application also actively uses another three popular A\&A libraries. 
 
 Analytics services collect information about application performance, crash and usage data, as well as the exact actions the user performs within the app. 
-While this information has a clear value to the developer, no comprehensive consent specifying the  nature and frequency of such data collection is presented to the user.
+While this information has a clear value to the developer, no apparent description specifying the nature and frequency of the data collection is presented to the user. 
 In fact, some applications start collecting analytics information even before they get activated. 
-For example, twitter, Walmart and Pandora start their data collection as soon as the phone is booted and continue, periodically, during the phone's entire up time, even if the applications themselves were never used. 
+For example, twitter, Walmart and Pandora start their data collection as soon as the phone is booted and continue, periodically, during the phone's entire up time, even if the applications themselves were never used.
+In most cases, the user cannot opt-out from such data sharing without uninstalling the application.
+ 
 
 Beyond A\&A, several applications release information to their own and/or third-party services, without  causing any effect on the applications' observable behavior. 
 For example, twitter uses covert connections to collect information about videos and other rich media attachments followed by the users from tweets. 
@@ -379,20 +380,22 @@ Yet, blocking that release of information does not harm the scanning capabilitie
 %\noindent 
 %{\bf Lessons Learned.}
 \subsubsection{Lessons Learned}
-As can be seen in the last column of Table~\ref{tbl:applications}, distinguishing between overt and covert connections only by considering their package name schema is impractical.  
+As can be seen in the last column of Table~\ref{tbl:applications}, distinguishing between overt and covert connections only by considering their package name schema is ineffective.  
 %connection types and their destinations. 
-That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where the authors 
-show that blocking all messages to A\&A services made more than 60\% of the applications either less functional or completely dysfunctional. 
+%That observation is consistent with findings in~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11}, where the authors 
+%show that blocking all messages to A\&A services made more than 60\% of the applications either less functional or completely dysfunctional. 
 Moreover, some malicious applications deliberately hide their payloads by using package names which look legitimate and benign~\cite{Zhou:Jiang:SP2012}. We conclude that a more sophisticated 
 technique for identifying the covert communication performed by the applications is required. 
 
-We manually investigated binaries of the analyzed applications, to gain more insights into the way applications treat covert connections. % of each of the identified type and communication target. 
+We manually investigated binaries of the analyzed applications, to gain more insights into the 
+%way applications treat covert connections. % of each of the identified type and communication target.
+implementation patterns of covert connections.
 We noticed that, in a large number of cases, neither successes nor failures of such connections trigger visual notifications to the user. 
 %Connection failures are silently ignored by the applications without producing any . 
 For the failures, the triggered exception is often either caught and silently ignored in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by developers rather than end-user.
 
-\conclusion{To answer RQ2, we conjecture that covert connections can be detected by inspecting updates to GUI elements on both the success and the failure path of a connection statement. 
-Lack of such GUI updates is indicative for a connection being covert for the application execution as the user is unaware of both the success and the failure of the communication.}
+\conclusion{To answer RQ2, we conjecture that covert connections can be detected by inspecting updates to UI elements on both the success and the failure path of a connection statement. 
+Lack of such UI updates is indicative for a connection being covert for the application execution as the user is unaware of both the success and the failure of the communication.}
 
 %\conclusion{To answer RQ2, we conjecture that covert connections can be detected by inspecting connection failure paths. The lack of updates to GUI elements on the failure path is indicative for a connection being silently ignored by the application, thus being covert for the application execution.}
 

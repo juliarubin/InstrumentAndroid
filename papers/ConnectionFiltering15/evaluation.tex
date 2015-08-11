@@ -1,38 +1,6 @@
-\begin{table}[t]
-\vspace{-0.15in}
-\caption{Comparison With The Manually Established Results.}
-\label{tbl:eval}
-\centering
-\tabcolsep=2.0pt
-\resizebox{1.0\columnwidth}{!}{%
-\begin{tabular}{|l|C{2.7cm}|C{2.7cm}|C{1.9cm}|}
-\hline
-\multirow{2}{*}{\textbf{Applications}} & \multicolumn{2}{c|}{\textbf{Correctly detected covert}} & \multirow{2}{1.4cm}{\textbf{Execution time}} \\
-\cline{2-3}
-                                & Precision         & Recall            &    \\
-\hline
-%--------------------------------------------------------------------
-air.com.sgn.cookiejam.gp  & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 2min 11s \\
-com.crimsonpine.stayinline  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 2min 24s \\
-com.devuni.flashlight   & 1/2 (50.0\%)  & 1/1 (100.0\%)  & 1min 44s \\
-com.emoji.Smart.Keyboard  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 1min 16s \\
-com.grillgames.guitarrockhero & 1/1 (100.0\%)  & 1/14 (7.1\%)  & 6min 14s \\
-com.jb.emoji.gokeyboard   & 4/4 (100.0\%)  & 4/7 (57.1\%)  & 3min 22s \\
-com.pandora.android    & 4/4 (100.0\%)  & 4/9 (44.4\%)  & 2min 41s \\
-com.spotify.music    & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 2min 51s \\
-com.twitter.android    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 3min  3s \\
-com.walmart.android    & 3/3 (100.0\%)  & 3/5 (60.0\%)  & 3min  2s \\
-net.zedge.android    & 3/4 (75.0\%)  & 3/4 (75.0\%)  & 4min 13s \\
-\hline
-%--------------------------------------------------------------------
-Average       & 93.2\% & 61.5\% & 2min 48s \\
-\hline
-%--------------------------------------------------------------------
-\end{tabular}
-}% resizebox
-\end{table}
 
-\vspace{-0.05in}
+
+%\vspace{-0.05in}
 \section{Experiments}
 \label{sec:evaluation}
 We start by assessing the quality of our static analysis technique. 
@@ -78,7 +46,7 @@ three runs on an Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\te
 The results of this experiment are summarized in Table~\ref{tbl:eval}.  
 The second column of the table shows that the overall averaged precision of our analysis is 93.2\%. 
 The analysis correctly identifies all but two covert connections. 
-The first one, in \emph{com.devuni.flashlight}, is responsible for presenting icons of application extensions that can be downloaded from Google Play. The misclassification stems from the fact that GUI updates for these icons happen after the success and failure paths unify, and thus are missed by our search. 
+The first one, in \emph{com.devuni.flashlight}, is responsible for presenting icons of application extensions that can be downloaded from Google Play. The misclassification stems from the fact that UI updates for these icons happen after the success and failure paths unify, and thus are missed by our search. 
 
 The second misclassified connection, in \emph{net.zedge.android}, is responsible for presenting advertisement material and belongs to the \emph{com.mopub.mobileads} A\&A service library packaged with the application. 
 That library relies on asynchronous RPC communication with Google services 
@@ -111,7 +79,7 @@ Even though our analysis is designed to be conservative, it is able to correctly
 %, resulting in the overall recall of 63.8\% 
 The major reasons for why we do
 not achieve higher recall are (1) a conservative, though feasibly
-analyzable, definition of {\it processing} related to a connection
+analyzable, definition of direct processing related to a connection
 call, and (2) conservative call graph construction, specifically
 w.r.t. reflection.
 Such solution is aligned with our goal of providing actionable results, which are ``safe'' albeit under-approximate.  
@@ -124,18 +92,56 @@ the last column of table Table~\ref{tbl:eval}.
 %Considering advertisement covert results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
 %The technique correctly identifies the majority of covert connections.
 
+
+
+
 \subsubsection{Usability Assessment}
-To check whether our technique is able to provide actionable results, we further select 100 applications that persisted in the list of the 500 most popular free applications on Google Play in November 2014 and May 2015 samples. 
-We used two Nexus devices running Android v4.4.4, installing the original version of an application on one; on the other, we installed a modified version that was produced by employing the \emph{blocking transformation} (see Section~\ref{sec:study}) to disable all calls identified as covert by the static analysis. 
+To check whether our technique is able to provide actionable results, we further selected 100 applications that persisted in the list of the 500 most popular free applications on Google Play in the November 2014 and May 2015 samples. 
+We installed the original version of each application on a Nexus device running Android v4.4.4.
+On an identical device, we installed a modified version of each application that was produced by employing the \emph{blocking transformation} (see Section~\ref{sec:study}) to disable all calls identified as covert by the static analysis. 
 
 We recruited two human subjects, both experienced software developers, and paired each with an author of this paper.
 Each pair was given one device with the original and one with the modified versions of the applications. We asked them to execute the same application simultaneously on both devices for around 10 minutes, and to record all differences observed during the execution.
-Similar to the experiment described in Section~\ref{sec:study}, our goal was to ensure sufficient coverage and manifestation of background data fetch processes in the application's GUI.
+Similar to the experiment described in Section~\ref{sec:study}, our goal was to ensure sufficient coverage and manifestation of background data fetch processes in the application's UI.
 We asked the participants to avoid signing in with a Google Plus account or performing in-app purchases from the Google Play store, as these features are not supported in resigned applications, as discussed in Section~\ref{sec:study}.
 
+\begin{table}[t]
+\caption{Comparison With The Manually Established Results.}
+\label{tbl:eval}
+\centering
+\tabcolsep=2.0pt
+\resizebox{1.0\columnwidth}{!}{%
+\begin{tabular}{|l|C{2.7cm}|C{2.7cm}|C{1.9cm}|}
+\hline
+\multirow{2}{*}{\textbf{Applications}} & \multicolumn{2}{c|}{\textbf{Correctly detected covert}} & \multirow{2}{1.4cm}{\textbf{Execution time}} \\
+\cline{2-3}
+                                & Precision         & Recall            &    \\
+\hline
+%--------------------------------------------------------------------
+air.com.sgn.cookiejam.gp  & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 2min 11s \\
+com.crimsonpine.stayinline  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 2min 24s \\
+com.devuni.flashlight   & 1/2 (50.0\%)  & 1/1 (100.0\%)  & 1min 44s \\
+com.emoji.Smart.Keyboard  & 2/2 (100.0\%)  & 2/2 (100.0\%)  & 1min 16s \\
+com.grillgames.guitarrockhero & 1/1 (100.0\%)  & 1/14 (7.1\%)  & 6min 14s \\
+com.jb.emoji.gokeyboard   & 4/4 (100.0\%)  & 4/7 (57.1\%)  & 3min 22s \\
+com.pandora.android    & 4/4 (100.0\%)  & 4/9 (44.4\%)  & 2min 41s \\
+com.spotify.music    & 1/1 (100.0\%)  & 1/2 (50.0\%)  & 2min 51s \\
+com.twitter.android    & 1/1 (100.0\%)  & 1/3 (33.3\%)  & 3min  3s \\
+com.walmart.android    & 3/3 (100.0\%)  & 3/5 (60.0\%)  & 3min  2s \\
+net.zedge.android    & 3/4 (75.0\%)  & 3/4 (75.0\%)  & 4min 13s \\
+\hline
+%--------------------------------------------------------------------
+Average       & 93.2\% & 61.5\% & 2min 48s \\
+\hline
+%--------------------------------------------------------------------
+\end{tabular}
+}% resizebox
+\vspace{-0.15in}
+\end{table}
+
 To analyze the results of that experiment in a reliable manner, we exclude 14 applications that were non-operational (either did not run in both versions, or required payment to continue running);
- 17 applications for which asm-based instrumentation failed or the instrumented version did not run due to the issues related to the resigning process;
- 2 Google Play applications that we could not re-install on a device;
+ 17 applications for which ASM-based instrumentation failed or the instrumented version did not run due to the issues related to the resigning process;
+ 2 Google applications that we could not re-install on a device;
 5 chat applications;
 4 applications that either contained no connection statements or had no covert connection statements detected;
 and 11 applications for which no covert connection statement were triggered during the dynamic execution of the application.
@@ -173,7 +179,7 @@ that the connection statements deemed covert by the static analysis have indeed 
 %\item  
 \\
 \noindent {\bf Missing advertisement: 9  (19.2\%)}. 
-Advertisement information was missing in 9 cases, for the same reason as in Zedge example described above. 
+Advertisement information was missing in 9 cases, for the same reason as in the Zedge example described above. 
 %\item
 \\
 \noindent{\bf Missing minor functionality: 3  (6.4\%)}. 
@@ -183,8 +189,8 @@ The participants observed the absence of features that they perceived as minor: 
 \noindent{\bf Missing essential functionality: 5 (10.6\%)}.
 Only 5 applications were missing essential functionality: %or seriously broken: 
 Battery Saver, Spider-Man and Minion Rush games, Microsoft Office Mobile and PicsArt Photo Studio. We conjecture that the last case is related to resigning issues. %, but we could not verify that.
-Other cases stem from the limitations of our static analysis techniques: performing intra-application analysis, ignoring stateful communication and restricting the search for GUI updates only to statements that occur before the success and failure paths unify.
-We believe that the low number of such cases, together with the high availability and scalability of our analysis, justifies these choices.   
+Other cases stem from the limitations of our static analysis techniques: performing intra-application analysis, ignoring stateful communication and restricting the search for UI updates only to statements that occur before the success and failure paths unify.
+We believe that the low number of such cases, together with the high scalability of our analysis, justifies these choices.   
 %\end{itemize}
 
 
@@ -196,8 +202,9 @@ and, as it turns out, attempt network communication. Examples of such applicatio
 %A detailed summary of the applications that we exercised  and statistics about there execution is available in~\cite{Appendix}. 
 
 %Overall, these results are very encouraging and demonstrate that, in a vast majority of cases, the results of our static analysis can be directly applied to disable covert communication. 
-
-\conclusion{To answer RQ3, we conclude that the static analysis proposed in this paper can be applied for an accurate detection of covert connections. The technique is precise, highly scalable and provides actionable output that can be directly used for disabling covert communication in a vast majority of cases.}
+ 
+\conclusion{
+To answer RQ3, we conclude that the static analysis proposed in this paper can be applied for an accurate detection of covert connections. The technique is precise, highly scalable and provides actionable output that can be directly used for disabling covert communication in a vast majority of cases.}
 
 
 
@@ -238,7 +245,7 @@ and, as it turns out, attempt network communication. Examples of such applicatio
 
 
 \subsection{Covert Communication in the Wild}
-We next apply our technique to the 500 most popular Android application
+We next apply our technique to the 500 most popular Android applications
 downloaded from the Google Play store. By considering such a large data set, our goal is to
 investigate how often covert communication occurs and what its most common sources are.
 
@@ -262,43 +269,14 @@ investigate how often covert communication occurs and what its most common sourc
 %%}% resizebox
 %\end{table}
 
-\begin{table}[t]
-\renewcommand*{\arraystretch}{1.3}
-\vspace{-0.15in}
-\caption{Top 10 Covert Communication Callers.}
-\label{tbl:callers}
-\centering
-\tabcolsep=1.5pt
-\resizebox{1.0\columnwidth}{!}{%
-\begin{tabular}{|c|P{2.6cm}|P{3.6cm}|C{1.9cm}|C{2.4cm}|}
-\hline
-%--------------------------------------------------------------------
- &
- \textbf{Package} &
- \textbf{Description} &
- \textbf{Used in \#~(\%)~of~Apps} &
- \textbf{covert~calls (\%~of~total~calls)} \\
-\hline
-1.  & com.google.android    & Google services          & 382 (76.4\%)  & 1913 (49.9\%) \\
-2.  & com.gameloft      & Mobile games          & 17 (3.4\%)  & 784 (87.4\%) \\
-3.  & com.inmobi      & A\&A services  & 61 (12.2\%)  & 615 (67.6\%) \\
-4.  & com.millennialmedia.\newline{}android  & A\&A services  & 78 (15.6\%)  & 447 (58.8\%) \\
-5.  & com.mopub.mobileads    & A\&A services  & 72 (14.4\%)  & 320 (56.9\%) \\
-6.  & com.tapjoy      & A\&A services  & 49 (9.8\%)  & 277 (43.8\%) \\
-7.  & com.facebook      & Facebook services          & 112 (22.4\%)  & 222 (24.3\%) \\
-8.  & com.unity3d      & Gaming services          & 77 (15.4\%)  & 203 (41.8\%) \\
-9.  & (default)       & Default package of an application      & 23 (4.6\%)  & 178 (48\%) \\
-10.  & com.flurry      & A\&A services  & 95 (19\%)   & 175 (35.3\%) \\
 
-\hline
-%--------------------------------------------------------------------
-\end{tabular}
-}% resizebox
-\end{table}
+
+
+
 
 
 Our analysis reveals that 46.2\% of all connection statements in these application can be considered covert (8,539 connections out of 18,480 in total).
-These results are consistent with the observation of our empirical study described in Section~\ref{sec:study}.
+These results, adjusted by the 93\% precision and 61\% recall rates of the analysis, are consistent with the observation of our empirical study described in Section~\ref{sec:study}.
 %, showing that a large percent of connections
 %made by applications can be considered covert.  In fact, even
 %with our conservative analysis, 84\% of connections fall into that
@@ -313,7 +291,7 @@ These results are consistent with the observation of our empirical study describ
 
 Table~\ref{tbl:callers} presents the top 10 packages in which
 covert connections occur. 
-As we analyzed free applications that frequently use open-source packages and then aggregated the numbers for
+As we analyzed free applications that frequently use third-party packages and then aggregated the numbers for
 500 such applications, it is no surprise that Google services, gaming, and A\&A services are at the top of the
 list; the number of applications that use each of these packages is shown in the third
 column of Table~\ref{tbl:callers}.

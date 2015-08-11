@@ -8,7 +8,7 @@
 %\pagestyle{plain}
 %\pagenumbering{arabic}
 
-\usepackage{hyperref}
+%\usepackage{hyperref}
 \usepackage{boxedminipage}
 %\usepackage{algorithmic}
 \usepackage{algpseudocode} 
@@ -95,6 +95,9 @@
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
 \hyphenation{le-ga-cy}
+
+\AtEndDocument{\par\leavevmode}
+
 
 %\renewcommand{\baselinestretch}{0.94}
 %\renewcommand{\dbltopfraction}{1.0}
@@ -207,7 +210,8 @@ manner, we propose a highly precise and scalable static analysis technique:
 it achieves 93\% precision and 61\% recall compared to the empirically determined ``ground truth'', 
 and runs in a matter of a few minutes.
 Furthermore, according to human evaluators, in 42 out of 47 cases, disabling connections deemed covert by our analysis leaves the delivered application experience either completely intact or with only insignificant interference. 
-We conclude that our technique is effective for identifying and disabling covert communication and use it to investigate communication patterns in the 500 top-popular applications from Google Play. 
+We conclude that our technique is effective for identifying and disabling covert communication. 
+We then use it to investigate communication patterns in the 500 top-popular applications from Google Play. 
 \end{abstract}
 
 % A category with the (minimum) three required fields

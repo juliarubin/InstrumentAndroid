@@ -54,7 +54,7 @@ potential privacy breaches, bandwidth charges, power consumption on
 the device, and the unsuspected presence of continued communication
 between the device and remote organizations. In fact, we observed that
 several popular applications, e.g., Walmart and twitter, spawn
-services that communicate with third-party servers even when the 
+services that covertly communicate with remote servers even when the 
 application itself is inactive and the user is unaware that the
 spawned services are running in the background.
 
@@ -112,7 +112,7 @@ applications, e.g., twitter.
 Our study reveals that 63\% of
 the \emph{exercised} connection statements are covert~-- disabling
 them has no noticeable effect on the observable application
-functionality. Interestingly, only less than half of such covert connections correspond to communication initiated from known advertisement and analytics (A\&A) packages included in the application.
+functionality. Interestingly, less than half of such covert connections correspond to communication initiated from known advertisement and analytics (A\&A) packages included in the application.
 %; other statements are triggered by the ``core'' application itself. 
 Thus, looking at the package information only is not sufficient for distinguishing between
 overt and covert communication. 
@@ -180,17 +180,34 @@ Otherwise, it is deemed covert.
 %of a rich model of the Android
 %API~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. 
 
-We perform intra-application analysis only, ignoring effects of RPC communication between multiple applications on the same device. Moreover, our technique is not designed to handle
-%(1) \emph{optional} behaviors, for which failing connections are silently ignored, but successful connections result in presenting additional information to the user; 
-%advertisement content usually falls into that category. 
-\emph{stateful} communication patterns with external services: those when a connection attempt leaves the target in a state different from the one it had before, and further communication is influenced by the server's state. Our experiments show that both such cases are rare. 
+There are two reasons for the analysis to misclassify a connection as covert. 
+First, it does not take into account user interface (UI) updates that occur outside of the connection's direct processing, i.e., %those that result from 
+due to the connection altering a local or a remote state. 
+Second, the computation of the direct processing itself does not extend beyond the application's byte code, i.e., it does not consider native code and inter-application executions. 
+Our experiments show that these cases are rare, which, together with the high scalability achieved by the technique, justifies our design choices.
+
+%
+% Such cases might include GUI updates within and application as well as  within nor outside the application not outside of it, e.g., when performing an RPC inter-application communication or when toggling a state of a remote server.
+%First, similar to most static analysis techniques for Android, %it does not guarantee soundness because
+%it does not consider all runtime semantics, e.g., GUI updates that occur in native code.  
+
+%\emph{stateful} communication patterns with external services: those when a connection 
+%alters the state of the server and further communication, that is influenced by the server's state, modifies the user interface. 
+
+%Finally, 
 
 %\vspace{0.05in}
 \noindent 
 {\bf RQ3: How well does static detection perform?}
-To assess the precision and recall of our technique, we evaluate it on the ``truth set'' established during the in-depth dynamic study described above. %of thirteen popular applications from Google Play.
-The results show that our static analysis features a high precision -- 93\% of the covert connection calls identified by the static analysis are indeed classified as covert during the manual analysis. Only two connections are misclassified as covert: one is responsible for presenting advertisement material via the Google Ads component installed on the device, and another -- for presenting icons of additional apps that can be downloaded from Google Play. 
-Moreover, even though our technique is designed to be conservative, it is still able to identify 61\% of all covert connections in the studied application.
+To assess the precision and recall of the static analysis technique, we evaluate it on the ``truth set'' established during the in-depth dynamic study described above. %of thirteen popular applications from Google Play.
+The results show that our technique features a high precision: 93\% of the covert connection calls identified by the static analysis are indeed classified as covert during the dynamic study. 
+Moreover, even though the technique is designed to be conservative and favor high precision over high recall, 
+%i.e., it relies on a feasibly analyzable definition of direct processing and conservative call graph construction, 
+%specifically w.r.t. reflection, 
+it is still able to identify 61\% of all covert connections in the studied applications.
+
+There are only two connections that were misclassified as covert, both due to the reasons mentioned above. The first one occurs because a UI update~-- in this case, presenting icons of additional apps that can be downloaded from Google Play~-- happens outside of the connection's direct processing. The second case, which is responsible for presenting advertisement material via the Google Ads component installed on the device, occurs because the direct processing of the connection does not extend to asynchronous RPC communication with Google services installed on the device. 
+
 
 
 To gain further insights on the quality of the technique, we apply it to additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed covert by the analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the run of an application on two devices. 
