@@ -10,8 +10,7 @@ developed in Java as a series of external event handler routines,
 e.g., button click and application exit.  Given an Android
 application, the static analysis classifies each statement that may
 invoke a connection call as either {\it overt} or {\it covert}.  We
-begin by defining failure handling, overt and covert connection
-statements with precision.
+begin by defining overt and covert communication.
 
 
 %% In an Android application, each
@@ -61,26 +60,30 @@ statements with precision.
 %% \vspace{-0.1in}
 %% \end{figure}
 
-\begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
+%% \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 
-\item \textsc{\bfseries{Definition (Rethrown Exception)}}.  A rethrown
-  exception occurs when a \lstinline!catch! block catches an
-  exception, but before the block is exited, a reachable statement
-  throws a new or the same exception.
+%% \item \textsc{\bfseries{Definition (Rethrown Exception)}}.  A rethrown
+%%   exception occurs when a \lstinline!catch! block catches an
+%%   exception, but before the block is exited, a reachable statement
+%%   throws a new or the same exception.
   
-\item \textsc{\bfseries{Definition (Failure Handling)}}. The failure
-  handling of a connection call $s$ for exception type $e$ is defined
-  as the execution paths that start when an exception of type $e$
-  propagates to connection call $s$ and end on each path when a
-  \lstinline!catch! block is exited such that $e$ and all exceptions
-  that could be rethrown on the path from $s$ are caught.
-\end{description}
+%% \item \textsc{\bfseries{Definition (Failure Handling)}}. The failure
+%%   handling of a connection call $s$ for exception type $e$ is defined
+%%   as all the execution paths that 
 
-Intuitively, the failure handling of $s$ on $e$ are the computation
-paths that handle $e$ and any failures triggered by the handling of
-$e$ (through rethrown exceptions).  Failure handling is finished when
-all exceptions triggered by $e$ are handled and flow returns to normal
-execution.
+%%   start at all catch blocks that handle exceptions of type $e$ at $s$
+  
+%%   and 
+
+%%   end when (1) 
+
+%%  end when a \lstinline!catch!
+%%   block is exited such that $e$ and all exceptions that could be
+%%   rethrown on the path from $s$ are caught.
+
+
+%% \end{description}
+
 
 %% Figure~\ref{fig:failure-handling} give a simplified representation of
 %% failure handling pattern that we observed in the twitter application.
@@ -94,37 +97,49 @@ execution.
 %% handling of thrown \lstinline!RemoteException! to the end of the
 %% handling of the rethrown \lstinline!AdvertisingException!.
 
+
+
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 \item \textsc{\bfseries{Definition (Overt and Covert
     Connections)}}.  For connection statement $s$, $s$ is classified as
   an {\it overt connection} if it meets at least one of the following
   criteria:
   
-%\begin{enumerate}[leftmargin=0.5cm]
-
-%\item
-\noindent
-{\bf 1. User-Interface Cue on Failure}: When $s$ triggers an exception,
+\begin{enumerate}
+\item  {\bf UI Cue on Failure}: When $s$ triggers an
+  exception $e$,
   the user may be notified of the failure via a user interface cue
-  during failure handling.
+  during {\it failure handling} of $s$ on $e$.
 
-\noindent
-{\bf 2. Program Exit on Failure}: When $s$ triggers an exception, the
-  program may stop executing due to a failure handling path that
-  propagates that exception back up to the Android runtime.
 
-\noindent
-{\bf 3. User-Interface Cue on Success}: When $s$ succeeds, there
+\item {\bf Program Exit on Failure}: When $s$ triggers an exception, the
+program may stop executing due to an execution path that propagates
+that exception back up to the Android runtime.
+
+\item {\bf UI Cue on Success}: When $s$ succeeds, there
   exists a possible modification to the user interface {\it before}
   either (a) the next external event is handled by the application or
-  (b) processing continues beyond the failure handling of $s$.
+  (b) processing continues beyond the {\it failure handling} of $s$.
 
-%\end{enumerate}
+\end{enumerate}
 
-\noindent Conversely, a covert connection call does not meet
-any of the criteria.  
+\noindent Conversely, a covert connection call does not meet any of
+the criteria.  
 
 \end{description}
+
+Failure handling is defined precisely in
+Section~\ref{sec:failure-handling}.  Intuitively, the failure handling
+of connection statement $s$ on exception type $e$ are the computation
+paths that handle $e$ and any failures triggered by the handling of
+$e$ (through rethrown exceptions).  Failure handling is finished when
+all exceptions triggered by $e$ are handled and flow returns to normal
+execution.  
+
+In the next section, we discuss how we compute a static call graph
+that represents possible method targets of each call expression in the
+Android application.
+
 
 %% \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 %% \item \textsc{\bfseries{Problem}}: For each connection call in an
@@ -137,7 +152,7 @@ any of the criteria.
 %% that denotes connection failure for each connection call in the
 %% application.  If there exists a failure-handling path of $s$ on $e$
 %% that may include a call to a method that notifies the user of the
-%% failure, then $s$ is considered overt.  If it is possible for $e$,
+%% failure, then $s$ is considered overt.  If it is possible $e$,
 %% when triggered at $s$, to propagate back up the stack to the Android
 %% runtime, $s$ is considered overt.
 
@@ -181,11 +196,17 @@ DroidSafe Android Device Implementation
 (ADI)~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.  The ADI
 is a Java-based model of the Android runtime and API that attempts to
 present full runtime semantics for commonly-used classes of the
-runtime and API.  Our call graph construction does not traverse into
-Android API methods.  However, we found it necessary to account for
-API calls that directly call back into the application, e.g.,
-\lstinline!Thread.start()!, by replacing the API call with a direct
-call to the application method(s) that the API call could invoke.
+runtime and API.  Our call graph construction begins at each
+application method that could be a target of the Android runtime;
+these are the event handler methods of the applications.  Call graph
+construction does not traverse into Android API methods.  So the call
+graph is actually a forest of graphs, each rooted at the events
+handlers of the application, and each graph includes only
+application-defined methods.  However, we found it necessary to
+account for API calls that directly call back into the application,
+e.g., \lstinline!Thread.start()!, by replacing the API call with a
+direct call to the application method(s) that the API call could
+invoke.
 
 %% For example, if an application method, $m$ calls
 %% \lstinline!Thread.start()! on a receiver that is an application class,
@@ -257,14 +278,29 @@ affecting the user interface are listed in Table~\ref{tbl:ui} (also
 included are all overriding methods).
 
 \subsection{Failure Handler Analysis}
+\label{sec:failure-handling}
 
 Failure analysis determines if a connection call modifies the UI or
-could exit the application on exception.  We organize the static
+could exit the application on exception.  The precise definition of
+execution paths of the failure handling of $s$ on $e$ is defined via
+the algorithms in this section. We organize the static
 failure-handling analysis as a recursive traversal on the call graph
 for ease of understanding.  An iterator over all application
 statements calls the analysis separately for the combination of each
 statement in the application that could target a connection call and
 an exception that indicates communication failure.
+
+Conceptually, the failure handling of $s$ on $e$ is defined as a slice
+of instructions.  In the slice are all statements that are reachable
+from all \lstinline!catch! blocks that can dynamically handle $e$.
+Then for each reachable statement in the slice that could throw an
+exception of type $f$, recursively add to the slice all statements
+that are reachable from all \lstinline!catch! blocks that could
+dynamically handle $f$.  Next, recursively process the reachable
+statements that were just added to the slice that could throw an
+exception, and so on.  In the processing, Android API methods are not
+considered, and searching for a handler does not propagate into the
+Android runtime.
 
 %resize line numbers
 \algrenewcommand\alglinenumber[1]{\scriptsize #1:}
@@ -674,14 +710,14 @@ phases:
   statements of $f$ for calls that affect the user interface.  This
   has the effect of traversing the call graph backwards from $m$ at
   $s$ for UI calls, stopping at event handlers (that are called by the
-  Android API) and, on a path, stopping once the exception(s) of $s$ is
+  Android API) and, on a path, stopping once the exception of $s$ is
   handled.
 
 If the success forward and success backward analysis do not find any
 calls that could affect the user interface, then the connection call
 is classified as covert.
 
-\subsection{Design Discussion and Limitations}
+\subsection{Design Discussion}
 
 The intuition for our static analysis is that overt connection
 calls {\it always} affect the user interface either on success or
@@ -700,10 +736,4 @@ motivation for why the success backward analysis only examines methods
 that were analyzed by the failure analysis.  We assume that for all
 stacks of $m$, methods beyond the failure handling do not contribute
 to processing of $s$.
-
-The presented analysis has the following limitations. Dynamically
-loaded code is not considered.  The analysis considers only checked
-exceptions.  We use a best-effort, though aggressive, policy to
-account for reflection semantics; this policy could miss possible
-runtime semantics.  
 
