@@ -13,16 +13,16 @@ To minimize unexpected results, we performed all our dynamic experiments on the 
 We also automated our execution scripts in order to compare behaviors of different variants under the same scenario and settings. 
 We only report on the results comparing these similar runs.  
 
-Yet, due to thelimitations of dynamic analysis, we could encounter false-positive results: a connection statement that we classified as covert could have an effect on an unexplored part of an application. 
+Yet, due to the limitations of dynamic analysis, we could encounter false-positive results: a connection statement that we classified as covert could have an effect on an unexplored part of an application. 
 At the same time, we could also have false-negative results: changes in user interface could stem from the non-determinism in an application itself rather than the absence of communications. 
 Moreover, by focusing on individual connection statements, we cannot distinguish between multiple application behaviors
 that communicate via the same statement in code. We thus conservatively deem a connection as overt if it is overt for at least one of such behaviors. 
 Exploring more sophisticated techniques for identification of covert connections could be a subject of possible future work.
 
-During our analysis, we disabled connections one by one, iterating over their list arranged in a lexicographic (i.e., semantically random) order. As such, we could miss cases when 
-several connections can be excluded altogether, but not individually. 
-Since exploring all connection state combinations is exponential, we opted for this linear approach that still guarantees correct, 
-albeit possibly over-approximate results. 
+%During our analysis, we disabled connections one by one, iterating over their list arranged in a lexicographic (i.e., semantically random) order. As such, we could miss cases when 
+%several connections can be excluded altogether, but not individually. 
+%Since exploring all connection state combinations is exponential, we opted for this linear approach that still guarantees correct, 
+%albeit possibly over-approximate results. 
 
  
 Finally, our study only includes a limited number of subjects, so the results might not generalize to other applications.

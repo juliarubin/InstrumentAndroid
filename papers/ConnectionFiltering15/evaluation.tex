@@ -75,7 +75,7 @@ installed on the same device. Our static analysis is not designed to track inter
 
 Even though our analysis is designed to be conservative, it is able to correctly identify 
 %64 out of 106 connection
-61\% of statements deemed covert in the empirical study (see column 3 in Table~\ref{tbl:eval}). 
+61.5\% of statements deemed covert in the empirical study (see column 3 in Table~\ref{tbl:eval}). 
 %, resulting in the overall recall of 63.8\% 
 The major reasons for why we do
 not achieve higher recall are (1) a conservative, though feasibly
@@ -86,7 +86,7 @@ Such solution is aligned with our goal of providing actionable results, which ar
 
 Finally, the analysis is highly efficient and
 runs in a matter of minutes even on large applications, as shown in
-the last column of table Table~\ref{tbl:eval}.
+the last column of Table~\ref{tbl:eval}.
 
 
 %Considering advertisement covert results in a slight increase in recall, to 64.6\% (column 5 in Table~\ref{tbl:eval}).
@@ -96,7 +96,7 @@ the last column of table Table~\ref{tbl:eval}.
 
 
 \subsubsection{Usability Assessment}
-To check whether our technique is able to provide actionable results, we further selected 100 applications that persisted in the list of the 500 most popular free applications on Google Play in the November 2014 and May 2015 samples. 
+To check whether our technique is able to provide actionable results, we further selected 100 applications that persisted in the list of the 500 most popular free applications on Google Play in the January 2015 and May 2015 samples. 
 We installed the original version of each application on a Nexus device running Android v4.4.4.
 On an identical device, we installed a modified version of each application that was produced by employing the \emph{blocking transformation} (see Section~\ref{sec:study}) to disable all calls identified as covert by the static analysis. 
 
@@ -203,8 +203,7 @@ and, as it turns out, attempt network communication. Examples of such applicatio
 
 %Overall, these results are very encouraging and demonstrate that, in a vast majority of cases, the results of our static analysis can be directly applied to disable covert communication. 
  
-\conclusion{
-To answer RQ3, we conclude that the static analysis proposed in this paper can be applied for an accurate detection of covert connections. The technique is precise, highly scalable and provides actionable output that can be directly used for disabling covert communication in a vast majority of cases.}
+\conclusion{To answer RQ3, we conclude that the static analysis proposed in this paper can be applied for an accurate detection of covert connections. The technique is precise, highly scalable and provides actionable output that can be directly used for disabling covert communication in a vast majority of cases.}
 
 
 
@@ -246,7 +245,8 @@ To answer RQ3, we conclude that the static analysis proposed in this paper can b
 
 \subsection{Covert Communication in the Wild}
 We next apply our technique to the 500 most popular Android applications
-downloaded from the Google Play store. By considering such a large data set, our goal is to
+downloaded from the Google Play store in January 2015. 
+By considering such a large data set, our goal is to
 investigate how often covert communication occurs and what its most common sources are.
 
 %\begin{table}[t]
@@ -295,7 +295,7 @@ As we analyzed free applications that frequently use third-party packages and th
 500 such applications, it is no surprise that Google services, gaming, and A\&A services are at the top of the
 list; the number of applications that use each of these packages is shown in the third
 column of Table~\ref{tbl:callers}.
-More surprising is the \emph{com.gameloft} package (row 2 of Table~\ref{tbl:callers}) that is part of only 17 different mobile applications by the same company. Yet, the number of covert connection statements these game applications contain is notable. 
+More surprising is the \emph{com.gameloft} package (row 2 of Table~\ref{tbl:callers}); even though it is part of only 17 different mobile applications published by the same company, the number of covert connection statements these game applications contain is notable. 
 
 The last column of Table~\ref{tbl:callers} shows the percentage of covert connections out of all connection statements in the corresponding package. This number varies between 24\% and 87\%, confirming, again, our initial observation in Section~\ref{sec:study} that the source of a connection cannot be used to determine its impact on the application behavior. 
 

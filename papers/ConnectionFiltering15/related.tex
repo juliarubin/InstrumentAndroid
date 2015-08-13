@@ -44,7 +44,7 @@ Our work is orthogonal and complimentary to all the above: while they focus on p
 our focus is on distinguishing between overt and covert flows. 
 
 The authors of AppFence~\cite{Hornyack:Han:Jung:Schechter:Wetherall:CCS11} build up on TaintDroid and explore approaches for either obfuscating or completely blocking the identified cases of sensitive information release.
-Their study shows that blocking all such cases renders more than 65\% of the application either less functional or completely dysfunctional, blocking cases when information flows to advertisement and analytics services ``hurts'' 10\% of the applications, and blocking the communication with the advertisement and analytics services altogether -- more than 60\% of the applications.
+Their study shows that blocking all such cases renders more than 65\% of the applications either less functional or completely dysfunctional, blocking cases when information flows to advertisement and analytics services ``hurts'' 10\% of the applications, and blocking the communication with the advertisement and analytics services altogether -- more than 60\% of the applications.
 Our work has a complementary nature as we rather attempt to identify cases when communication can be disabled without affecting the application functionality. 
 Our approach for assessing the user-observable effect of that operation is similar to the one they used. 
 
@@ -56,7 +56,7 @@ Our work has a complementary nature as we focus on identifying covert rather tha
 Shen et al.~\cite{Shen:Vishnubhotla:Todarka:Arora:Dhandapani:Lehner:Ko:Ziarek:ASE14} contribute FlowPermissions -- 
 an approach that extends the Android permission model with a mechanism for allowing the users to examine and grant permissions per an information flow within an application, e.g., a permission to read
 the phone number and send it over the network or to another application already installed on the device. 
-While our approaches have a similar ultimate goal -- to provide visibility into the holistic behavior of the applications installed on a user's phone -- our techniques are entirely orthogonal. 
+While our approaches have a similar ultimate goal -- to provide visibility of the holistic behavior of the applications installed on a user's phone -- our techniques are entirely orthogonal. 
 
 %\vspace{0.1in}
 %\noindent 

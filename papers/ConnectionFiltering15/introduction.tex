@@ -181,10 +181,9 @@ Otherwise, it is deemed covert.
 %API~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. 
 
 There are two reasons for the analysis to misclassify a connection as covert. 
-First, it does not take into account user interface (UI) updates that occur outside of the connection's direct processing, i.e., %those that result from 
-due to the connection altering a local or a remote state. 
-Second, the computation of the direct processing itself does not extend beyond the application's byte code, i.e., it does not consider native code and inter-application executions. 
-Our experiments show that these cases are rare, which, together with the high scalability achieved by the technique, justifies our design choices.
+First, it does not take into account user interface (UI) updates that occur outside of the connection's direct processing but are caused by the connection altering a local or a remote state. 
+Second, the semantics of the direct processing itself is defined solely by the application's byte code, i.e., it does not consider native code and inter-application executions. 
+Our experiments show that these cases are rare, which, together with the high scalability of the technique, justifies our design choices.
 
 %
 % Such cases might include GUI updates within and application as well as  within nor outside the application not outside of it, e.g., when performing an RPC inter-application communication or when toggling a state of a remote server.
@@ -210,17 +209,17 @@ There are only two connections that were misclassified as covert, both due to th
 
 
 
-To gain further insights on the quality of the technique, we apply it to additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed covert by the analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the run of an application on two devices. 
+To gain further insights on the quality of the technique, we apply it to additional 47 top-popular applications from Google Play. For these applications, we disable all connection statements deemed covert by the analysis. We then employ humans to perform a \emph{usability assessment}: we provide them with two identical devices, one running the original and the other -- the modified version of the application. We ask them to track and report on any observable differences between the runs of an application on two devices. 
 
-The results of this  assessment are encouraging: there were no observable differences in 63.8\% of the applications (30 cases). In 25.6\% of the applications (12 cases) differences were related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) missed functional features considered essential by the users. 
-This result implies that our technique produces actionable output that could already be applied to eliminate many cases of covert communication. 
+The results of this  assessment are encouraging: there are no observable differences in 63.8\% of the applications (30 cases). In 25.6\% of the applications (12 cases), differences are related to absence of functionality considered minor by the users, e.g., ads or decorating images. Only 10.6\% of the applications (5 cases) miss functional features considered essential by the users. 
+This result implies that our static analysis produces actionable output that could already be applied to eliminate many cases of covert communication. 
 
 
 %\vspace{0.05in}
 \noindent 
 {\bf RQ4: How often does covert communication occur in real-life applications and what are its most common sources?}
 %Inspired by the high precision of our technique, 
-We apply our technique on the top 500 popular applications from Google Play. This experiment reveals that 46\% of connection statements encoded in these applications 
+We apply the analysis on the top 500 popular applications from Google Play. This experiment reveals that 46\% of connection statements encoded in these applications 
 are deemed covert.
 Most common sources of covert communication are Google services %for mobile developers 
 and various A\&A services. Yet, these are not the exclusive source of covert communication, and not all communication made from these packages is covert. 

@@ -207,10 +207,10 @@ We manually exercised the application for around 10 minutes, exploring all its f
 Yet, we refrained from executing functionality related to signing-in into the user's Google Plus account or performing in-app purchases, due to the resign-related limitations mentioned above.
 We recorded the execution script that captured all triggered actions. 
 We then re-installed the application %to recreate a ``clean'' state 
-and re-ran the script to collect schreenshots that were used as the baseline for further comparisons. 
+and re-ran the script to collect screenshots that were used as the baseline for further comparisons. 
 
 In the second phase, we used the monitoring transformation to produce a version of the %original 
-application that logs information about all existing and triggered connection statements. We ran this version using the execution script and collected the statistics about its communication statements.  
+application that logs information about all existing and triggered connection statements. We ran this version using the recorded execution script and collected the statistics about its communication statements.  
 
 In the third phase, we iterated over all \emph{triggered} connection statements, disabling them one by one, in order to assess
 the necessity of each connection for preserving the user-observable behavior of the application. 
@@ -279,15 +279,15 @@ Total        &   & 330  & 81 & 51 (62.9\%)   & 22 (43.1\%)  \\ % & 1.8 (30.7\%) 
 \subsection{Results}
 The quantitative results of the study are presented in %columns~3--7 of 
 Table~\ref{tbl:applications}. 
-Column 3 and 4 of the table show that only a small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
-While some of the non-triggered statements can correspond to execution paths that were not explored during our dynamic application traversal, the vast majority of the statements originate in  
+Columns 3 and 4 of the table show that only a relatively small number of connection statements encoded in the applications are, in fact, triggered dynamically. 
+Some of the non-triggered statements correspond to execution paths that were not explored during our dynamic application traversal. Yet, the vast majority of the statements originate in  
 third-party libraries included in the application, e.g., Google and Facebook services for mobile developers and various A\&A libraries. 
 Such libraries are often only partially used by an application, which could explain the incomplete coverage.  
 %In fact, we identified 14 different A\&A libraries used by the 13 applications that we analyzed, 
 %and many times a single applications uses multiple such libraries.
 
 An interesting case is the Facebook application (row 5 in Table~\ref{tbl:applications}), where most of the application code is dynamically loaded at runtime from resources shipped within the apk file. 
-Our analysis was unable to traverse this dynamically loaded code, and we thus excluded the application from the further analysis, noting that the only three connection statements that existed in the application jar file are never triggered. We also excluded from the further analysis the Candy Crush Saga application (row 8 in Table~\ref{tbl:applications}), as it did not exhibit any covert connections.
+Our analysis was unable to traverse code in these custom-packed resources, and we thus excluded the application from the further analysis, noting that the only three connection statements that existed in the application jar file are never triggered. We also excluded from the further analysis the Candy Crush Saga application (row 8 in Table~\ref{tbl:applications}), as it did not exhibit any covert connections.
 
 %\begin{table}[t]
 %\caption{Communication Types.}
@@ -321,7 +321,7 @@ Our analysis was unable to traverse this dynamically loaded code, and we thus ex
 %{\bf Classification of the Triggered Statements.}
 \subsubsection{Classification of the Triggered Statements}
 Column 5 of Table~\ref{tbl:applications} shows the number of connection statements that we determined as covert during our study. 
-Averaged for all applications, 63\% of the connections fall in that category. 
+Averaged for all applications, 62.9\% of the connections fall in that category. 
 This means that only 37\% of the connection statements triggered by an application affect its observable behavior, 
 when executed for the exact same scenario with the connection being either enabled or disabled.
 % (see column 6 of Table~\ref{tbl:applications}). 
@@ -329,7 +329,7 @@ when executed for the exact same scenario with the connection being either enabl
 %Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  overt were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
 
 \conclusion{To answer RQ1, we conclude that covert communication often occurs in real-world applications: 
-63\% of the triggered connection statements can be deemed covert.}
+62.9\% of the triggered connection statements can be deemed covert.}
 
 
 Determining the original purpose of these covert connections is a non-trivial task: 
@@ -354,7 +354,7 @@ In most cases, the user cannot opt-out from such data sharing without uninstalli
  
 
 Beyond A\&A, several applications release information to their own and/or third-party services, without  causing any effect on the applications' observable behavior. 
-For example, twitter uses covert connections to collect information about videos and other rich media attachments followed by the users from tweets. 
+For example, twitter uses covert connections to collect information about videos and other rich media attachments followed by the users in tweets. 
 The GO Keyboard application sends, via a covert connection, a set of ids to the \emph{launchermsg.3g.cn} server; it also sends some encrypted data, which we could not decode, to \emph{nextbrowser.goforandroid.com}. 
 Both Pandora and Spotify music players use Facebook's social graph services~\cite{facebookSG}, sending out information about the application usage.
 As another example, the Walmart application incorporates the barcode scanner library provided by 
@@ -392,7 +392,7 @@ We manually investigated binaries of the analyzed applications, to gain more ins
 implementation patterns of covert connections.
 We noticed that, in a large number of cases, neither successes nor failures of such connections trigger visual notifications to the user. 
 %Connection failures are silently ignored by the applications without producing any . 
-For the failures, the triggered exception is often either caught and silently ignored in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by developers rather than end-user.
+For the failures, the triggered exception is often either caught and silently ignored in the method that issues the connection or, more commonly, propagated upwards in the call stack and then ignored by one of the calling methods. In several cases, an error or warning message is written to the Android log file. However, this file is mostly used by developers rather than end-users.
 
 \conclusion{To answer RQ2, we conjecture that covert connections can be detected by inspecting updates to UI elements on both the success and the failure path of a connection statement. 
 Lack of such UI updates is indicative for a connection being covert for the application execution as the user is unaware of both the success and the failure of the communication.}
