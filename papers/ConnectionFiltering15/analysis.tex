@@ -186,19 +186,18 @@ environment or account for possible dynamic program behaviors with
 conservative analysis choices; otherwise some runtime behaviors could
 be unconsidered.
 
-Our analysis over-approximates the runtime
-behaviors of the applications, and under-approximates the connection
-calls that could be covert.
-The analysis prioritizes high precision over high recall because we do
-not want to block connection calls that perform overt
+Our analysis over-approximates the runtime behaviors of the
+applications, and under-approximates the connection calls that could
+be covert.  The analysis prioritizes high precision over high recall
+because we do not want to block connection calls that perform overt
 communication. Our analysis employs a class hierarchy analysis
 (CHA)~\cite{Dean1995} to build a call graph with refinement achieved
-by intra-procedural data-flow analysis.  After much experimentation
-with higher precision, though brittle, points-to analysis techniques,
-this analysis combination gave us the best performance for the
-classification task.  Our analysis is implemented in the Soot Analysis
-Framework~\cite{Vallee-Rai2000} and utilizes the Android API model
-provided by
+by intra-procedural data-flow analysis.  After much
+experimentation with higher precision, though brittle, points-to
+analysis techniques, this analysis combination gave us the best
+performance for the classification task.  Our analysis is implemented
+in the Soot Analysis Framework~\cite{Vallee-Rai2000} and utilizes the
+Android API model provided by
 DroidSafe~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}. The
 presentation of the analysis below assumes the application is
 represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
@@ -303,7 +302,7 @@ from all \lstinline!catch!  blocks that could dynamically handle $f$.
 Next, we recursively process those newly added statements that could
 throw an exception.  In the processing, Android API methods are not
 considered, and searching for a handler does not propagate into the
-Android runtime.
+Android runtime environment.
 
 %resize line numbers
 \algrenewcommand\alglinenumber[1]{\scriptsize #1:}
@@ -694,12 +693,12 @@ thrown.
 \subsection{Success Analysis}
 
 For connection statement stmt, if the failure handling analysis
-concludes that no UI call could be invoked during failure
-handling and all stacks handle stmt's exception, then the analysis
-continues with the success paths of stmt. The success analysis
-determines if there is any UI modification after the
-connection succeeds but before control returns to the Android runtime
-and before control merges back to the failure handling paths.
+concludes that no UI call could be invoked during failure handling and
+all stacks handle stmt's exception, then the analysis continues with
+the success paths of stmt. The success analysis determines if there is
+any UI modification after the connection succeeds but before control
+returns to the Android runtime environment and before control merges
+back to the failure handling paths.
 
 Here we summarize the success analysis of connection call stmt enclosed
 in method meth by presenting a high-level description of two conceptual
