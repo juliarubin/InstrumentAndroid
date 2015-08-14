@@ -10,8 +10,7 @@ developed in Java as a series of external event handler routines,
 e.g., button click and application exit.  Given an Android
 application, the static analysis classifies each statement that may
 invoke a connection call as either {\it overt} or {\it covert}.  We
-begin by defining overt and covert communication.
-
+begin by giving a precise definition of overt and covert connections. 
 
 %% In an Android application, each
 %% connection call $s$ may generate an exception (of dynamic type $e$)
@@ -102,7 +101,7 @@ begin by defining overt and covert communication.
 \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
 \item \textsc{\bfseries{Definition (Overt and Covert
     Connections)}}.  For connection statement $s$, $s$ is classified as
-  an {\it overt connection} if it meets at least one of the following
+   {\it overt} if it meets at least one of the following
   criteria:
   
 \begin{enumerate}
@@ -112,9 +111,9 @@ begin by defining overt and covert communication.
   during {\it failure handling} of $s$ on $e$.
 
 
-\item {\bf Program Exit on Failure}: When $s$ triggers an exception, the
+\item {\bf Program Exit on Failure}: When $s$ triggers an exception $e$, the
 program may stop executing due to an execution path that propagates
-that exception back up to the Android runtime.
+$e$ back up to the Android runtime.
 
 \item {\bf UI Cue on Success}: When $s$ succeeds, there
   exists a possible modification to the user interface {\it before}
@@ -136,9 +135,21 @@ $e$ (through rethrown exceptions).  Failure handling is finished when
 all exceptions triggered by $e$ are handled and flow returns to normal
 execution.  
 
-In the next section, we discuss how we compute a static call graph
+In what follows, we discuss how we compute a static call graph
 that represents possible method targets of each call expression in the
-Android application.
+Android application. We then discuss our analysis on top of this graph, 
+which, for each connection statement, consists of three steps:
+(1) failure handler analysis, (2) success forward analysis,
+and (3) success backward analysis. 
+% The analysis terminates if a
+%step determines that the connection is overt. Otherwise, a
+%connection is considered covert.
+
+Table~\ref{tbl:connections} lists the target methods that are considered as
+connection calls.  The set of target methods that are considered as
+affecting the user interface are listed in Table~\ref{tbl:ui} (also
+included are all overriding methods).
+
 
 
 %% \begin{description}[leftmargin=0cm,listparindent=0pt,itemindent=0cm]
@@ -173,11 +184,12 @@ applications~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.
 Static analysis must either model the Android execution
 environment or account for possible dynamic program behaviors with
 conservative analysis choices; otherwise some runtime behaviors could
-be unconsidered.  Our static analysis over-approximates the runtime
+be unconsidered.  
+
+Our analysis over-approximates the runtime
 behaviors of the applications, and under-approximates the connection
 calls that could be covert.
- 
-Our analysis prioritizes high precision over high recall because we do
+The analysis prioritizes high precision over high recall because we do
 not want to block connection calls that perform overt
 communication. Our analysis employs a class hierarchy analysis
 (CHA)~\cite{Dean1995} to build a call graph with refinement achieved
@@ -194,19 +206,20 @@ represented in the Jimple intermediate language~\cite{Vallee-Rai2000}.
 To compute a call graph, we augment the application code with the
 DroidSafe Android Device Implementation
 (ADI)~\cite{Gordon:Kim:Perkins:Gilham:Nguyen:Rinard:NDSS15}.  The ADI
-is a Java-based model of the Android runtime and API that attempts to
+is a Java-based model of the Android runtime and API. It attempts to
 present full runtime semantics for commonly-used classes of the
 runtime and API.  Our call graph construction begins at each
-application method that could be a target of the Android runtime;
+application method that could be a target of the Android runtime, i.e., 
 these are the event handler methods of the applications.  Call graph
-construction does not traverse into Android API methods.  So the call
-graph is actually a forest of graphs, each rooted at the events
+construction does not traverse into Android API methods. 
+As such, the call
+graph is actually a forest of graphs, each rooted at the event
 handlers of the application, and each graph includes only
 application-defined methods.  However, we found it necessary to
 account for API calls that directly call back into the application,
-e.g., \lstinline!Thread.start()!, by replacing the API call with a
+e.g., \lstinline!Thread.start()!. We achieve that by replacing the API call with a
 direct call to the application method(s) that the API call could
-invoke.
+invoke, e.g., \lstinline!Thread.run()!.
 
 %% For example, if an application method, $m$ calls
 %% \lstinline!Thread.start()! on a receiver that is an application class,
@@ -233,11 +246,7 @@ then we limit the edges to only targets that have the same number and
 types of arguments.  This strategy works well for us in
 practice and aggressively accounts for reflection semantics.
 
-The static analysis is performed in three steps for each connection
-statement: (1) failure handler analysis, (2) success forward analysis,
-and (3) success backward analysis.  The analysis will terminate if a
-step determines that the connection is overt. Otherwise, a
-connection is considered covert.
+
 
 \lstDeleteShortInline+
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=true]+
@@ -272,10 +281,7 @@ connection is considered covert.
 
 \lstMakeShortInline[basicstyle=\scriptsize\ttfamily,keywordstyle=\color{DarkPurple},breaklines=false]+
 
-Table~\ref{tbl:connections} lists the target methods that we consider
-connection calls.  The set of target methods that are considered as
-affecting the user interface are listed in Table~\ref{tbl:ui} (also
-included are all overriding methods).
+
 
 \subsection{Failure Handler Analysis}
 \label{sec:failure-handling}
@@ -293,10 +299,10 @@ an exception that indicates communication failure.
 Conceptually, the failure handling of $s$ on $e$ is defined as a slice
 of instructions.  In the slice are all statements that are reachable
 from all \lstinline!catch! blocks that can dynamically handle $e$.
-Then for each reachable statement in the slice that could throw an
-exception of type $f$, recursively add to the slice all statements
+Then, for each reachable statement in the slice that could throw an
+exception of type $f$, we recursively add to the slice all statements
 that are reachable from all \lstinline!catch! blocks that could
-dynamically handle $f$.  Next, recursively process the reachable
+dynamically handle $f$.  Next, we recursively process the reachable
 statements that were just added to the slice that could throw an
 exception, and so on.  In the processing, Android API methods are not
 considered, and searching for a handler does not propagate into the
@@ -368,7 +374,7 @@ not caught locally, the analysis recursively visits all direct
 caller methods to find \lstinline!catch! blocks that trap
 the call graph edge (lines
 \ref{alg:no-local-hander-start}-\ref{alg:no-local-hander-end}).  For
-each predecessor, $p$, if a catch is not found that wraps the call
+each predecessor $p$, if a catch is not found that wraps the call
 edge, then $p$'s direct predecessors are visited, and so on.
 
 \begin{figure}[t]
@@ -597,23 +603,6 @@ the failure handling analysis.
 \begin{tabular}{|p{3.3in}|}
 \hline 
 
-\textsc{GetPossibleThrownTypes}($meth$,$stmt$): Calculate the
-possible exception types caught at the catch block that begins with
-$stmt$ of $meth$. The statements of the +try+ block that associates with the +catch+ block
-that encloses $stmt$:  (1) For a call statement, the
-procedure adds to the return list all exception types declared throws
-by all methods that the call can target,  (2) For a +throw+
-statement, the reaching definitions of the thrown value are
-calculated.  If the reaching definition is an allocation, then add to
-the return list the type of the allocation.  If the reaching
-definition is a caught exception statement, then
-\textsc{GetPossibleThrownExceptions} recursively calls itself to find
-the nesting try block statements and continue the calculation.  If a
-definition of any other statement type can reach the thrown value,
-then return null to denote that it cannot calculate the
-thrown.  
-\\
-\hline
 \textsc{FindCompatCatch}($meth$,$stmt$,$ex$): Return the first
   statement of the +catch+ block that will handle an
   exception of type $ex$ thrown at statement stmt in method meth.
@@ -631,6 +620,23 @@ return all statements that were defined in the source code for the
 +catch+ block of $stmt$.  This method calculates an
 over-estimation of +catch+ block extents, e.g., it includes
 +finally+ blocks.
+\\
+\hline
+\textsc{GetPossibleThrownTypes}($meth$,$stmt$): Calculate the
+possible exception types caught at the catch block that begins with
+$stmt$ of $meth$. The statements of the +try+ block that associates with the +catch+ block
+that encloses $stmt$:  (1) For a call statement, the
+procedure adds to the return list all exception types declared throws
+by all methods that the call can target,  (2) For a +throw+
+statement, the reaching definitions of the thrown value are
+calculated.  If the reaching definition is an allocation, then add to
+the return list the type of the allocation.  If the reaching
+definition is a caught exception statement, then
+\textsc{GetPossibleThrownExceptions} recursively calls itself to find
+the nesting try block statements and continue the calculation.  If a
+definition of any other statement type can reach the thrown value,
+then return null to denote that it cannot calculate the
+thrown.  
 \\
 \hline
 \textsc{GetTryBlock}($meth$,$stmt$): Given a statement $stmt$
