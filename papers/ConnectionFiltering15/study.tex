@@ -134,25 +134,28 @@ Comparison of user-observable behavior requires dynamic execution of
 the analyzed applications.  The main obstacle in performing such
 comparison is the ability to reproduce program executions in a
 repeatable manner.  To overcome this obstacle, we produce a script
-that automates the execution of each application.  As the first step,
-we use the Android getevent tool~\cite{getevent} that runs on the
-device and captures all user and kernel input events to capture a
-sequence of events that exercise an application behavior. We make sure
-to pause between user gestures that assume application response.  We
-then enhance the script produced by getevent to insert a screen
-capturing command after each pause and also between events of any
-prolonged sequences.  We upload the produced script onto the device
-and run it for each version of the application.
+that automates the execution of each application. 
 
-We experimented with Android's UI/Application Exerciser
-Monkey~\cite{monkey} tool but it was unable to provide a reasonably
-exhaustive coverage of application functionality. Even for
-applications that do not require entering any login credentials, it
-quickly locked itself out of the application by generating gestures
-that the analyzed application cannot handle.  We thus have chosen to
-manually record the desired application execution scenario, which also
-included any ``semantic'' user input required by the application,
+We experimented with Android's %UI/Application Exerciser
+Monkey tool~\cite{monkey}, but it was unable to provide a reasonably
+exhaustive coverage %of application functionality . Even for
+%applications that do not require entering any login credentials, 
+as it quickly locked itself out of the application by generating gestures
+that the analyzed application cannot handle.  We thus recorded the desired application execution scenario manually, 
+including in the recording any ``semantic'' user input required by the application,
 e.g., username and password.
+We used the Android getevent tool~\cite{getevent} that runs on the
+device and captures all user and kernel input events. % to capture a
+%sequence of events that exercise an application behavior. 
+We made sure
+to pause between user gestures that assume application response.  We
+then enhanced the script produced by getevent to insert a screen
+capturing command after each pause and between events of any
+prolonged sequences. 
+% We uploaded the produced script onto the device
+%and ran it for each version of the application.
+
+
 
 \begin{figure}[!t]
     \centering
@@ -185,9 +188,9 @@ e.g., username and password.
 %     \label{fig:diff34}%
 %     \includegraphics[width=0.3\columnwidth]{img/diff34.png}%
 %     }
-    \vspace{-0.1in}
+%    \vspace{-0.05in}
     \caption{Visual differences.}
-       \vspace{-0.1in}
+%       \vspace{-0.05in}
     \label{fig:screenshots}
     \vspace{-0.1in}
 \end{figure}
@@ -284,7 +287,7 @@ Total        &   & 330  & 81 & 51 (62.9\%)   & 22 (43.1\%)  \\ % & 1.8 (30.7\%) 
 %--------------------------------------------------------------------
 \end{tabular}
 }% resizebox
-\vspace{-0.1in}
+%\vspace{-0.05in}
 \end{table}
 
 \subsection{Results}
@@ -298,7 +301,9 @@ Such libraries are often only partially used by an application, which could expl
 %and many times a single applications uses multiple such libraries.
 
 An interesting case is the Facebook application (row 5 in Table~\ref{tbl:applications}), where most of the application code is dynamically loaded at runtime from resources shipped within the apk file. 
-Our analysis was unable to traverse code in these custom-packed resources, and we thus excluded the application from the further analysis, noting that the only three connection statements that existed in the application jar file are never triggered. We also excluded from the further analysis the Candy Crush Saga application (row 8 in Table~\ref{tbl:applications}), as it did not exhibit any covert connections.
+Our analysis was unable to traverse %code in 
+these custom-packed resources, and we thus excluded the application from the further analysis, noting that the only three connection statements %that existed 
+in the application jar file are never triggered. We also excluded from the further analysis the Candy Crush Saga application (row 8 in Table~\ref{tbl:applications}), as it did not exhibit any covert connections.
 
 %\begin{table}[t]
 %\caption{Communication Types.}
@@ -339,10 +344,6 @@ when executed for the exact same scenario with the connection being either enabl
 
 %Four of the analyzed applications contained advertisement material. For these applications, 71\% of the connections deemed  overt were used for advertising purposes, as shown in the last column of Table~\ref{tbl:applications}.
 
-\conclusion{To answer RQ1, we conclude that covert communication often occurs in real-world applications: 
-62.9\% of the triggered connection statements can be deemed covert.}
-
-
 Determining the original purpose of these covert connections is a non-trivial task: 
 as implied by their nature, they do not exhibit any observable behavior. 
 Due to obfuscation, virtually no ``semantic'' insights about the purpose of these connections can be drawn from the manual analysis of the application binaries either. 
@@ -374,6 +375,10 @@ an eBay company that specializes in comparing prices.
 This library causes the application %encrypts and 
 to send out information about the scanned barcode to the \emph{data.redlaser.com} server. 
 Yet, blocking that release of information does not harm the scanning capabilities. 
+
+\conclusion{To answer RQ1, we conclude that covert communication often occurs in real-world applications: 
+62.9\% of the triggered connection statements can be deemed covert.}
+
 %Interestingly, the same scanned barcode number is also sent to \emph{api.redlaser.com} over an overt connection; this time -- non-encrypted. 
 
 %Such various handshakes, while generally harmless, exemplify the potential privacy violationa and network bandwidth consumption induced by covert communication.   
@@ -387,7 +392,7 @@ Yet, blocking that release of information does not harm the scanning capabilitie
 %\noindent 
 %{\bf Information Leakages.}
 
-%\vspace{0.1in}
+\vspace{0.1in}
 %\noindent 
 %{\bf Lessons Learned.}
 \subsubsection{Lessons Learned}

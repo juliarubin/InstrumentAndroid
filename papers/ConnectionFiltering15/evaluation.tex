@@ -82,8 +82,8 @@ not achieve higher recall are (1) a conservative, though feasibly
 analyzable, definition of direct processing related to a connection
 call, and (2) conservative call graph construction, specifically
 w.r.t. reflection.
-Such solution is aligned with our goal of providing actionable results, which are ``safe'' albeit under-approximate.  
-
+Such solution is aligned with our goal of providing actionable results, which are ``safe'' albeit under-approximate.
+  
 Finally, the analysis is highly efficient and
 runs in a matter of minutes even on large applications, as shown in
 the last column of Table~\ref{tbl:eval}.
@@ -136,10 +136,10 @@ Average       & 93.2\% & 61.5\% & 2min 48s \\
 %--------------------------------------------------------------------
 \end{tabular}
 }% resizebox
-\vspace{-0.15in}
+\vspace{-0.1in}
 \end{table}
 
-To analyze the results of that experiment in a reliable manner, we exclude 14 applications that were non-operational (either did not run in both versions, or required payment to continue running);
+To analyze the results of that experiment in a reliable manner, we exclude 14 applications that were non-operational (either did not run in the original version or required payment to continue running);
  17 applications for which ASM-based instrumentation failed or the instrumented version did not run due to the issues related to the resigning process;
  2 Google applications that we could not re-install on a device;
 5 chat applications;
