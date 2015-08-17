@@ -1,4 +1,4 @@
-%\vspace{-0.05in}
+\vspace{-0.05in}
 \section{Static Analysis for Classifying Connections}
 \label{sec:analysis}
 
@@ -730,17 +730,35 @@ is classified as covert.
 \subsection{Design Discussion}
 
 The intuition for our static analysis is that overt connection calls
-{\it always} affect the user interface either on success or
-failure. Furthermore, the effect is {\it direct} on success.  An
-execution trace that handles a single runtime event naturally denotes
-a unified block of processing. As such, our analysis reasons about
-event handlers to bound the success search to represent the direct
-processing of a connection call.
-
+always affect the user interface either on success or
+failure. 
 Another insight gleaned from the study in Section~\ref{sec:study} is
-that direct processing associated with a successful invocation of
-connection call stmt in method meth often ends when the successful control
-flow merges back with the exceptional control flow. This is the
-motivation for why the success backward analysis only examines methods
+that normal processing of a connection often ends when the exceptional and non-exceptional control
+flow paths merge. Hence, 
+the success backward analysis only examines methods
 that were analyzed by the failure analysis.  
+Furthermore, we use the enclosing runtime event handlers to bound the connection call processing.
+ 
+%Furthermore, the effect is {\it direct} on success.  An
+%execution trace that handles a single runtime event . As such, our analysis reasons about
+%event handlers to bound the success search to represent the direct
+%processing of a connection call.
+
+
+
+%The intuition for our static analysis is that overt connection calls
+%{\it always} affect the user interface either on success or
+%failure. 
+%Furthermore, the effect is {\it direct} on success.  An
+%execution trace that handles a single runtime event naturally denotes
+%a unified block of processing. As such, our analysis reasons about
+%event handlers to bound the success search to represent the direct
+%processing of a connection call.
+%
+%Another insight gleaned from the study in Section~\ref{sec:study} is
+%that direct processing associated with a successful invocation of
+%connection call stmt in method meth often ends when the successful control
+%flow merges back with the exceptional control flow. This is the
+%motivation for why the success backward analysis only examines methods
+%that were analyzed by the failure analysis.  
 

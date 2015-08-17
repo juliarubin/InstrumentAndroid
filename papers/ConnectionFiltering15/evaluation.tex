@@ -19,7 +19,7 @@ Then, via a usability assessment, we evaluate the user-experience when running a
 
 \subsubsection{Accuracy}
 For the accuracy evaluation, we look again at the applications listed in 
-Table~\ref{tbl:applications}, excluding Facebook and Candy Crush because these two applications  did not exhibit any covert communication. We limit the set of results reported by the static analysis to those that were, in fact, triggered dynamically, as only for these we have the ``ground truth'' established. 
+Table~\ref{tbl:applications}, excluding Facebook and Candy Crush because these applications  did not exhibit any covert communication. We limit the set of results reported by the static analysis to those that were, in fact, triggered dynamically, as only for these we have the ``ground truth'' established. 
 % (see Table~\ref{tbl:applications} in Section~\ref{sec:study}): these are the connection statements for which we have reliable information to compare against. 
 We assess the results, for each application individually and averaged for all applications, using the metrics below:
 
@@ -31,8 +31,10 @@ We assess the results, for each application individually and averaged for all ap
 % \emph{Correct}: the number of covert connections correctly identified by the static analysis, i.e., those that were deemed as covert in the dynamic study as well.
 % reported by the technique.\\
 \item \emph{Precision}: the fraction of connection statements correctly identified as covert among those reported by the technique.
+\vspace{0.05in}
 % calculated as \emph{$\frac{\text{Correct}}{\text{Reported}}$}. 
 \item \emph{Recall}: the fraction of connection statements correctly identified as covert among those expected, i.e., marked as covert during the dynamic study. 
+\vspace{0.05in}
 %, calculated as
 %\emph{$\frac{\text{Correct}}{\text{Expected}}$}.
 %\item
