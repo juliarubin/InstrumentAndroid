@@ -321,7 +321,6 @@ Android runtime environment.
 \State catchBlockStart $\gets$ \textsc{FindCompatCatch}(meth, stmt, ex)
 \label{alg:find-catch}
 \If {catchBlockStart $=$ \textbf{null} }
-\label{alg:no-local-hander-start}
 \If {\textsc{IsEventHandler}(meth)}
 \label{alg:event-handler-line}
 \State overt $\gets$ overt $\cup$ stmt
